@@ -1,0 +1,26 @@
+{
+  "name": "web-api",
+  "version": "1.0.0",
+  "description": "Perfect Week web API",
+  "main": "main.js",
+  "scripts": {
+      "build": "tsc",
+      "start": "tsc && node build/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerfectWeek/web-api.git"
+  },
+  "keywords": [
+    "api"
+  ],
+  "author": "Perfect Week",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PerfectWeek/web-api/issues"
+  },
+  "homepage": "https://github.com/PerfectWeek/web-api#readme",
+  "dependencies": {
+    "typescript": "^2.8.3"
+  }
+}

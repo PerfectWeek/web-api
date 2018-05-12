@@ -35,13 +35,13 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+package-lock.json
 
 # TypeScript v1 declaration files
 typings/
 
 # Optional npm cache directory
 .npm
-package-lock.json
 
 # Optional eslint cache
 .eslintcache
@@ -63,3 +63,6 @@ package-lock.json
 
 # Directories
 .DS_Store
+
+# Build
+/build
