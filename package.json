@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node build/main.js",
-    "test": "mocha"
+    "test": "mocha",
+    "db": "cd ./database && docker-compose up"
   },
   "repository": {
     "type": "git",
