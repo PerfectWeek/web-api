@@ -9,6 +9,8 @@ import * as Cors from 'cors';
 import * as CookieParser from 'cookie-parser';
 import * as BodyParser from 'body-parser';
 
+import { loadRouters } from "./utils/loadRouters";
+
 
 const app = Express();
 
@@ -20,11 +22,7 @@ app.use(BodyParser.urlencoded({ extended: true }));
 app.use(BodyParser.json());
 
 // Load all Routers
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).json({
-        message: "Hello"
-    });
-});
+loadRouters(app, "build/api/routes");
 
 // Handle invalid requests as 404
 app.use((req: Request, res: Response, next: Function) => {
