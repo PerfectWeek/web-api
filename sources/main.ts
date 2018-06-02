@@ -28,10 +28,10 @@ loadRouters(app, "build/api/routes");
 
 
 // Handle invalid requests as 404
-app.use((req: Request, res: Response, next: Function) => {
-    const error = new Error('Route or Resource not found');
-    (<any>error).status = 404;
-    next(error);
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        message: "Route or Resource not found"
+    });
 });
 
 
