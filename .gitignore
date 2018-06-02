@@ -69,3 +69,9 @@ typings/
 
 # Database
 /database/data
+
+# IDE
+/.idea
+/.vs
+*~
+*\#*
