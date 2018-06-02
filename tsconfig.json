@@ -14,6 +14,7 @@
         "sources/main.ts",
 
         // Routes
+        "sources/api/routes/index.ts",
 
         // Controllers
 
