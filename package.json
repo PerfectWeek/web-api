@@ -1,34 +1,34 @@
 {
-  "name": "web-api",
-  "version": "1.0.0",
-  "description": "Perfect Week web API",
-  "main": "main.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "tsc && node build/main.js",
-    "test": "mocha",
-    "db": "cd ./database && docker-compose up"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PerfectWeek/web-api.git"
-  },
-  "keywords": [
-    "api"
-  ],
-  "author": "Perfect Week",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/PerfectWeek/web-api/issues"
-  },
-  "homepage": "https://github.com/PerfectWeek/web-api#readme",
-  "dependencies": {
-    "typescript": "^2.8.3"
-  },
-  "devDependencies": {
-    "@types/mocha": "^5.2.0",
-    "chai": "^4.1.2",
-    "chai-http": "^4.0.0",
-    "mocha": "^5.1.1"
-  }
+    "name": "web-api",
+    "version": "1.0.0",
+    "description": "Perfect Week web API",
+    "main": "main.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "tsc && node build/main.js",
+        "test": "mocha",
+        "db": "cd ./database && docker-compose up"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PerfectWeek/web-api.git"
+    },
+    "keywords": [
+        "api"
+    ],
+    "author": "Perfect Week",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/PerfectWeek/web-api/issues"
+    },
+    "homepage": "https://github.com/PerfectWeek/web-api#readme",
+    "dependencies": {
+        "typescript": "^2.8.3"
+    },
+    "devDependencies": {
+        "@types/mocha": "^5.2.0",
+        "chai": "^4.1.2",
+        "chai-http": "^4.0.0",
+        "mocha": "^5.1.1"
+    }
 }
