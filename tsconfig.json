@@ -12,6 +12,7 @@
     "files": [
         // Main
         "sources/main.ts",
+        "sources/api/db.ts",
 
         // Routes
         "sources/api/routes/index.ts",
