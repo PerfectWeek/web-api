@@ -12,6 +12,7 @@ import * as BodyParser from 'body-parser';
 import { loadRouters } from "./utils/loadRouters";
 
 
+// Express
 const app = Express();
 
 // Configure some useful middleware
@@ -21,15 +22,18 @@ app.use(CookieParser());
 app.use(BodyParser.urlencoded({ extended: true }));
 app.use(BodyParser.json());
 
+
 // Load all Routers
 loadRouters(app, "build/api/routes");
 
+
 // Handle invalid requests as 404
-app.use((req: Request, res: Response, next: Function) => {
-    const error = new Error('Route or Resource not found');
-    (<any>error).status = 404;
-    next(error);
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        message: "Route or Resource not found"
+    });
 });
+
 
 // Handle errors
 app.use((error: Error, req: Request, res: Response) => {
@@ -38,6 +42,7 @@ app.use((error: Error, req: Request, res: Response) => {
         message: error.message
     });
 });
+
 
 // Start the server
 const port = process.env.PORT || 3000;
