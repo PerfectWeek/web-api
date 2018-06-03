@@ -16,8 +16,13 @@
 
         // Routes
         "sources/api/routes/index.ts",
+        "sources/api/routes/users/index.ts",
 
         // Controllers
+        "sources/api/controllers/users.ts",
+
+        // Models
+        "sources/api/models/User.ts",
 
         // Middleware
 
