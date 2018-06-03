@@ -28,7 +28,7 @@ loadRouters(app, "build/api/routes");
 
 
 // Handle invalid requests as 404
-app.use((req: Request, res: Response) => {
+app.use((req: Request, res: Response, next: Function) => {
     res.status(404).json({
         message: "Route or Resource not found"
     });
@@ -36,8 +36,8 @@ app.use((req: Request, res: Response) => {
 
 
 // Handle errors
-app.use((error: Error, req: Request, res: Response) => {
-    res.status((<any>error).status || 500);
+app.use((error: Error, req: Request, res: Response, next: Function) => {
+    res.status(500);
     res.json({
         message: error.message
     });
