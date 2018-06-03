@@ -7,7 +7,7 @@
         "build": "tsc",
         "start": "tsc && node build/main.js",
         "test": "mocha",
-        "db": "cd ./database && docker-compose up"
+        "migration": "knex migrate:latest"
     },
     "repository": {
         "type": "git",
