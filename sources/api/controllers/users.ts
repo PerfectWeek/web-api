@@ -3,8 +3,38 @@
 //
 
 import { Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken'
 
 import { UserModel, User } from "../models/User";
+
+
+
+//
+// Log a user in and return token
+//
+export async function login(req: Request, res: Response) {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await UserModel.getOneByEmail(email);
+
+    const token_payload = {
+        id: user.id
+    };
+
+    if (user.object.checkPassword(password)) {
+        const token = jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
+        res.status(200).json({
+            message: 'Authentication successful',
+            access_token: token,
+            user: {
+                pseudo: user.object.pseudo,
+                email: user.object.email
+            }
+        });
+    }
+    else
+        throw new Error("Bad user or password");
+}
 
 //
 // Create a new User and save it in the DataBase
@@ -13,7 +43,7 @@ export async function createUser(req: Request, res: Response) {
     const user: User = new User(
         req.body.pseudo,
         req.body.email,
-        User.hashPassword(req.body.password)
+        await User.hashPassword(req.body.password)
     );
     if (!user.isValid())
         return res.status(400).json({
