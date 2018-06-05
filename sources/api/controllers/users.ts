@@ -3,10 +3,10 @@
 //
 
 import { Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken'
 
 import { UserModel, User } from "../models/User";
 
-import * as jwt from 'jsonwebtoken'
 
 
 //
@@ -27,7 +27,7 @@ export async function login(req: Request, res: Response) {
             message: 'Authentication successful',
             access_token: token,
             user: {
-                name: user.object.pseudo,
+                pseudo: user.object.pseudo,
                 email: user.object.email
             }
         });

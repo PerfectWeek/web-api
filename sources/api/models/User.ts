@@ -3,6 +3,7 @@
 //
 
 import {Db, DbObject} from "../db";
+
 import {Encrypt} from "../../utils/encrypt";
 
 export class User
@@ -22,7 +23,6 @@ export class User
         if (password.length < 8)
             throw new Error("Password must be at least 8 characters long");
         const passwd = await Encrypt.hashPassword(password);
-        console.log(passwd);
         return passwd;
     }
 

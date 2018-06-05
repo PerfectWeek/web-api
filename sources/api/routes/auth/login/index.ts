@@ -3,7 +3,6 @@
 //
 
 import {Router} from "express";
-
 import * as AsyncHandler from 'express-async-handler';
 
 import * as UserController from '../../../controllers/users';
