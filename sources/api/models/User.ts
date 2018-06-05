@@ -3,6 +3,7 @@
 //
 
 import {Db, DbObject} from "../db";
+import {Encrypt} from "../../utils/encrypt";
 
 export class User
 {
@@ -16,17 +17,17 @@ export class User
         this.hashed_password = hashed_password;
     }
 
-    public static hashPassword(password: string): string {
-        // TODO
+    static async hashPassword(password: string): Promise<string> {
         // - check password validity
-        // - hash password
-        return password;
+        if (password.length < 8)
+            throw new Error("Password must be at least 8 characters long");
+        const passwd = await Encrypt.hashPassword(password);
+        console.log(passwd);
+        return passwd;
     }
 
-    public checkPassword(password: string): boolean {
-        // TODO
-        // - Check if the given password is compatible with the hash
-        return true;
+    public async checkPassword(password: string): Promise<boolean> {
+        return await Encrypt.matchPassword(password, this.hashed_password);
     }
 
     // Validators
@@ -66,11 +67,17 @@ export class UserModel {
 
         return new DbObject<User>(
             db_user.id,
-            new User(
-                db_user.pseudo,
-                db_user.email,
-                db_user.hashed_password
-            ),
+            User.create(db_user),
+            db_user.created_at,
+            db_user.updated_at);
+    }
+
+    public static async getOneByEmail(email: string): Promise<DbObject<User>> {
+        const db_user = await Db.table(tableName).where({email: email}).first();
+
+        return new DbObject<User>(
+            db_user.id,
+            User.create(db_user),
             db_user.created_at,
             db_user.updated_at);
     }
