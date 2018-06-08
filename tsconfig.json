@@ -30,6 +30,7 @@
         "sources/utils/db.ts",
         "sources/utils/encrypt.ts",
         "sources/utils/fetchTree.ts",
-        "sources/utils/loadRouters.ts"
+        "sources/utils/loadRouters.ts",
+        "sources/utils/checkEnvVariable.ts"
     ]
 }
