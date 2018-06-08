@@ -2,7 +2,7 @@
 // Created by benard_g on 2018/06/03
 //
 
-import {Db, DbObject} from "../db";
+import {Db, DbObject} from "../../utils/db";
 
 import {Encrypt} from "../../utils/encrypt";
 

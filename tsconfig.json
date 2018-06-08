@@ -12,7 +12,6 @@
     "files": [
         // Main
         "sources/main.ts",
-        "sources/api/db.ts",
 
         // Routes
         "sources/api/routes/index.ts",
@@ -28,6 +27,7 @@
         // Middleware
 
         // Utils
+        "sources/utils/db.ts",
         "sources/utils/encrypt.ts",
         "sources/utils/fetchTree.ts",
         "sources/utils/loadRouters.ts"
