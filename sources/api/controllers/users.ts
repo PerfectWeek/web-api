@@ -6,8 +6,7 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken'
 
 import { UserModel, User } from "../models/User";
-
-
+import {ApiException} from "../../utils/apiException";
 
 //
 // Log a user in and return token
@@ -33,7 +32,7 @@ export async function login(req: Request, res: Response) {
         });
     }
     else
-        throw new Error("Bad user or password");
+        throw new ApiException(403, "Bad user or password");
 }
 
 //

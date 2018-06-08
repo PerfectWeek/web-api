@@ -30,6 +30,7 @@
         // Utils
         "sources/utils/encrypt.ts",
         "sources/utils/fetchTree.ts",
-        "sources/utils/loadRouters.ts"
+        "sources/utils/loadRouters.ts",
+        "sources/utils/apiException.ts"
     ]
 }

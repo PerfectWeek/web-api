@@ -10,6 +10,7 @@ import * as CookieParser from 'cookie-parser';
 import * as BodyParser from 'body-parser';
 
 import { loadRouters } from "./utils/loadRouters";
+import {ApiException} from "./utils/apiException";
 
 
 // Express
@@ -26,7 +27,6 @@ app.use(BodyParser.json());
 // Load all Routers
 loadRouters(app, "build/api/routes");
 
-
 // Handle invalid requests as 404
 app.use((req: Request, res: Response, next: Function) => {
     res.status(404).json({
@@ -37,7 +37,12 @@ app.use((req: Request, res: Response, next: Function) => {
 
 // Handle errors
 app.use((error: Error, req: Request, res: Response, next: Function) => {
-    res.status(500);
+    if (error instanceof ApiException) {
+        res.status((<ApiException>error).code);
+    }
+    else {
+        res.status(500);
+    }
     res.json({
         message: error.message
     });
