@@ -10,6 +10,12 @@ import * as CookieParser from 'cookie-parser';
 import * as BodyParser from 'body-parser';
 
 import { loadRouters } from "./utils/loadRouters";
+import { checkEnvVariable } from "./utils/checkEnvVariable";
+
+// Check for mandatory env variables
+checkEnvVariable("DB_HOST");
+checkEnvVariable("DB_PASSWD");
+checkEnvVariable("JWT_ENCODE_KEY");
 
 
 // Express

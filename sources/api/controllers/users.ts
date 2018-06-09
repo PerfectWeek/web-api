@@ -3,11 +3,9 @@
 //
 
 import { Request, Response } from 'express';
-import * as jwt from 'jsonwebtoken'
+import * as Jwt from 'jsonwebtoken'
 
 import { UserModel, User } from "../models/User";
-
-
 
 //
 // Log a user in and return token
@@ -22,7 +20,7 @@ export async function login(req: Request, res: Response) {
     };
 
     if (user.object.checkPassword(password)) {
-        const token = jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
+        const token = Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
         res.status(200).json({
             message: 'Authentication successful',
             access_token: token,
