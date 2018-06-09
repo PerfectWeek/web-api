@@ -5,7 +5,7 @@
 import { Request, Response } from 'express';
 import * as Jwt from 'jsonwebtoken'
 
-import { UserModel, User } from "../models/User";
+import { UserModel, User } from "../models/UserModel";
 
 //
 // Log a user in and return token

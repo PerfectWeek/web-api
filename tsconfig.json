@@ -19,10 +19,10 @@
         "sources/api/routes/auth/login/index.ts",
 
         // Controllers
-        "sources/api/controllers/users.ts",
+        "sources/api/controllers/UserController.ts",
 
         // Models
-        "sources/api/models/User.ts",
+        "sources/api/models/UserModel.ts",
 
         // Middleware
 
