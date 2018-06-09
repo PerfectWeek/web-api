@@ -24,6 +24,9 @@
         // Models
         "sources/api/models/UserModel.ts",
 
+        // Views
+        "sources/api/views/UserView.ts",
+
         // Middleware
 
         // Utils
