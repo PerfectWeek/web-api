@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
             "    RETURN NEW;\n" +
             "END;" +
             "$func$ LANGUAGE plpgsql;")
-        // Call the function on UPDATE
+        // Call the function on UPDATE for the users table
         .raw(
             "CREATE TRIGGER user_update\n" +
             "BEFORE UPDATE ON users\n" +
