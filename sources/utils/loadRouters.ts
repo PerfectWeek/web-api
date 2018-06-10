@@ -9,7 +9,10 @@ import { fetchTree } from "./fetchTree";
 
 function filesToRoutes(api_directory: string, files: string[]) {
     return files.map((file: string) => {
-        let route = file.substring(api_directory.length, file.lastIndexOf('/'));
+        // Replace all "\" with "/" on Windows
+        const formatted_file = file.replace(/\\/g, "/");
+
+        let route = formatted_file.substring(api_directory.length, formatted_file.lastIndexOf('/'));
         if (route.length === 0)
             route = '/';
         return { file: file, route: route}
