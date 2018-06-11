@@ -23,8 +23,7 @@ export class User
         // - check password validity
         if (password.length < 8)
             throw new ApiException(403, "Password must be at least 8 characters long");
-        const passwd = await Encrypt.hashPassword(password);
-        return passwd;
+        return await Encrypt.hashPassword(password);
     }
 
     public async checkPassword(password: string): Promise<boolean> {
