@@ -28,6 +28,7 @@
         "sources/api/views/UserView.ts",
 
         // Middleware
+        "sources/api/middlewares/loggedOnly.ts",
 
         // Utils
         "sources/utils/db.ts",

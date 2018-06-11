@@ -71,10 +71,24 @@ export class UserModel {
     public static async getOneByEmail(email: string): Promise<DbObject<User>> {
         const db_user = await Db.table(tableName).where({email: email}).first();
 
-        return new DbObject<User>(
-            db_user.id,
-            User.create(db_user),
-            db_user.created_at,
-            db_user.updated_at);
+        return !db_user
+            ? null
+            : new DbObject<User>(
+                db_user.id,
+                User.create(db_user),
+                db_user.created_at,
+                db_user.updated_at);
+    }
+
+    public static async getOneById(id: number): Promise<DbObject<User>> {
+        const db_user = await Db.table(tableName).where({id: id}).first();
+
+        return !db_user
+            ? null
+            : new DbObject<User>(
+                db_user.id,
+                User.create(db_user),
+                db_user.created_at,
+                db_user.updated_at);
     }
 }
