@@ -5,11 +5,15 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken'
 
-import {UserModel } from "../models/UserModel";
+import {User, UserModel} from "../models/UserModel";
 import {ApiException} from "../../utils/apiException";
+import {DbObject} from "../../utils/db";
 
+export function getRequestingUser(req: Request): DbObject<User> {
+    return (<any>req).user;
+}
 
-async function loggedOnly(req: Request, res: Response, next: Function) {
+export async function loggedOnly(req: Request, res: Response, next: Function) {
     const token = <string>req.headers["access-token"];
     if (!token)
         throw new ApiException(400, "You need to provide access-token");
@@ -22,5 +26,3 @@ async function loggedOnly(req: Request, res: Response, next: Function) {
     (<any>req).user = user;
     next();
 }
-
-export default loggedOnly;
