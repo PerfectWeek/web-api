@@ -11,6 +11,7 @@ import * as BodyParser from 'body-parser';
 
 import { loadRouters } from "./utils/loadRouters";
 import { checkEnvVariable } from "./utils/checkEnvVariable";
+import {ApiException} from "./utils/apiException";
 
 // Check for mandatory env variables
 checkEnvVariable("DB_HOST");
@@ -43,10 +44,10 @@ app.use((req: Request, res: Response, next: Function) => {
 
 // Handle errors
 app.use((error: Error, req: Request, res: Response, next: Function) => {
-    res.status(500);
-    res.json({
-        message: error.message
-    });
+    res.status(error instanceof ApiException ? (<ApiException>error).code : 500)
+        .json({
+            message: error.message
+        });
 });
 
 

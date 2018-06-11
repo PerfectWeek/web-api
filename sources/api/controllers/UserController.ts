@@ -3,9 +3,10 @@
 //
 
 import { Request, Response } from 'express';
-import * as Jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken'
 
 import { UserModel, User } from "../models/UserModel";
+import {ApiException} from "../../utils/apiException";
 import { UserView } from "../views/UserView";
 
 //
@@ -17,10 +18,10 @@ export async function login(req: Request, res: Response) {
     const user = await UserModel.getOneByEmail(email);
 
     if (!user || !user.object.checkPassword(password))
-        throw new Error("Bad user or password");
+        throw new ApiException(403, "Bad user or password");
 
     const token_payload = {id: user.id};
-    const token = Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
+    const token = jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
 
     res.status(200).json({
         message: 'Authentication successful',
@@ -39,7 +40,7 @@ export async function createUser(req: Request, res: Response) {
         await User.hashPassword(req.body.password)
     );
     if (!user.isValid())
-        throw new Error("Invalid fields in User");
+        throw new ApiException(400, "Invalid fields in User");
 
     await UserModel.createOne(user);
 
@@ -55,7 +56,7 @@ export async function getUser(req: Request, res: Response) {
     const user = await UserModel.getOneByPseudo(req.params.pseudo);
 
     if (!user)
-        throw new Error("User not found");
+        throw new ApiException(404, "User not found");
 
     return res.status(200).json({
         message: "OK",

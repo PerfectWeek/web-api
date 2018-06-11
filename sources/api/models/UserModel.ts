@@ -5,6 +5,7 @@
 import {Db, DbObject} from "../../utils/db";
 
 import {Encrypt} from "../../utils/encrypt";
+import {ApiException} from "../../utils/apiException";
 
 export class User
 {
@@ -21,7 +22,7 @@ export class User
     static async hashPassword(password: string): Promise<string> {
         // - check password validity
         if (password.length < 8)
-            throw new Error("Password must be at least 8 characters long");
+            throw new ApiException(403, "Password must be at least 8 characters long");
         const passwd = await Encrypt.hashPassword(password);
         return passwd;
     }
