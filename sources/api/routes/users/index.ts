@@ -6,7 +6,7 @@ import { Router } from "express";
 import * as AsyncHandler from 'express-async-handler';
 
 import * as UserController from '../../controllers/UserController';
-import loggedOnly from "../../middlewares/loggedOnly";
+import  { loggedOnly } from "../../middleware/loggedOnly";
 
 const router = Router();
 
