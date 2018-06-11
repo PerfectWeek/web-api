@@ -2,7 +2,7 @@
 // Created by benard_g on 2018/06/03
 //
 
-import {Db, DbObject} from "../db";
+import {Db, DbObject} from "../../utils/db";
 
 import {Encrypt} from "../../utils/encrypt";
 import {ApiException} from "../../utils/apiException";
@@ -36,15 +36,8 @@ export class User
     private static email_regex = new RegExp(/^[a-zA-Z][a-zA-Z0-9-_.]*@[a-zA-Z][a-zA-Z0-9-_]*(?:\.[a-zA-Z]{2,4})+$/);
 
     public isValid() {
-        if (!User.pseudo_regex.test(this.pseudo)) {
-            console.log('Bad pseudo');
-            return false;
-        }
-        if (!User.email_regex.test(this.email)) {
-            console.log('Bad email');
-            return false;
-        }
-        return true;
+        return User.pseudo_regex.test(this.pseudo)
+            && User.email_regex.test(this.email);
     }
 
     public static create(user: any): User {
@@ -66,11 +59,13 @@ export class UserModel {
     public static async getOneByPseudo(pseudo: string): Promise<DbObject<User>> {
         const db_user = await Db.table(tableName).where({pseudo: pseudo}).first();
 
-        return new DbObject<User>(
-            db_user.id,
-            User.create(db_user),
-            db_user.created_at,
-            db_user.updated_at);
+        return !db_user
+            ? null
+            : new DbObject<User>(
+                db_user.id,
+                User.create(db_user),
+                db_user.created_at,
+                db_user.updated_at);
     }
 
     public static async getOneByEmail(email: string): Promise<DbObject<User>> {

@@ -12,7 +12,6 @@
     "files": [
         // Main
         "sources/main.ts",
-        "sources/api/db.ts",
 
         // Routes
         "sources/api/routes/index.ts",
@@ -20,17 +19,22 @@
         "sources/api/routes/auth/login/index.ts",
 
         // Controllers
-        "sources/api/controllers/users.ts",
+        "sources/api/controllers/UserController.ts",
 
         // Models
-        "sources/api/models/User.ts",
+        "sources/api/models/UserModel.ts",
+
+        // Views
+        "sources/api/views/UserView.ts",
 
         // Middleware
 
         // Utils
+        "sources/utils/db.ts",
         "sources/utils/encrypt.ts",
         "sources/utils/fetchTree.ts",
         "sources/utils/loadRouters.ts",
-        "sources/utils/apiException.ts"
+        "sources/utils/apiException.ts",
+        "sources/utils/checkEnvVariable.ts"
     ]
 }

@@ -5,8 +5,9 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken'
 
-import { UserModel, User } from "../models/User";
+import { UserModel, User } from "../models/UserModel";
 import {ApiException} from "../../utils/apiException";
+import { UserView } from "../views/UserView";
 
 //
 // Log a user in and return token
@@ -16,23 +17,17 @@ export async function login(req: Request, res: Response) {
     const password = req.body.password;
     const user = await UserModel.getOneByEmail(email);
 
-    const token_payload = {
-        id: user.id
-    };
-
-    if (user.object.checkPassword(password)) {
-        const token = jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
-        res.status(200).json({
-            message: 'Authentication successful',
-            access_token: token,
-            user: {
-                pseudo: user.object.pseudo,
-                email: user.object.email
-            }
-        });
-    }
-    else
+    if (!user || !user.object.checkPassword(password))
         throw new ApiException(403, "Bad user or password");
+
+    const token_payload = {id: user.id};
+    const token = jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
+
+    res.status(200).json({
+        message: 'Authentication successful',
+        access_token: token,
+        user: UserView.formatUser(user.object)
+    });
 }
 
 //
@@ -45,9 +40,7 @@ export async function createUser(req: Request, res: Response) {
         await User.hashPassword(req.body.password)
     );
     if (!user.isValid())
-        return res.status(400).json({
-            message: "Invalid fields in User"
-        });
+        throw new ApiException(403, "Invalid fields in User");
 
     await UserModel.createOne(user);
 
@@ -60,19 +53,13 @@ export async function createUser(req: Request, res: Response) {
 // Get information about a specific User
 //
 export async function getUser(req: Request, res: Response) {
-
     const user = await UserModel.getOneByPseudo(req.params.pseudo);
+
+    if (!user)
+        throw new ApiException(403, "User not found");
 
     return res.status(200).json({
         message: "OK",
-        user: { // TODO: Create a view
-            id: user.id,
-
-            pseudo: user.object.pseudo,
-            email: user.object.email,
-
-            created_at: user.created_at,
-            updated_at: user.updated_at
-        }
+        user: UserView.formatUser(user.object)
     });
 }
