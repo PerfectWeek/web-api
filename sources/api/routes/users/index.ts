@@ -6,11 +6,12 @@ import { Router } from "express";
 import * as AsyncHandler from 'express-async-handler';
 
 import * as UserController from '../../controllers/UserController';
+import loggedOnly from "../../middlewares/loggedOnly";
 
 const router = Router();
 
 router.post('/', AsyncHandler(UserController.createUser));
 
-router.get('/:pseudo', AsyncHandler(UserController.getUser));
+router.get('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.getUser));
 
 export default router;

@@ -34,6 +34,9 @@ export async function login(req: Request, res: Response) {
 // Create a new User and save it in the DataBase
 //
 export async function createUser(req: Request, res: Response) {
+    if (!req.body.pseudo || !req.body.password || !req.body.email) {
+        throw new ApiException(400, "Invalid request");
+    }
     const user: User = new User(
         req.body.pseudo,
         req.body.email,
