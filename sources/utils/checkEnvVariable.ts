@@ -6,7 +6,7 @@ import {ApiException} from "./apiException";
 
 export function checkEnvVariable(name: string): void {
     if (!process.env[name])
-        throw new ApiException(403, "You must set the environment variable \""
+        throw new Error("You must set the environment variable \""
             + name
             + "\" to a valid value");
 }

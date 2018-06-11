@@ -40,7 +40,7 @@ export async function createUser(req: Request, res: Response) {
         await User.hashPassword(req.body.password)
     );
     if (!user.isValid())
-        throw new ApiException(403, "Invalid fields in User");
+        throw new ApiException(400, "Invalid fields in User");
 
     await UserModel.createOne(user);
 
@@ -56,7 +56,7 @@ export async function getUser(req: Request, res: Response) {
     const user = await UserModel.getOneByPseudo(req.params.pseudo);
 
     if (!user)
-        throw new ApiException(403, "User not found");
+        throw new ApiException(404, "User not found");
 
     return res.status(200).json({
         message: "OK",
