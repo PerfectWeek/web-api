@@ -5,14 +5,16 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken'
 
-import {User, UserModel} from "../models/UserModel";
+import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
-import {DbObject} from "../../utils/db";
+import {DbConnection} from "../../utils/DbConnection";
+
 
 //
 // Check if the requesting user is authenticated
 //
 export async function loggedOnly(req: Request, res: Response, next: Function) {
+
     // Check token presence
     const token = <string>req.headers["access-token"];
     if (!token)
@@ -26,19 +28,22 @@ export async function loggedOnly(req: Request, res: Response, next: Function) {
         throw new ApiException(400, error.message);
     }
 
-    // Retrieve requesting User
-    const user = await UserModel.getOneById(decoded.id);
+    // Find the corresponding User
+    const conn = await DbConnection.getConnection();
+    const userRepository = conn.getRepository(User);
+    const user: User = await userRepository.findOne(decoded.id);
     if (!user)
         throw new ApiException(401, "Authentication failed");
 
-    // Continue the request
+    // Add the user to the Request and continue the pipeline
     (<any>req).user = user;
     next();
 }
 
+
 //
 // Helper
 //
-export function getRequestingUser(req: Request): DbObject<User> {
+export function getRequestingUser(req: Request): User {
     return (<any>req).user;
 }

@@ -2,7 +2,7 @@
 // Created by benard_g on 2018/06/09
 //
 
-import { User } from "../models/UserModel";
+import { User } from "../../model/entity/User";
 
 export class UserView {
     public static formatUser(user: User): any {

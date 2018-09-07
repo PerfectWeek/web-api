@@ -11,11 +11,15 @@ import * as BodyParser from 'body-parser';
 
 import { loadRouters } from "./utils/loadRouters";
 import { checkEnvVariable } from "./utils/checkEnvVariable";
-import {ApiException} from "./utils/apiException";
+import { ApiException } from "./utils/apiException";
+import {loggedOnly} from "./api/middleware/loggedOnly";
+
 
 // Check for mandatory env variables
 checkEnvVariable("DB_HOST");
+checkEnvVariable("DB_PORT");
 checkEnvVariable("DB_PASSWD");
+
 checkEnvVariable("JWT_ENCODE_KEY");
 
 
@@ -33,9 +37,22 @@ app.use(BodyParser.json());
 // Load all Routers
 loadRouters(app, "build/api/routes");
 
+import * as AsyncHandler from 'express-async-handler';
+app.get('/lol', AsyncHandler(loggedOnly), (req: Request, res: Response) => {
+    const r = <any>req;
+    console.log(r.user);
+    console.log(r.dbConnection);
+
+    res.status(200).json({});
+});
 
 // Handle invalid requests as 404
 app.use((req: Request, res: Response, next: Function) => {
+
+    const r = <any>req;
+    console.log(r.user);
+    console.log(r.dbConnection);
+
     res.status(404).json({
         message: "Route or Resource not found"
     });
