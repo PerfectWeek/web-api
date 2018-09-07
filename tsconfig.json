@@ -2,41 +2,37 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es2017",
-        "outDir": "./build",
+        "outDir": "build",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "noImplicitAny": true
     },
     "exclude": [
         "node_modules",
         "build"
     ],
-    "files": [
-        // Main
+    "include": [
         "sources/main.ts",
 
+<<<<<<< HEAD
         // Routes
         "sources/api/routes/index.ts",
         "sources/api/routes/users/index.ts",
         "sources/api/routes/users/edit/index.ts",
         "sources/api/routes/auth/login/index.ts",
+=======
+        "sources/api/routes/**/*.ts",
+>>>>>>> origin/dev
 
-        // Controllers
-        "sources/api/controllers/UserController.ts",
+        "sources/api/controllers/*.ts",
 
-        // Models
-        "sources/api/models/UserModel.ts",
+        "sources/model/entity/*.ts",
+        "sources/model/migrations/*.ts",
 
-        // Views
-        "sources/api/views/UserView.ts",
+        "sources/api/views/*.ts",
 
-        // Middleware
-      "sources/api/middleware/loggedOnly.ts",
+        "sources/api/middleware/*.ts",
 
-        // Utils
-        "sources/utils/db.ts",
-        "sources/utils/encrypt.ts",
-        "sources/utils/fetchTree.ts",
-        "sources/utils/loadRouters.ts",
-        "sources/utils/apiException.ts",
-        "sources/utils/checkEnvVariable.ts"
+        "sources/utils/**/*.ts"
     ]
 }

@@ -2,14 +2,17 @@
 // Created by benard_g on 2018/06/03
 //
 
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import * as jwt from 'jsonwebtoken'
 
-import { UserModel, User } from "../models/UserModel";
+import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
-import { UserView } from "../views/UserView";
+import {UserView} from "../views/UserView";
+import {DbConnection} from "../../utils/DbConnection";
+
 
 //
+<<<<<<< HEAD
 // Edit one user's informations
 //
 export async function editUser(req: Request, res: Response) {
@@ -20,13 +23,19 @@ export async function editUser(req: Request, res: Response) {
 
 //
 // Log a user in and return token
+=======
+// Log a user in and return a session token
+>>>>>>> origin/dev
 //
 export async function login(req: Request, res: Response) {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = await UserModel.getOneByEmail(email);
+    const conn = await DbConnection.getConnection();
+    const userRepository = conn.getRepository(User);
 
-    if (!user || !await user.object.checkPassword(password))
+    const email = req.body.email;
+    const user = await userRepository.findOne({where: {email: email}});
+
+    const password = req.body.password;
+    if (!user || !await user.checkPassword(password))
         throw new ApiException(403, "Bad user or password");
 
     const token_payload = {id: user.id};
@@ -35,7 +44,7 @@ export async function login(req: Request, res: Response) {
     res.status(200).json({
         message: 'Authentication successful',
         access_token: token,
-        user: UserView.formatUser(user.object)
+        user: UserView.formatUser(user)
     });
 }
 
@@ -49,15 +58,18 @@ export async function createUser(req: Request, res: Response) {
     const user: User = new User(
         req.body.pseudo,
         req.body.email,
-        await User.hashPassword(req.body.password)
+        await User.cipherPassword(req.body.password)
     );
     if (!user.isValid())
         throw new ApiException(400, "Invalid fields in User");
 
-    await UserModel.createOne(user);
+    // Save the created User
+    const conn = await DbConnection.getConnection();
+    await conn.manager.save(user);
 
     return res.status(201).json({
-        message: "User created"
+        message: "User created",
+        user: UserView.formatUser(user)
     });
 }
 
@@ -65,13 +77,15 @@ export async function createUser(req: Request, res: Response) {
 // Get information about a specific User
 //
 export async function getUser(req: Request, res: Response) {
-    const user = await UserModel.getOneByPseudo(req.params.pseudo);
+    const conn = await DbConnection.getConnection();
+    const userRepository = conn.getRepository(User);
+    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
 
     if (!user)
         throw new ApiException(404, "User not found");
 
     return res.status(200).json({
         message: "OK",
-        user: UserView.formatUser(user.object)
+        user: UserView.formatUser(user)
     });
 }
