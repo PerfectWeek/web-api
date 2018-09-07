@@ -10,6 +10,15 @@ import {ApiException} from "../../utils/apiException";
 import { UserView } from "../views/UserView";
 
 //
+// Edit one user's informations
+//
+export async function editUser(req: Request, res: Response) {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await UserModel.getOneByEmail(email);
+}
+
+//
 // Log a user in and return token
 //
 export async function login(req: Request, res: Response) {
