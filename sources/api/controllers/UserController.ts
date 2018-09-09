@@ -13,6 +13,26 @@ import { getRequestingUser } from '../middleware/loggedOnly';
 
 
 //
+// Delete user
+//
+export async function deleteUser(req: Request, res: Response) {
+    let user: User = getRequestingUser(req);
+
+    if (user.pseudo != req.params.pseudo) {
+        return res.status(403).json({
+            message: "Action not allowed"
+        });
+    }
+    const conn = await DbConnection.getConnection();
+    await conn.manager.remove(user);
+
+
+    return res.status(200).json({
+        message: "User deleted"
+    });
+}
+
+//
 // Edit a user's informations
 //
 export async function editUser(req: Request, res: Response) {
