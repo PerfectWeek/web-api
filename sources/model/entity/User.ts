@@ -37,8 +37,8 @@ export class User {
     }
 
     // Validators
-    private static pseudo_regex = new RegExp(/^[a-zA-Z0-9_-]{2,42}$/);
-    private static email_regex = new RegExp(/^[a-zA-Z][a-zA-Z0-9-_.]*@[a-zA-Z][a-zA-Z0-9-_]*(?:\.[a-zA-Z]{2,4})+$/);
+    private static pseudo_regex = new RegExp(/^[a-zA-Z0-9_-]{2,31}$/);
+    private static email_regex = new RegExp(/\w+(?:\.\w+)*@\w+(?:\.\w+)+/);
 
     //
     // Check if a User satisfies the basic rules (pseudo format, email format, ...)
