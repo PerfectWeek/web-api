@@ -21,7 +21,7 @@ Also, don't forget to tag your issues correctly (see [labels](https://github.com
 
 **4** - The name of the branch must be `TYPE/ISSUE_ID-TITLE`.
 
-Note that branche names should be all **lowercase**
+Note that branch names should be all **lowercase**
 
 > **TYPE** - One word. The main are `feature`,`fix`,`refactor` and `test`.
 You can use your own if you don't find these suitable
