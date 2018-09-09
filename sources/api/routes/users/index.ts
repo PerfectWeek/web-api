@@ -16,4 +16,6 @@ router.get('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.get
 
 router.put('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.editUser));
 
+router.delete('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.deleteUser));
+
 export default router;
