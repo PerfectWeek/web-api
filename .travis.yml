@@ -1,12 +1,20 @@
+sudo: required
+
+services:
+- docker
+
 language:
     - node_js
 
 node_js:
     - "9"
 
+before_script:
+    - sudo /etc/init.d/postgresql stop
 
 before_install:
     - npm install
 
 script:
+    - npm run build
     - npm test
