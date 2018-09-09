@@ -40,7 +40,12 @@ export async function editUser(req: Request, res: Response) {
     user.email = req.body.email;
     user.pseudo = req.body.pseudo;
 
-    // Edit the User info
+    if (user.pseudo != req.params.pseudo) {
+        return res.status(403).json({
+            message: "Action not allowed"
+        });
+    }
+
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
