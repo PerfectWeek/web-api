@@ -14,15 +14,7 @@
     "include": [
         "sources/main.ts",
 
-<<<<<<< HEAD
-        // Routes
-        "sources/api/routes/index.ts",
-        "sources/api/routes/users/index.ts",
-        "sources/api/routes/users/edit/index.ts",
-        "sources/api/routes/auth/login/index.ts",
-=======
         "sources/api/routes/**/*.ts",
->>>>>>> origin/dev
 
         "sources/api/controllers/*.ts",
 

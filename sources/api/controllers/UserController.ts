@@ -9,23 +9,29 @@ import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {UserView} from "../views/UserView";
 import {DbConnection} from "../../utils/DbConnection";
+import { getRequestingUser } from '../middleware/loggedOnly';
 
 
 //
-<<<<<<< HEAD
-// Edit one user's informations
+// Edit a user's informations
 //
 export async function editUser(req: Request, res: Response) {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = await UserModel.getOneByEmail(email);
+    let user: User = getRequestingUser(req);
+    user.email = req.body.email;
+    user.pseudo = req.body.pseudo;
+
+    // Edit the User info
+    const conn = await DbConnection.getConnection();
+    await conn.manager.save(user);
+
+    return res.status(200).json({
+        message: "User updated",
+        user: UserView.formatUser(user)
+    });
 }
 
 //
-// Log a user in and return token
-=======
 // Log a user in and return a session token
->>>>>>> origin/dev
 //
 export async function login(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
