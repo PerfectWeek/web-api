@@ -25,7 +25,7 @@ export async function loggedOnly(req: Request, res: Response, next: Function) {
     try {
         decoded = <any>jwt.verify(token, process.env.JWT_ENCODE_KEY);
     } catch (error) {
-        throw new ApiException(400, "Invalid authentication token");
+        throw new ApiException(401, "Invalid authentication token");
     }
 
     // Find the corresponding User
