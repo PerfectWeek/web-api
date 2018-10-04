@@ -47,3 +47,7 @@ Once this is done, start the API with the following command
 ```sh
 npm start
 ```
+
+## Documentation
+
+The API documentation can be found on [the documentation page](https://app.swaggerhub.com/apis-docs/PerfectWeek/PerfectWeek/0.1.0)
