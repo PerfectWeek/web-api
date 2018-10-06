@@ -1,8 +1,5 @@
-//
-// Created by benar-g on 2018/05/12
-//
-
 const {exec} = require('child_process');
+const newman = require('newman');
 
 process.env = {
     ...process.env,
@@ -11,6 +8,9 @@ process.env = {
     'DB_PASSWD': 'lol',
     'JWT_ENCODE_KEY': 'lel'
 };
+
+const MINUTE = 60000;
+const TEST_API_PORT = 9090;
 
 const app = require('../build/main');
 let server;
@@ -31,7 +31,7 @@ describe('Testing auth', () => {
                     if (err)
                         done(err);
                     else {
-                        server = app.listen(9090, () => {
+                        server = app.listen(TEST_API_PORT, () => {
                             console.log('listening !');
                             done();
                         });
@@ -39,7 +39,7 @@ describe('Testing auth', () => {
                 });
             }
         })
-    }, 600000);
+    }, 10 * MINUTE);
 
     afterAll(async (done) => {
         exec('npm run postgres-down', (err, stdout, stderr) => {
@@ -48,12 +48,23 @@ describe('Testing auth', () => {
             server.close();
             done(err);
         })
-    }, 60000);
+    }, MINUTE);
 
-    describe('Testing login', () => {
+    describe('Testing routes', () => {
 
-        test('dummy', () => {
-            expect(1).toEqual(1);
+        test('Run Newman Collection', (done) => {
+            newman.run({
+                collection: require('./routes.postman_collection'),
+                environment: "./__tests__/routes.postman_environment.json",
+                reporters: 'cli'
+            }, function (err, summary) {
+                if (err) { return done(err); }
+                if (summary.run.failures.length) {
+                    console.warn(JSON.stringify(summary.run.failures, null, 4));
+                    return done(new Error('Tests failed'));
+                }
+                done();
+            });
         })
 
     });
