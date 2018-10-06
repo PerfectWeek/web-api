@@ -16,9 +16,15 @@ import {DbConnection} from "../../utils/DbConnection";
 export async function loggedOnly(req: Request, res: Response, next: Function) {
 
     // Check token presence
-    const token = <string>req.headers["access-token"];
+    let token = <string>req.headers["authorization"];
     if (!token)
         throw new ApiException(401, "You need to be authenticated to perform this action");
+
+    // Check token format
+    if (token.slice(0, 7) !== "Bearer ")
+        throw new ApiException(401, "Invalid authentication token");
+
+    token = token.slice(7);
 
     // Verify token
     let decoded;

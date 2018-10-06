@@ -37,16 +37,26 @@ export async function deleteUser(req: Request, res: Response) {
 //
 export async function editUser(req: Request, res: Response) {
     let user: User = getRequestingUser(req);
-    user.email = req.body.email;
-    user.pseudo = req.body.pseudo;
+    const old_pseudo = user.pseudo;
 
-    if (user.pseudo != req.params.pseudo) {
-        return res.status(403).json({
-            message: "Action not allowed"
-        });
+    if (user.pseudo !== req.params.pseudo) {
+        throw new ApiException(403, "Action forbidden");
+    }
+
+    user.pseudo = req.body.pseudo || user.pseudo;
+    user.email = req.body.email || user.email;
+
+    if (!user.isValid()) {
+        throw new ApiException(400, "Invalid fields in User");
     }
 
     const conn = await DbConnection.getConnection();
+
+    if (old_pseudo !== user.pseudo
+        && await conn.getRepository(User).findOne({where: {pseudo: user.pseudo}})) {
+        throw new ApiException(400, "Invalid pseudo: already taken");
+    }
+
     await conn.manager.save(user);
 
     return res.status(200).json({
