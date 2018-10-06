@@ -1,5 +1,7 @@
 # Perfect Week Web API
 
+[![Build Status](https://travis-ci.org/PerfectWeek/web-api.svg?branch=dev)](https://travis-ci.org/PerfectWeek/web-api)
+
 ## QuickStart
 
 ### Retrieve nodejs dependencies
