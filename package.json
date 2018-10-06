@@ -4,9 +4,11 @@
     "description": "Perfect Week web API",
     "main": "main.js",
     "scripts": {
-        "start": "tsc && node build/main.js",
-        "test": "mocha",
-        "build": "shx rm -rf build && tsc",
+        "start": "npm run build && node build/main.js",
+        "test": "jest",
+        "build": "rimraf build && tsc",
+        "postgres-run": "./scripts/database_run.sh",
+        "postgres-down": "./scripts/database_delete.sh",
         "migration-up": "tsc && typeorm migration:run",
         "migration-down": "tsc && typeorm migration:revert"
     },
@@ -46,11 +48,10 @@
         "@types/morgan": "^1.7.35",
         "@types/node": "^10.9.4",
         "@types/pg": "^7.4.10",
-        "chai": "^4.1.2",
-        "chai-http": "^4.2.0",
-        "mocha": "^5.1.1",
+        "jest": "^23.5.0",
+        "newman": "^4.1.0",
         "reflect-metadata": "^0.1.12",
-        "shx": "^0.3.2",
+        "rimraf": "^2.6.2",
         "typeorm": "^0.2.7",
         "typescript": "^3.0.3"
     }

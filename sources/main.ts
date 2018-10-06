@@ -69,7 +69,12 @@ app.use((error: Error, req: Request, res: Response, next: Function) => {
 
 
 // Start the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.debug('Server started on port ' + port);
-});
+
+if (require.main === module) {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.debug('Server started on port ' + port);
+    });
+} else {
+    module.exports = app;
+}
