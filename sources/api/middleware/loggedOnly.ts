@@ -18,14 +18,14 @@ export async function loggedOnly(req: Request, res: Response, next: Function) {
     // Check token presence
     const token = <string>req.headers["access-token"];
     if (!token)
-        throw new ApiException(400, "You need to be authenticated to access this resource");
+        throw new ApiException(401, "You need to be authenticated to perform this action");
 
     // Verify token
     let decoded;
     try {
         decoded = <any>jwt.verify(token, process.env.JWT_ENCODE_KEY);
     } catch (error) {
-        throw new ApiException(400, error.message);
+        throw new ApiException(401, "Invalid authentication token");
     }
 
     // Find the corresponding User

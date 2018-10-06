@@ -21,7 +21,9 @@ Also, don't forget to tag your issues correctly (see [labels](https://github.com
 
 **4** - The name of the branch must be `TYPE/ISSUE_ID-TITLE`.
 
-> **TYPE** - One word, all uppercase. The main are `FEATURE`,`FIX`,`REFACTOR` and `TEST`.
+Note that branch names should be all **lowercase**
+
+> **TYPE** - One word. The main are `feature`,`fix`,`refactor` and `test`.
 You can use your own if you don't find these suitable
 
 > **ISSUE_ID** - The id delivered by GitHub for the related issue
@@ -29,7 +31,7 @@ You can use your own if you don't find these suitable
 > **TITLE** - All lowercase, spaces replaced with `_`.
 A short statement used to identify what this branch is about
 
-For example a PR related to authentication could have the following name: `FEATURE/42-user_authentication`
+For example a PR related to authentication could have the following name: `feature/42-user_authentication`
 
 **5** - Pull Requests will be merged on `dev` by repository managers depending on incoming releases and versions.
 
