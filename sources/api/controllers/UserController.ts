@@ -7,7 +7,10 @@ import * as jwt from 'jsonwebtoken'
 
 import { UserModel, User } from "../models/UserModel";
 import {ApiException} from "../../utils/apiException";
-import { UserView } from "../views/UserView";
+import {UserView} from "../views/UserView";
+import {getRequestingUser} from '../middleware/loggedOnly';
+import {EmailSender} from '../../utils/emailSender';
+import {AccountVerification} from '../../utils/accountVerification'
 
 //
 // Log a user in and return token
@@ -45,7 +48,11 @@ export async function createUser(req: Request, res: Response) {
     if (!user.isValid())
         throw new ApiException(400, "Invalid fields in User");
 
-    await UserModel.createOne(user);
+    EmailSender.sendEmail(user.email, 'Account Verification', AccountVerification.generateLink());
+
+    // Save the created User
+    const conn = await DbConnection.getConnection();
+    await conn.manager.save(user);
 
     return res.status(201).json({
         message: "User created"
