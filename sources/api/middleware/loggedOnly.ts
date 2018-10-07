@@ -5,40 +5,51 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken'
 
-import {User, UserModel} from "../models/UserModel";
+import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
-import {DbObject} from "../../utils/db";
+import {DbConnection} from "../../utils/DbConnection";
+
 
 //
 // Check if the requesting user is authenticated
 //
 export async function loggedOnly(req: Request, res: Response, next: Function) {
+
     // Check token presence
-    const token = <string>req.headers["access-token"];
+    let token = <string>req.headers["authorization"];
     if (!token)
-        throw new ApiException(400, "You need to be authenticated to access this resource");
+        throw new ApiException(401, "You need to be authenticated to perform this action");
+
+    // Check token format
+    if (token.slice(0, 7) !== "Bearer ")
+        throw new ApiException(401, "Invalid authentication token");
+
+    token = token.slice(7);
 
     // Verify token
     let decoded;
     try {
         decoded = <any>jwt.verify(token, process.env.JWT_ENCODE_KEY);
     } catch (error) {
-        throw new ApiException(400, error.message);
+        throw new ApiException(401, "Invalid authentication token");
     }
 
-    // Retrieve requesting User
-    const user = await UserModel.getOneById(decoded.id);
+    // Find the corresponding User
+    const conn = await DbConnection.getConnection();
+    const userRepository = conn.getRepository(User);
+    const user: User = await userRepository.findOne(decoded.id);
     if (!user)
         throw new ApiException(401, "Authentication failed");
 
-    // Continue the request
+    // Add the user to the Request and continue the pipeline
     (<any>req).user = user;
     next();
 }
 
+
 //
 // Helper
 //
-export function getRequestingUser(req: Request): DbObject<User> {
+export function getRequestingUser(req: Request): User {
     return (<any>req).user;
 }
