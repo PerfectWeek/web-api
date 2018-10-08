@@ -25,7 +25,6 @@ export class User {
     cipheredPassword: string;
 
     @ManyToMany(type => Group)
-    @JoinTable()
     groups: Group[];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})

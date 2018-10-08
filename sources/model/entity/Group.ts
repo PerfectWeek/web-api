@@ -2,7 +2,7 @@
 // Created by benard-g on 2018//07
 //
 
-import {Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./User";
 
 @Entity("groups")
@@ -19,6 +19,7 @@ export class Group {
     ownerId: number;
 
     @ManyToMany(type => User)
+    @JoinTable()
     members: User[];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
