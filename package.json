@@ -7,8 +7,8 @@
         "start": "npm run build && node build/main.js",
         "test": "jest",
         "build": "rimraf build && tsc",
-        "postgres-run": "./scripts/database_run.sh",
-        "postgres-down": "./scripts/database_delete.sh",
+        "test-postgres-run": "./scripts/test_database_run.sh",
+        "test-postgres-down": "./scripts/test_database_delete.sh",
         "migration-up": "tsc && typeorm migration:run",
         "migration-down": "tsc && typeorm migration:revert"
     },
