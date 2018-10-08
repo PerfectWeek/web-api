@@ -12,6 +12,8 @@ import {getRequestingUser} from '../middleware/loggedOnly';
 import {EmailSender} from '../../utils/emailSender';
 import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
+import {PendingUser} from '../../model/entity/PendingUser';
+import { getReqUrl } from '../../utils/getReqUrl';
 
 
 //
@@ -98,22 +100,60 @@ export async function createUser(req: Request, res: Response) {
     if (!req.body.pseudo || !req.body.password || !req.body.email)
         throw new ApiException(400, "Invalid request");
 
-    const user: User = new User(
+    // Check if user exists before creating PendingUser
+    const connection = await DbConnection.getConnection();
+    const UserRepository = connection.getRepository(User);
+    const peudoExists = await UserRepository.findOne({where : {pseudo: req.body.pseudo }})
+    const emailExists = await UserRepository.findOne({where : {email: req.body.email }})
+    
+    if (peudoExists || emailExists) {
+        throw new ApiException(400, "User already exists");
+    }
+
+    const validation_link: string = AccountVerification.generateLink();
+    const user: PendingUser = new PendingUser(
         req.body.pseudo,
         req.body.email,
-        await User.cipherPassword(req.body.password)
+        await PendingUser.cipherPassword(req.body.password),
+        validation_link
     );
     if (!user.isValid())
         throw new ApiException(400, "Invalid fields in User");
-
-    EmailSender.sendEmail(user.email, 'Account Verification', AccountVerification.generateLink());
-
+    
     // Save the created User
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
+    const link = getReqUrl(req) + 'validate/' + validation_link;
+    EmailSender.sendEmail(user.email, 'Account Verification', link);
+
     return res.status(201).json({
-        message: "User created",
+        message: "An link has been sent to your email address, please click on it in order to confirm you email " + link,
+        user: UserView.formatPendingUser(user)
+    });
+}
+
+//
+// Validate email for a specific user
+//
+export async function confirmUserEmail(req: Request, res: Response) {
+    const conn = await DbConnection.getConnection();
+    const pendingUserRepository = conn.getRepository(PendingUser);
+    const pendingUser = await pendingUserRepository.findOne({where: {validationUuid: req.params.uuid}});
+
+    if (!pendingUser)
+        throw new ApiException(404, "User not found");
+
+    const user: User = new User(
+        pendingUser.pseudo,
+        pendingUser.email,
+        pendingUser.cipheredPassword,
+    );
+    conn.manager.save(user);
+    conn.manager.remove(pendingUser);
+
+    return res.status(201).json({
+        message: "User has been successfully created",
         user: UserView.formatUser(user)
     });
 }
