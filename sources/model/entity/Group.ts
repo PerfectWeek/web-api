@@ -34,4 +34,11 @@ export class Group {
         this.ownerId = ownerId;
         this.members = members;
     }
+
+    //
+    // Check if a Group satisfies the basic rules (name, ...)
+    //
+    public isValid() : boolean {
+        return this.name.length > 0;
+    }
 }

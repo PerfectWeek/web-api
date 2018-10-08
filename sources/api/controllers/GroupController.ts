@@ -16,7 +16,7 @@ import {GroupView} from "../views/GroupView";
 export async function createGroup(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
-    const groupName = req.body.name;
+    const groupName = (req.body.name || "").trim();
     let groupMemberNames = req.body.members;
     groupMemberNames = removeDuplicates(groupMemberNames);
     groupMemberNames = removeIfExists(groupMemberNames, requestingUser.pseudo);
@@ -32,6 +32,9 @@ export async function createGroup(req: Request, res: Response) {
     groupMembers.push(requestingUser);
 
     const group = new Group(groupName, requestingUser.id, groupMembers);
+    if (!group.isValid()) {
+        throw new ApiException(400, "Invalid fields in Group");
+    }
 
     const createdGroup = await conn.manager.save(group);
     console.log(createdGroup);
