@@ -24,6 +24,7 @@ export class User {
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
 
+    @JoinTable()
     @ManyToMany(type => Group)
     groups: Group[];
 
