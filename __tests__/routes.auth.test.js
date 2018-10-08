@@ -19,7 +19,7 @@ let server;
 describe('Testing auth', () => {
 
     beforeAll(async (done) => {
-        exec('npm run postgres-run', (err, stdout, stderr) => {
+        exec('npm run test-postgres-run', (err, stdout, stderr) => {
             if (stdout) console.log(stdout);
             if (stderr) console.error(stderr);
             if (err)
@@ -32,7 +32,6 @@ describe('Testing auth', () => {
                         done(err);
                     else {
                         server = app.listen(TEST_API_PORT, () => {
-                            console.log('listening !');
                             done();
                         });
                     }
@@ -42,7 +41,7 @@ describe('Testing auth', () => {
     }, 10 * MINUTE);
 
     afterAll(async (done) => {
-        exec('npm run postgres-down', (err, stdout, stderr) => {
+        exec('npm run test-postgres-down', (err, stdout, stderr) => {
             if (stdout) console.log(stdout);
             if (stderr) console.error(stderr);
             server.close();
