@@ -10,6 +10,7 @@ export class GroupView {
     public static formatGroup(group: Group): any {
         const ownerIdx = group.members.findIndex(member => member.id == group.ownerId);
         return {
+            id: group.id,
             name: group.name,
             owner: UserView.formatPublicUser(group.members[ownerIdx]),
             members: group.members.map(UserView.formatPublicUser)
