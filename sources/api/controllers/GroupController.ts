@@ -37,7 +37,6 @@ export async function createGroup(req: Request, res: Response) {
     }
 
     const createdGroup = await conn.manager.save(group);
-    console.log(createdGroup);
 
     return res.status(201).json({
         message: "Group created",
