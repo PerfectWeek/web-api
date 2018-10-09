@@ -20,9 +20,12 @@ export async function createGroup(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
     const groupName = (req.body.name || "").trim();
-    let groupMemberNames = req.body.members;
+    let groupMemberNames = req.body.members || [];
     groupMemberNames = removeDuplicates(groupMemberNames);
     groupMemberNames = removeIfExists(groupMemberNames, requestingUser.pseudo);
+
+    if (groupMemberNames.length === 0)
+        throw new ApiException(400, "A Group can't be empty");
 
     const conn = await DbConnection.getConnection();
     const userRepository = conn.getRepository(User);
