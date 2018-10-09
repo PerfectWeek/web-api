@@ -2,9 +2,10 @@
 // Created by benard-g on 2018/09/03
 //
 
-import {Column, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Encrypt} from "../../utils/encrypt";
 import {ApiException} from "../../utils/apiException";
+import {Group} from "./Group";
 
 @Entity("users")
 export class User {
@@ -22,6 +23,10 @@ export class User {
 
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
+
+    @JoinTable()
+    @ManyToMany(type => Group)
+    groups: Group[];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
