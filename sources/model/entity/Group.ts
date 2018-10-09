@@ -15,8 +15,8 @@ export class Group {
     name: string;
 
     @ManyToOne(type => User)
-    @JoinColumn({name: "owner_id"})
-    ownerId: number;
+    @JoinColumn()
+    owner: User;
 
     @ManyToMany(type => User)
     @JoinTable()
@@ -29,9 +29,9 @@ export class Group {
     updatedAt: Date;
 
 
-    public constructor(name: string, ownerId: number, members: User[]) {
+    public constructor(name: string, owner: User, members: User[]) {
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.members = members;
     }
 

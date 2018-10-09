@@ -8,7 +8,7 @@ import {UserView} from "./UserView";
 export class GroupView {
 
     public static formatGroup(group: Group): any {
-        const ownerIdx = group.members.findIndex(member => member.id == group.ownerId);
+        const ownerIdx = group.members.findIndex(member => member.id == group.owner.id);
         return {
             id: group.id,
             name: group.name,
