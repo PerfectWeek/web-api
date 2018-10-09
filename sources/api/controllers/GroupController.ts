@@ -13,6 +13,9 @@ import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
 
+//
+// Create a new Group
+//
 export async function createGroup(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
@@ -31,7 +34,7 @@ export async function createGroup(req: Request, res: Response) {
     let groupMembers: User[] = <any[]>(await Promise.all(userPromises));
     groupMembers.push(requestingUser);
 
-    const group = new Group(groupName, requestingUser.id, groupMembers);
+    const group = new Group(groupName, requestingUser, groupMembers);
     if (!group.isValid()) {
         throw new ApiException(400, "Invalid fields in Group");
     }
@@ -53,3 +56,27 @@ async function getUser(userRepository: Repository<User>, pseudo: string) : Promi
 
     return user;
 }
+
+
+//
+// Get information about a Group
+//
+export async function groupInfo(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+    const groupId = req.params.group_id;
+
+    const conn = await DbConnection.getConnection();
+    const groupRepository = conn.getRepository(Group);
+    const group = await Group.getGroupInfo(groupRepository, groupId);
+
+    if (!group
+        || group.members.findIndex(member => member.id === requestingUser.id) < 0) {
+        throw new ApiException(403, "Group not accessible")
+    }
+
+    res.status(200).json({
+        message: "OK",
+        group: GroupView.formatGroup(group)
+    });
+}
+

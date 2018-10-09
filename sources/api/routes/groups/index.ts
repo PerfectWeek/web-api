@@ -11,4 +11,6 @@ const router = Router();
 
 router.post('/', AsyncHandler(loggedOnly), AsyncHandler(GroupController.createGroup));
 
+router.get('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.groupInfo));
+
 export default router;

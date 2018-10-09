@@ -2,7 +2,16 @@
 // Created by benard-g on 2018//07
 //
 
-import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    Repository
+} from "typeorm";
 import {User} from "./User";
 
 @Entity("groups")
@@ -40,5 +49,18 @@ export class Group {
     //
     public isValid() : boolean {
         return this.name.length > 0;
+    }
+
+
+    //
+    // Get one Group by Id
+    //
+    static async getGroupInfo(groupRepository: Repository<Group>, groupId: number) : Promise<Group> {
+        return await groupRepository
+            .createQueryBuilder("groups")
+            .leftJoinAndSelect("groups.owner", "owner")
+            .leftJoinAndSelect("groups.members", "members")
+            .where({id: groupId})
+            .getOne();
     }
 }
