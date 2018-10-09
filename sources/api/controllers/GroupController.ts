@@ -71,7 +71,7 @@ export async function groupInfo(req: Request, res: Response) {
 
     if (!group
         || group.members.findIndex(member => member.id === requestingUser.id) < 0) {
-        throw new ApiException(403, "Group not accessible")
+        throw new ApiException(403, "Group not accessible");
     }
 
     res.status(200).json({
@@ -80,3 +80,26 @@ export async function groupInfo(req: Request, res: Response) {
     });
 }
 
+
+//
+// Delete a Group
+//
+export async function deleteGroup(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+    const groupId = req.params.group_id;
+
+    const conn = await DbConnection.getConnection();
+    const groupRepository = conn.getRepository(Group);
+    const group = await Group.getGroupInfo(groupRepository, groupId);
+
+    if (!group
+        || group.owner.id !== requestingUser.id) {
+        throw new ApiException(403, "You are not allowed to delete this Group");
+    }
+
+    await groupRepository.remove(group);
+
+    res.status(200).json({
+        message: "Group successfully deleted"
+    });
+}
