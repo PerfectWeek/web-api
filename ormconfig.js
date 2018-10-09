@@ -1,7 +1,7 @@
 module.exports = {
     "type": "postgres",
     "host": "localhost",
-    "port": process.env.DB_PORT || 5342,
+    "port": process.env.DB_PORT || 5432,
     "username": "perfectweek",
     "password": "lol",
     "database": "perfectweek",
