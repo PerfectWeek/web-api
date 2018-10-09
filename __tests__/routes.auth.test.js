@@ -67,7 +67,7 @@ describe('Testing auth', () => {
                 }
                 done();
             });
-        })
+        }, 10 * MINUTE)
 
     });
 
