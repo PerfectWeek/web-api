@@ -124,13 +124,26 @@ export async function createUser(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
-    const link = getReqUrl(req) + '/validate/' + validation_link;
+    var reqUrl = getReqUrl(req)
+    if (!reqUrl.endsWith('/')) {
+    	reqUrl += '/';
+    }
+
+    const link = reqUrl + 'validate/' + validation_link;
     EmailSender.sendEmail(user.email, 'Account Verification', link);
 
+    if (process.env.SENDEMAIL) {
+        return res.status(201).json({
+            message: "A link has been sent to your email address, please click on it in order to confirm you email",
+            user: UserView.formatPendingUser(user)
+        });
+    }
     return res.status(201).json({
-        message: "An link has been sent to your email address, please click on it in order to confirm you email " + (process.env.SENDMAIL ? "" : link),
+        message: "A link has been sent to your email address, please click on it in order to confirm you email",
+        link: link,
         user: UserView.formatPendingUser(user)
     });
+
 }
 
 //

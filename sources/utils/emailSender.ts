@@ -4,7 +4,7 @@ var mailgun = require('mailgun-js')({apiKey: 'ecbf0f4ae1176cc06e6a503f92179dc4-c
 export class EmailSender {
 
   public static sendEmail(emailDest: string, subject: string, text: string): void {
-    if (process.env.SENDMAIL) {
+    if (process.env.SENDEMAIL) {
       const data = {
         from: 'Perfect Week<perfectweek@kalastud.io>',
         to: emailDest,
