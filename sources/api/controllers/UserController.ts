@@ -22,7 +22,7 @@ import { getReqUrl } from '../../utils/getReqUrl';
 export async function deleteUser(req: Request, res: Response) {
     let user: User = getRequestingUser(req);
 
-    if (user.pseudo != req.params.pseudo) {
+    if (user.pseudo !== req.params.pseudo) {
         return res.status(403).json({
             message: "Action not allowed"
         });

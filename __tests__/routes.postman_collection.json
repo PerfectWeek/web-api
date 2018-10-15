@@ -1,14 +1,12 @@
 {
 	"info": {
+		"_postman_id": "85e3d040-d1d2-4660-b661-955712d340ae",
 		"name": "PW",
-		"_postman_id": "5802ce0c-0769-8c05-073b-b718112ec8fa",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "[/] Home Page",
-			"description": "",
 			"item": [
 				{
 					"name": "GET / | Check returned value",
@@ -46,16 +44,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "id",
-									"type": "text",
-									"value": "3"
+									"value": "3",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "verified",
-									"type": "text",
-									"value": "true"
+									"value": "true",
+									"type": "text"
 								}
 							]
 						},
@@ -69,8 +65,7 @@
 							"path": [
 								""
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -78,7 +73,6 @@
 		},
 		{
 			"name": "[/users] User Features",
-			"description": "",
 			"item": [
 				{
 					"name": "GET /users/mortimr | Get user while not authenticated",
@@ -114,16 +108,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "id",
-									"type": "text",
-									"value": "3"
+									"value": "3",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "verified",
-									"type": "text",
-									"value": "true"
+									"value": "true",
+									"type": "text"
 								}
 							]
 						},
@@ -138,8 +130,7 @@
 								"users",
 								"mortimr"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -177,22 +168,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": "mortimr"
+									"value": "mortimr",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@invalid"
+									"value": "mortimr@invalid",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahahaha"
+									"value": "hahahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -206,8 +194,7 @@
 							"path": [
 								"users"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -245,22 +232,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": "mortimr"
+									"value": "mortimr",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahaha"
+									"value": "hahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -274,8 +258,7 @@
 							"path": [
 								"users"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -313,22 +296,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": ""
+									"value": "",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahaha"
+									"value": "hahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -342,8 +322,7 @@
 							"path": [
 								"users"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -383,22 +362,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": "mortimr"
+									"value": "mortimr",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahahaha"
+									"value": "hahahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -412,8 +388,7 @@
 							"path": [
 								"users"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -456,16 +431,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahahaha"
+									"value": "hahahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -480,8 +453,7 @@
 								"auth",
 								"login"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -521,7 +493,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
 							"protocol": "http",
@@ -533,8 +508,7 @@
 								"users",
 								"mortimr"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -572,7 +546,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/idloft",
 							"protocol": "http",
@@ -584,8 +561,7 @@
 								"users",
 								"idloft"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -634,13 +610,11 @@
 								{
 									"key": "pseudo",
 									"value": "mortimr",
-									"description": "",
 									"type": "text"
 								},
 								{
 									"key": "email",
 									"value": "mortimr@invalid",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -656,8 +630,7 @@
 								"users",
 								"mortimr"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -708,13 +681,11 @@
 								{
 									"key": "pseudo",
 									"value": "iulian",
-									"description": "",
 									"type": "text"
 								},
 								{
 									"key": "email",
 									"value": "iulian@fake.com",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -730,8 +701,7 @@
 								"users",
 								"mortimr"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -778,16 +748,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": "mortimr"
+									"value": "mortimr",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@invalid"
+									"value": "mortimr@invalid",
+									"type": "text"
 								}
 							]
 						},
@@ -802,8 +770,7 @@
 								"users",
 								"idloft"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -843,7 +810,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/iulian",
 							"protocol": "http",
@@ -855,8 +825,7 @@
 								"users",
 								"iulian"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -894,7 +863,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
 							"protocol": "http",
@@ -906,8 +878,7 @@
 								"users",
 								"mortimr"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -945,7 +916,10 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/idloft",
 							"protocol": "http",
@@ -957,8 +931,7 @@
 								"users",
 								"idloft"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -996,7 +969,10 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/iulian",
 							"protocol": "http",
@@ -1008,8 +984,7 @@
 								"users",
 								"iulian"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -1017,7 +992,6 @@
 		},
 		{
 			"name": "[/auth/login]",
-			"description": "",
 			"item": [
 				{
 					"name": "POST /users | Create new user mortimr",
@@ -1055,22 +1029,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": "mortimr"
+									"value": "mortimr",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahahaha"
+									"value": "hahahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -1084,8 +1055,7 @@
 							"path": [
 								"users"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1125,22 +1095,19 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "pseudo",
-									"type": "text",
-									"value": "idloft"
+									"value": "idloft",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "idloft@fake.com"
+									"value": "idloft@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hohohoho"
+									"value": "hohohoho",
+									"type": "text"
 								}
 							]
 						},
@@ -1154,8 +1121,7 @@
 							"path": [
 								"users"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1194,16 +1160,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "beubeu@fake.com"
+									"value": "beubeu@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahahaha"
+									"value": "hahahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -1218,8 +1182,7 @@
 								"auth",
 								"login"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1258,16 +1221,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hohohoho"
+									"value": "hohohoho",
+									"type": "text"
 								}
 							]
 						},
@@ -1282,8 +1243,7 @@
 								"auth",
 								"login"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1326,16 +1286,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "mortimr@fake.com"
+									"value": "mortimr@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hahahaha"
+									"value": "hahahaha",
+									"type": "text"
 								}
 							]
 						},
@@ -1350,8 +1308,7 @@
 								"auth",
 								"login"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1394,16 +1351,14 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "email",
-									"type": "text",
-									"value": "idloft@fake.com"
+									"value": "idloft@fake.com",
+									"type": "text"
 								},
 								{
-									"description": "",
 									"key": "password",
-									"type": "text",
-									"value": "hohohoho"
+									"value": "hohohoho",
+									"type": "text"
 								}
 							]
 						},
@@ -1418,8 +1373,1048 @@
 								"auth",
 								"login"
 							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "[/groups] Group features",
+			"item": [
+				{
+					"name": "Patrick create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e30d4c44-85a4-4522-91e8-e68c948b7df6",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"value": "{{PATRICK_PSEUDO}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{PATRICK_EMAIL}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{PATRICK_PASSWORD}}",
+									"type": "text"
+								}
+							]
 						},
-						"description": ""
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "866ec95e-9b24-4843-a52c-cbceaf91e01e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"value": "{{BENOIT_PSEUDO}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{BENOIT_EMAIL}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{BENOIT_PASSWORD}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Intruder Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7964990e-5589-4195-ba35-9b2564f599d1",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"value": "{{INTRUDER_PSEUDO}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{INTRUDER_EMAIL}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{INTRUDER_PASSWORD}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patrick Log In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3302207a-3670-49d2-9ccb-926f3cf368ef",
+								"exec": [
+									"pm.test(\"Get token\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const body = pm.response.json();",
+									"    pm.globals.set(\"PATRICK_TOKEN\", body.access_token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{PATRICK_EMAIL}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{PATRICK_PASSWORD}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Log In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1d4d1aa9-9d95-499c-a14d-aba87cab5d2b",
+								"exec": [
+									"pm.test(\"Get token\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const body = pm.response.json();",
+									"    pm.globals.set(\"BENOIT_TOKEN\", body.access_token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{BENOIT_EMAIL}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{BENOIT_PASSWORD}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Intruder Log In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a602c640-b986-4932-92a1-132814e281e7",
+								"exec": [
+									"pm.test(\"Get token\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const body = pm.response.json();",
+									"    pm.globals.set(\"INTRUDER_TOKEN\", body.access_token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{INTRUDER_EMAIL}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{INTRUDER_PASSWORD}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] Group create without being logged",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a9c89997-04ef-46c2-be65-1c02d7bcbd43",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Message is Unauthorized\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.equal(\"You need to be authenticated to perform this action\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "fake",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] Create group without fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f6cdba0-dfd7-4266-900a-5ec869f78cba",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Message is Bad Request\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.equal(\"A Group can't be empty\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PB Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Group correctly created\", function () {",
+									"    pm.expect(body.message).to.equal(\"Group created\");",
+									"});",
+									"",
+									"pm.test(\"Group contains 2 members\", function () {",
+									"   pm.expect(group.members.length).to.equal(2);",
+									"});",
+									"",
+									"pm.test(\"Group contains PATRICK\", function () {",
+									"    const pseudoP = pm.environment.get(\"PATRICK_PSEUDO\");",
+									"    const memberP = group.members[group.members.findIndex(m => m.pseudo === pseudoP)];",
+									"    pm.expect(memberP.pseudo).to.equal(pseudoP);",
+									"});",
+									"",
+									"pm.test(\"Group contains BENOIT\", function () {",
+									"    const pseudoB = pm.environment.get(\"BENOIT_PSEUDO\");",
+									"    const memberB = group.members[group.members.findIndex(m => m.pseudo === pseudoB)];",
+									"    pm.expect(memberB.pseudo).to.equal(pseudoB);",
+									"});",
+									"",
+									"pm.test(\"Group name is correct\", function () {",
+									"    pm.expect(group.name).to.equal(\"group-PB\");",
+									"});",
+									"",
+									"pm.globals.set(\"GROUP_PB_ID\", body.group.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "group-PB",
+									"type": "text"
+								},
+								{
+									"key": "members[0]",
+									"value": "{{PATRICK_PSEUDO}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PBI Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0d794a9c-83bc-45bd-bfed-ed75bb8e4b64",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Group correctly created\", function () {",
+									"    pm.expect(body.message).to.equal(\"Group created\");",
+									"});",
+									"",
+									"pm.test(\"Group contains PATRICK\", function () {",
+									"    const pseudoP = pm.environment.get(\"PATRICK_PSEUDO\");",
+									"    const memberP = group.members[group.members.findIndex(m => m.pseudo === pseudoP)];",
+									"    pm.expect(memberP.pseudo).to.equal(pseudoP);",
+									"});",
+									"",
+									"pm.test(\"Group contains BENOIT\", function () {",
+									"    const pseudoB = pm.environment.get(\"BENOIT_PSEUDO\");",
+									"    const memberB = group.members[group.members.findIndex(m => m.pseudo === pseudoB)];",
+									"    pm.expect(memberB.pseudo).to.equal(pseudoB);",
+									"});",
+									"",
+									"pm.test(\"Group contains INTRUDER\", function () {",
+									"    const pseudoI = pm.environment.get(\"INTRUDER_PSEUDO\");",
+									"    const memberI = group.members[group.members.findIndex(m => m.pseudo === pseudoI)];",
+									"    pm.expect(memberI.pseudo).to.equal(pseudoI);",
+									"});",
+									"",
+									"pm.test(\"Group name is correct\", function () {",
+									"    pm.expect(group.name).to.equal(\"group-PBI\");",
+									"});",
+									"",
+									"pm.globals.set(\"GROUP_PBI_ID\", body.group.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "group-PBI",
+									"type": "text"
+								},
+								{
+									"key": "members[0]",
+									"value": "{{PATRICK_PSEUDO}}",
+									"type": "text"
+								},
+								{
+									"key": "members[1]",
+									"value": "{{BENOIT_PSEUDO}}",
+									"type": "text"
+								},
+								{
+									"key": "members[2]",
+									"value": "{{INTRUDER_PSEUDO}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PB Get by Benoit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bf73e664-1967-41e3-8505-b6fe05a4afb5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Group contains 2 members\", function () {",
+									"   pm.expect(group.members.length).to.equal(2);",
+									"});",
+									"",
+									"pm.test(\"Group contains PATRICK\", function () {",
+									"    const pseudoP = pm.environment.get(\"PATRICK_PSEUDO\");",
+									"    const memberP = group.members[group.members.findIndex(m => m.pseudo === pseudoP)];",
+									"    pm.expect(memberP.pseudo).to.equal(pseudoP);",
+									"});",
+									"",
+									"pm.test(\"Group contains BENOIT\", function () {",
+									"    const pseudoB = pm.environment.get(\"BENOIT_PSEUDO\");",
+									"    const memberB = group.members[group.members.findIndex(m => m.pseudo === pseudoB)];",
+									"    pm.expect(memberB.pseudo).to.equal(pseudoB);",
+									"});",
+									"",
+									"pm.test(\"Group name is correct\", function () {",
+									"    pm.expect(group.name).to.equal(\"group-PB\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PB Get by Intruder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a6ed8676-bc2d-4012-8bae-81c3d9f7b207",
+								"exec": [
+									"pm.test(\"Code status is 403\", function () {",
+									"    pm.expect(pm.response.code).to.equal(403);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patrick Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4bfeed6d-6a35-47a7-9db6-68e106c4f6fb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{PATRICK_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{PATRICK_PSEUDO}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{PATRICK_PSEUDO}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PB Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2bae41c8-5ce1-4382-8c59-034f5a203268",
+								"exec": [
+									"pm.test(\"Status Code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Deletion message is OK\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.equal(\"Group successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Intruder Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "64798071-f5fe-4055-be83-15ea3ba20b45",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{INTRUDER_PSEUDO}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{INTRUDER_PSEUDO}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PBI Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d272baef-fa51-4b99-82d7-22b4db8329b2",
+								"exec": [
+									"pm.test(\"Status Code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Deletion message is OK\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.equal(\"Group successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PBI_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PBI_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "121052f0-085d-40a4-a73a-4a52ce0616bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{BENOIT_PSEUDO}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{BENOIT_PSEUDO}}"
+							]
+						}
 					},
 					"response": []
 				}
