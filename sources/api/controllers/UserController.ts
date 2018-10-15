@@ -128,7 +128,7 @@ export async function createUser(req: Request, res: Response) {
     EmailSender.sendEmail(user.email, 'Account Verification', link);
 
     return res.status(201).json({
-        message: "An link has been sent to your email address, please click on it in order to confirm you email " + link,
+        message: "An link has been sent to your email address, please click on it in order to confirm you email " + (process.env.SENDMAIL ? "" : link),
         user: UserView.formatPendingUser(user)
     });
 }
