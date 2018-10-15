@@ -124,7 +124,7 @@ export async function createUser(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
-    const link = getReqUrl(req) + 'validate/' + validation_link;
+    const link = getReqUrl(req) + '/validate/' + validation_link;
     EmailSender.sendEmail(user.email, 'Account Verification', link);
 
     return res.status(201).json({
