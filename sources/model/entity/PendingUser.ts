@@ -20,7 +20,7 @@ export class PendingUser {
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
 
-    @Column()
+    @Column({name: "validation_uuid"})
     @Index({unique: true})
     validationUuid: string;
 
