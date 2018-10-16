@@ -105,9 +105,9 @@ export async function createUser(req: Request, res: Response) {
     const connection = await DbConnection.getConnection();
     const UserRepository = connection.getRepository(User);
 
-    const userExists = createQueryBuilder('user')
-                      .where('user.email = :email', {email: 'an@email.io'})
-                      .orWhere('user.pseudo = :pseudo', {pseudo: 'Sam'}).getOne();
+    const userExists = await UserRepository.createQueryBuilder('user')
+        			     .where("user.email = :email", { email: req.body.email })
+	    			     .orWhere("user.pseudo = :pseudo", { pseudo: req.body.pseudo }).getOne();
     
     if (userExists) {
         throw new ApiException(409, "Pseudo or email already exists");
@@ -132,7 +132,7 @@ export async function createUser(req: Request, res: Response) {
     	reqUrl += '/';
     }
 
-    const link = reqUrl + 'validate/' + validation_link;
+    const link = reqUrl + 'auth/validate-email/' + validation_link;
     EmailSender.sendEmail(user.email, 'Account Verification', link);
 
     let response : any = {
@@ -141,7 +141,7 @@ export async function createUser(req: Request, res: Response) {
       user: UserView.formatPendingUser(user)
     };
 
-    if (process.env.EMAIL_ENABLED) {
+    if (!process.env.EMAIL_ENABLED) {
        response['link'] = link;
     }
     return res.status(201).json(response);

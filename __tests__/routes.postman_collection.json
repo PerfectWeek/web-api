@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b4557e77-0a71-4b45-9d18-c7b856399a1f",
+		"_postman_id": "7fff70f5-628f-481a-8e79-710f6ed60bcd",
 		"name": "PW",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -140,6 +140,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"exec": [
 									"",
 									"pm.test(\"Test body value\", function () {",
@@ -151,7 +152,6 @@
 									"    pm.response.to.have.status(400);",
 									"});"
 								],
-								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"type": "text/javascript"
 							}
 						}
@@ -536,7 +536,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
 							"protocol": "http",
@@ -586,7 +589,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/idloft",
 							"protocol": "http",
@@ -847,7 +853,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/iulian",
 							"protocol": "http",
@@ -897,7 +906,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
 							"protocol": "http",
@@ -947,7 +959,10 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/idloft",
 							"protocol": "http",
@@ -997,7 +1012,10 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/iulian",
 							"protocol": "http",
@@ -2621,66 +2639,6 @@
 							"path": [
 								"users",
 								"{{BENOIT_PSEUDO}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET /auth/validate-email | Validate email for user mortimr",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{mortimr_link}}",
-							"host": [
-								"{{mortimr_link}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET /auth/validate-email | Validate email for user mortimr",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{mortimr_link}}",
-							"host": [
-								"{{mortimr_link}}"
 							]
 						}
 					},

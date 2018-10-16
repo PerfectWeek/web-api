@@ -3,7 +3,7 @@ import { Encrypt } from "../../utils/encrypt";
 import { ApiException } from "../../utils/apiException";
 import { UserValidator } from "../../utils/validator/UserValidator"
 
-@Entity("pending_user")
+@Entity("pending_users")
 export class PendingUser {
 
     @PrimaryGeneratedColumn()

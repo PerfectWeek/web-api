@@ -1,5 +1,9 @@
-var mailgun = require('mailgun-js')({apiKey: process.env.API_KEY, 
-                                     domain: process.env.API_DOMAIN});
+import * as Mailgun from 'mailgun-js';
+
+if (process.env.EMAIL_ENABLED) {
+	var mailgun = Mailgun({apiKey: process.env.MG_API_KEY, 
+                                  domain: process.env.MG_API_DOMAIN});
+}
 
 export class EmailSender {
 
@@ -16,3 +20,4 @@ export class EmailSender {
     }
   }
 }
+
