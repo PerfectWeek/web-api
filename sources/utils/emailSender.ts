@@ -1,10 +1,10 @@
-var mailgun = require('mailgun-js')({apiKey: 'ecbf0f4ae1176cc06e6a503f92179dc4-c8e745ec-260bafae', 
-                                     domain: 'mg.kalastud.io'});
+var mailgun = require('mailgun-js')({apiKey: process.env.API_KEY, 
+                                     domain: process.env.API_DOMAIN});
 
 export class EmailSender {
 
   public static sendEmail(emailDest: string, subject: string, text: string): void {
-    if (process.env.SENDEMAIL) {
+    if (process.env.EMAIL_ENABLED) {
       const data = {
         from: 'Perfect Week<perfectweek@kalastud.io>',
         to: emailDest,

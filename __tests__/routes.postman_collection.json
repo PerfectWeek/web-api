@@ -396,7 +396,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user mortimr",
+					"name": "GET /auth/validate-email | Validate email for user mortimr",
 					"event": [
 						{
 							"listen": "test",
@@ -1082,7 +1082,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user mortimr",
+					"name": "GET /auth/validate-email | Validate email for user mortimr",
 					"event": [
 						{
 							"listen": "test",
@@ -1175,7 +1175,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user idloft",
+					"name": "GET /auth/validate-email | Validate email for user idloft",
 					"event": [
 						{
 							"listen": "test",
@@ -1537,7 +1537,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user Patrick",
+					"name": "GET /auth/validate-email | Validate email for user Patrick",
 					"event": [
 						{
 							"listen": "test",
@@ -1631,7 +1631,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user mortimr Copy Copy",
+					"name": "GET /auth/validate-email | Validate email for user benoit",
 					"event": [
 						{
 							"listen": "test",
@@ -1726,7 +1726,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user mortimr Copy Copy",
+					"name": "GET /auth/validate-email | Validate email for user intruder",
 					"event": [
 						{
 							"listen": "test",
@@ -2627,7 +2627,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user mortimr",
+					"name": "GET /auth/validate-email | Validate email for user mortimr",
 					"event": [
 						{
 							"listen": "test",
@@ -2657,7 +2657,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/validate | Validate email for user mortimr",
+					"name": "GET /auth/validate-email | Validate email for user mortimr",
 					"event": [
 						{
 							"listen": "test",

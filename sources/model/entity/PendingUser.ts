@@ -1,8 +1,9 @@
 import {Column, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
 import { Encrypt } from "../../utils/encrypt";
 import { ApiException } from "../../utils/apiException";
+import { UserValidator } from "../../utils/validator/UserValidator"
 
-@Entity("PendingUser")
+@Entity("pending_user")
 export class PendingUser {
 
     @PrimaryGeneratedColumn()
@@ -26,28 +27,20 @@ export class PendingUser {
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
 
-    @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
-    updatedAt: Date;
-
 
     public constructor(pseudo: string, email: string, ciphered_password: string, validation_uuid: string) {
         this.pseudo = pseudo;
         this.email = email;
         this.cipheredPassword = ciphered_password
         this.validationUuid = validation_uuid;
-
     }
-
-    // Validators
-    private static pseudo_regex = new RegExp(/^[a-zA-Z0-9_-]{2,31}$/);
-    private static email_regex = new RegExp(/\w+(?:\.\w+)*@\w+(?:\.\w+)+/);
 
     //
     // Check if a User satisfies the basic rules (pseudo format, email format, ...)
     //
     public isValid() : boolean {
-        return PendingUser.pseudo_regex.test(this.pseudo)
-            && PendingUser.email_regex.test(this.email);
+        return UserValidator.pseudo_regex.test(this.pseudo)
+            && UserValidator.email_regex.test(this.email);
     }
 
     //

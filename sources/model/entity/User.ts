@@ -5,6 +5,7 @@
 import {Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Encrypt} from "../../utils/encrypt";
 import {ApiException} from "../../utils/apiException";
+import {UserValidator} from "../../utils/validator/UserValidator";
 import {Group} from "./Group";
 
 @Entity("users")
@@ -49,8 +50,8 @@ export class User {
     // Check if a User satisfies the basic rules (pseudo format, email format, ...)
     //
     public isValid() : boolean {
-        return User.pseudo_regex.test(this.pseudo)
-            && User.email_regex.test(this.email);
+        return UserValidator.pseudo_regex.test(this.pseudo)
+            && UserValidator.email_regex.test(this.email);
     }
 
     //

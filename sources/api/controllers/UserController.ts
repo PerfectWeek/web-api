@@ -14,6 +14,7 @@ import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
+import { createQueryBuilder } from 'typeorm';
 
 
 //
@@ -103,11 +104,13 @@ export async function createUser(req: Request, res: Response) {
     // Check if user exists before creating PendingUser
     const connection = await DbConnection.getConnection();
     const UserRepository = connection.getRepository(User);
-    const peudoExists = await UserRepository.findOne({where : {pseudo: req.body.pseudo }})
-    const emailExists = await UserRepository.findOne({where : {email: req.body.email }})
+
+    const userExists = createQueryBuilder('user')
+                      .where('user.email = :email', {email: 'an@email.io'})
+                      .orWhere('user.pseudo = :pseudo', {pseudo: 'Sam'}).getOne();
     
-    if (peudoExists || emailExists) {
-        throw new ApiException(400, "User already exists");
+    if (userExists) {
+        throw new ApiException(409, "Pseudo or email already exists");
     }
 
     const validation_link: string = AccountVerification.generateLink();
@@ -124,7 +127,7 @@ export async function createUser(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
-    var reqUrl = getReqUrl(req)
+    let reqUrl = getReqUrl(req)
     if (!reqUrl.endsWith('/')) {
     	reqUrl += '/';
     }
@@ -132,18 +135,16 @@ export async function createUser(req: Request, res: Response) {
     const link = reqUrl + 'validate/' + validation_link;
     EmailSender.sendEmail(user.email, 'Account Verification', link);
 
-    if (process.env.SENDEMAIL) {
-        return res.status(201).json({
-            message: "A link has been sent to your email address, please click on it in order to confirm you email",
-            user: UserView.formatPendingUser(user)
-        });
-    }
-    return res.status(201).json({
-        message: "A link has been sent to your email address, please click on it in order to confirm you email",
-        link: link,
-        user: UserView.formatPendingUser(user)
-    });
+    let response : any = {
+      message:
+          'A link has been sent to your email address, please click on it in order to confirm you email',
+      user: UserView.formatPendingUser(user)
+    };
 
+    if (process.env.EMAIL_ENABLED) {
+       response['link'] = link;
+    }
+    return res.status(201).json(response);
 }
 
 //
@@ -162,8 +163,8 @@ export async function confirmUserEmail(req: Request, res: Response) {
         pendingUser.email,
         pendingUser.cipheredPassword,
     );
-    conn.manager.save(user);
-    conn.manager.remove(pendingUser);
+    await conn.manager.save(user);
+    await conn.manager.remove(pendingUser);
 
     return res.status(201).json({
         message: "User has been successfully created",
