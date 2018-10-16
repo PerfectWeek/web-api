@@ -43,6 +43,7 @@ Additionally, you can set the following variables:
 | Variable name | Description | Default value |
 | ------ | ------- | ----- |
 | `PORT` | The port on which the API will be accessible | 3000 |
+| `EMAIL_ENABLED` | If a value is set, emails will be sent when creating user. If not, the link will be in the answer (debug only) | false |
 
 Once this is done, start the API with the following command
 

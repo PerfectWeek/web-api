@@ -8,8 +8,13 @@ import * as jwt from 'jsonwebtoken'
 import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {UserView} from "../views/UserView";
+import {getRequestingUser} from '../middleware/loggedOnly';
+import {EmailSender} from '../../utils/emailSender';
+import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
-import { getRequestingUser } from '../middleware/loggedOnly';
+import {PendingUser} from '../../model/entity/PendingUser';
+import { getReqUrl } from '../../utils/getReqUrl';
+import { createQueryBuilder } from 'typeorm';
 
 
 //
@@ -96,20 +101,73 @@ export async function createUser(req: Request, res: Response) {
     if (!req.body.pseudo || !req.body.password || !req.body.email)
         throw new ApiException(400, "Invalid request");
 
-    const user: User = new User(
+    // Check if user exists before creating PendingUser
+    const connection = await DbConnection.getConnection();
+    const UserRepository = connection.getRepository(User);
+
+    const userExists = await UserRepository.createQueryBuilder('user')
+        			     .where("user.email = :email", { email: req.body.email })
+	    			     .orWhere("user.pseudo = :pseudo", { pseudo: req.body.pseudo }).getOne();
+    
+    if (userExists) {
+        throw new ApiException(409, "Pseudo or email already exists");
+    }
+
+    const validation_link: string = AccountVerification.generateLink();
+    const user: PendingUser = new PendingUser(
         req.body.pseudo,
         req.body.email,
-        await User.cipherPassword(req.body.password)
+        await PendingUser.cipherPassword(req.body.password),
+        validation_link
     );
     if (!user.isValid())
         throw new ApiException(400, "Invalid fields in User");
-
+    
     // Save the created User
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
+    let reqUrl = getReqUrl(req)
+    if (!reqUrl.endsWith('/')) {
+    	reqUrl += '/';
+    }
+
+    const link = reqUrl + 'auth/validate-email/' + validation_link;
+    EmailSender.sendEmail(user.email, 'Account Verification', link);
+
+    let response : any = {
+      message:
+          'A link has been sent to your email address, please click on it in order to confirm you email',
+      user: UserView.formatPendingUser(user)
+    };
+
+    if (!process.env.EMAIL_ENABLED) {
+       response['link'] = link;
+    }
+    return res.status(201).json(response);
+}
+
+//
+// Validate email for a specific user
+//
+export async function confirmUserEmail(req: Request, res: Response) {
+    const conn = await DbConnection.getConnection();
+    const pendingUserRepository = conn.getRepository(PendingUser);
+    const pendingUser = await pendingUserRepository.findOne({where: {validationUuid: req.params.uuid}});
+
+    if (!pendingUser)
+        throw new ApiException(404, "User not found");
+
+    const user: User = new User(
+        pendingUser.pseudo,
+        pendingUser.email,
+        pendingUser.cipheredPassword,
+    );
+    await conn.manager.save(user);
+    await conn.manager.remove(pendingUser);
+
     return res.status(201).json({
-        message: "User created",
+        message: "User has been successfully created",
         user: UserView.formatUser(user)
     });
 }

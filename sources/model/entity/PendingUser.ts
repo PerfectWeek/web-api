@@ -1,15 +1,10 @@
-//
-// Created by benard-g on 2018/09/03
-//
+import {Column, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
+import { Encrypt } from "../../utils/encrypt";
+import { ApiException } from "../../utils/apiException";
+import { UserValidator } from "../../utils/validator/UserValidator"
 
-import {Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Encrypt} from "../../utils/encrypt";
-import {ApiException} from "../../utils/apiException";
-import {UserValidator} from "../../utils/validator/UserValidator";
-import {Group} from "./Group";
-
-@Entity("users")
-export class User {
+@Entity("pending_users")
+export class PendingUser {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -25,26 +20,20 @@ export class User {
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
 
-    @JoinTable()
-    @ManyToMany(type => Group)
-    groups: Group[];
+    @Column({name: "validation_uuid"})
+    @Index({unique: true})
+    validationUuid: string;
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
 
-    @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
-    updatedAt: Date;
 
-
-    public constructor(pseudo: string, email: string, ciphered_password: string) {
+    public constructor(pseudo: string, email: string, ciphered_password: string, validation_uuid: string) {
         this.pseudo = pseudo;
         this.email = email;
-        this.cipheredPassword = ciphered_password;
+        this.cipheredPassword = ciphered_password
+        this.validationUuid = validation_uuid;
     }
-
-    // Validators
-    private static pseudo_regex = new RegExp(/^[a-zA-Z0-9_-]{2,31}$/);
-    private static email_regex = new RegExp(/\w+(?:\.\w+)*@\w+(?:\.\w+)+/);
 
     //
     // Check if a User satisfies the basic rules (pseudo format, email format, ...)

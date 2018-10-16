@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "85e3d040-d1d2-4660-b661-955712d340ae",
+		"_postman_id": "7fff70f5-628f-481a-8e79-710f6ed60bcd",
 		"name": "PW",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -140,6 +140,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"exec": [
 									"",
 									"pm.test(\"Test body value\", function () {",
@@ -151,7 +152,6 @@
 									"    pm.response.to.have.status(400);",
 									"});"
 								],
-								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"type": "text/javascript"
 							}
 						}
@@ -327,25 +327,28 @@
 					"response": []
 				},
 				{
-					"name": "POST /users | Create new user",
+					"name": "POST /users | Create new user mortimr",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"id": "8dbd60c6-d553-448d-8432-2598cca18422",
 								"exec": [
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"User created\");",
+									"    pm.expect(jsonData.message).to.include(\"A link has been sent\");",
+									"    pm.expect(jsonData.link).to.include(\"http\");",
+									"    pm.globals.set(\"mortimr_link\", jsonData.link);",
 									"    pm.expect(jsonData.user.pseudo).to.eql(\"mortimr\");",
 									"    pm.expect(jsonData.user.email).to.eql(\"mortimr@fake.com\");",
 									"});",
+									"",
 									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
-								"id": "ffa5ba0f-5191-4953-80d9-61c40c1ba4a9",
 								"type": "text/javascript"
 							}
 						}
@@ -387,6 +390,46 @@
 							"port": "{{TEST_API_PORT}}",
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /auth/validate-email | Validate email for user mortimr",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"User has been successfully created\");",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"mortimr\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"mortimr@fake.com\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{mortimr_link}}",
+							"host": [
+								"{{mortimr_link}}"
 							]
 						}
 					},
@@ -999,20 +1042,17 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "ffa5ba0f-5191-4953-80d9-61c40c1ba4a9",
 								"exec": [
-									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"User created\");",
-									"    pm.expect(jsonData.user.pseudo).to.eql(\"mortimr\");",
-									"    pm.expect(jsonData.user.email).to.eql(\"mortimr@fake.com\");",
+									"    pm.globals.set(\"mortimr_link\", jsonData.link);",
 									"});",
 									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
-								"id": "ffa5ba0f-5191-4953-80d9-61c40c1ba4a9",
 								"type": "text/javascript"
 							}
 						}
@@ -1060,26 +1100,53 @@
 					"response": []
 				},
 				{
+					"name": "GET /auth/validate-email | Validate email for user mortimr",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{mortimr_link}}",
+							"host": [
+								"{{mortimr_link}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST /users | Create new user idloft",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "69390ce1-77ec-49ff-8a53-8700cbabe11a",
-								"type": "text/javascript",
 								"exec": [
-									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"User created\");",
-									"    pm.expect(jsonData.user.pseudo).to.eql(\"idloft\");",
-									"    pm.expect(jsonData.user.email).to.eql(\"idloft@fake.com\");",
+									"    pm.globals.set(\"idloft_link\", jsonData.link);",
 									"});",
 									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1120,6 +1187,46 @@
 							"port": "{{TEST_API_PORT}}",
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /auth/validate-email | Validate email for user idloft",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"User has been successfully created\");",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"idloft\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"idloft@fake.com\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{idloft_link}}",
+							"host": [
+								"{{idloft_link}}"
 							]
 						}
 					},
@@ -1390,6 +1497,11 @@
 							"script": {
 								"id": "e30d4c44-85a4-4522-91e8-e68c948b7df6",
 								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.globals.set(\"patrick_link\", jsonData.link);",
+									"});",
+									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
@@ -1443,6 +1555,36 @@
 					"response": []
 				},
 				{
+					"name": "GET /auth/validate-email | Validate email for user Patrick",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{patrick_link}}",
+							"host": [
+								"{{patrick_link}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Benoit Create",
 					"event": [
 						{
@@ -1450,6 +1592,10 @@
 							"script": {
 								"id": "866ec95e-9b24-4843-a52c-cbceaf91e01e",
 								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.globals.set(\"benoit_link\", jsonData.link);",
+									"});",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
@@ -1503,6 +1649,36 @@
 					"response": []
 				},
 				{
+					"name": "GET /auth/validate-email | Validate email for user benoit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{benoit_link}}",
+							"host": [
+								"{{benoit_link}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Intruder Create",
 					"event": [
 						{
@@ -1510,6 +1686,11 @@
 							"script": {
 								"id": "7964990e-5589-4195-ba35-9b2564f599d1",
 								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.globals.set(\"intruder_link\", jsonData.link);",
+									"});",
+									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
@@ -1557,6 +1738,36 @@
 							"port": "{{TEST_API_PORT}}",
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /auth/validate-email | Validate email for user intruder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{intruder_link}}",
+							"host": [
+								"{{intruder_link}}"
 							]
 						}
 					},
@@ -1837,7 +2048,10 @@
 								"type": "text"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/groups",
 							"protocol": "http",
@@ -2107,7 +2321,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
 							"protocol": "http",
@@ -2153,7 +2370,10 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
 							"protocol": "http",
@@ -2253,7 +2473,10 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
 							"protocol": "http",
@@ -2353,7 +2576,10 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PBI_ID}}",
 							"protocol": "http",
