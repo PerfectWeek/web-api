@@ -28,7 +28,11 @@ export class Group {
     owner: User;
 
     @ManyToMany(type => User)
-    @JoinTable()
+    @JoinTable({
+        name: "groups_to_users",
+        joinColumn: {name: "group_id"},
+        inverseJoinColumn: {name: "user_id"}
+    })
     members: User[];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})

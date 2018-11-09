@@ -25,8 +25,12 @@ export class User {
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
 
-    @JoinTable()
     @ManyToMany(type => Group)
+    @JoinTable({
+        name: "groups_to_users",
+        joinColumn: {name: "user_id"},
+        inverseJoinColumn: {name: "group_id"}
+    })
     groups: Group[];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
@@ -41,10 +45,6 @@ export class User {
         this.email = email;
         this.cipheredPassword = ciphered_password;
     }
-
-    // Validators
-    private static pseudo_regex = new RegExp(/^[a-zA-Z0-9_-]{2,31}$/);
-    private static email_regex = new RegExp(/\w+(?:\.\w+)*@\w+(?:\.\w+)+/);
 
     //
     // Check if a User satisfies the basic rules (pseudo format, email format, ...)
