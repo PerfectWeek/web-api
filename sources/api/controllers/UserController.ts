@@ -14,9 +14,6 @@ import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
-import { createQueryBuilder } from 'typeorm';
-import { eventNames } from 'cluster';
-import { symlinkSync } from 'fs';
 
 
 //
