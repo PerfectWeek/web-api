@@ -15,6 +15,8 @@ import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
 import { createQueryBuilder } from 'typeorm';
+import { eventNames } from 'cluster';
+import { symlinkSync } from 'fs';
 
 
 //
@@ -127,7 +129,7 @@ export async function createUser(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
-    let reqUrl = getReqUrl(req)
+    let reqUrl = getReqUrl(req) || process.env.API_HOST;
     if (!reqUrl.endsWith('/')) {
     	reqUrl += '/';
     }
