@@ -14,6 +14,7 @@ import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
+import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 
 
 //
@@ -27,9 +28,11 @@ export async function deleteUser(req: Request, res: Response) {
             message: "Action not allowed"
         });
     }
-    const conn = await DbConnection.getConnection();
-    await conn.manager.remove(user);
 
+    const conn = await DbConnection.getConnection();
+    const userRepository = conn.getRepository(User);
+    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
+    await User.deleteUser(userRepository, groupsToUsersRepository, user.id);
 
     return res.status(200).json({
         message: "User deleted"
