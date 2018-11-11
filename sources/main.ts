@@ -55,9 +55,9 @@ app.use((error: Error, req: Request, res: Response, next: Function) => {
 
 // Start the server
 if (require.main === module) {
-    const port = process.env.PORT || 3000;
-    app.listen(port, () => {
-        console.debug('Server started on port ' + port);
+    const api_port = process.env.API_PORT || 3000;
+    app.listen(api_port, () => {
+        console.debug('Server started on port ' + api_port);
     });
 } else {
     module.exports = app;

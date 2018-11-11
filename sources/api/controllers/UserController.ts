@@ -14,7 +14,6 @@ import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
-import { createQueryBuilder } from 'typeorm';
 
 
 //
@@ -127,7 +126,7 @@ export async function createUser(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
-    let reqUrl = getReqUrl(req)
+    let reqUrl = process.env.API_HOST || getReqUrl(req);
     if (!reqUrl.endsWith('/')) {
     	reqUrl += '/';
     }
