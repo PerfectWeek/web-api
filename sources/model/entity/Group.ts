@@ -2,17 +2,9 @@
 // Created by benard-g on 2018//07
 //
 
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    JoinTable,
-    ManyToMany,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-    Repository
-} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Repository} from "typeorm";
 import {User} from "./User";
+import {GroupsToUsers} from "./GroupsToUsers";
 
 @Entity("groups")
 export class Group {
@@ -27,12 +19,6 @@ export class Group {
     @JoinColumn()
     owner: User;
 
-    @ManyToMany(type => User)
-    @JoinTable({
-        name: "groups_to_users",
-        joinColumn: {name: "group_id"},
-        inverseJoinColumn: {name: "user_id"}
-    })
     members: User[];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
@@ -40,7 +26,6 @@ export class Group {
 
     @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     updatedAt: Date;
-
 
     public constructor(name: string, owner: User, members: User[]) {
         this.name = name;
@@ -55,16 +40,60 @@ export class Group {
         return this.name.length > 0;
     }
 
+    //
+    // Create Group
+    //
+    static async createGroup(
+        groupRepository: Repository<Group>,
+        groupToUsersRepository: Repository<GroupsToUsers>,
+        group: Group
+    ): Promise<Group> {
+        await groupRepository.save(group);
+        const relations = group.members.map(user => new GroupsToUsers(group, user))
+        await groupToUsersRepository.save(relations);
+        return group;
+    }
 
     //
     // Get one Group by Id
     //
-    static async getGroupInfo(groupRepository: Repository<Group>, groupId: number) : Promise<Group> {
-        return await groupRepository
+    static async getGroupInfo(
+        groupRepository: Repository<Group>,
+        userRepository: Repository<User>,
+        groupId: number
+    ) : Promise<Group> {
+        let group = await groupRepository
             .createQueryBuilder("groups")
             .leftJoinAndSelect("groups.owner", "owner")
-            .leftJoinAndSelect("groups.members", "members")
-            .where({id: groupId})
+            .where({group_id: groupId})
             .getOne();
+
+        if (group) {
+            group.members = await userRepository
+                .createQueryBuilder()
+                .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.user_id = "User"."id"`)
+                .where("gtu.group_id = :group_id", {group_id: group.id})
+                .getMany();
+        }
+
+        return group;
+    }
+
+    static async removeGroup(
+        groupRepository: Repository<Group>,
+        groupToUsersRepository: Repository<GroupsToUsers>,
+        groupId: number
+    ) : Promise<any> {
+        await groupToUsersRepository
+            .createQueryBuilder()
+            .delete()
+            .where("group_id = :group_id", {group_id: groupId})
+            .execute();
+
+        await groupRepository
+            .createQueryBuilder()
+            .delete()
+            .where("id = :group_id", {group_id: groupId})
+            .execute();
     }
 }

@@ -12,6 +12,7 @@ import {Group} from "../../model/entity/Group";
 import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
+import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 
 //
 // Create a new Group
@@ -42,7 +43,9 @@ export async function createGroup(req: Request, res: Response) {
         throw new ApiException(400, "Invalid fields in Group");
     }
 
-    const createdGroup = await conn.manager.save(group);
+    const groupRepository = conn.getRepository(Group);
+    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
+    const createdGroup = await Group.createGroup(groupRepository, groupsToUsersRepository, group);
 
     return res.status(201).json({
         message: "Group created",
@@ -70,7 +73,8 @@ export async function groupInfo(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
     const groupRepository = conn.getRepository(Group);
-    const group = await Group.getGroupInfo(groupRepository, groupId);
+    const userRepository = conn.getRepository(User);
+    const group = await Group.getGroupInfo(groupRepository, userRepository, groupId);
 
     if (!group
         || group.members.findIndex(member => member.id === requestingUser.id) < 0) {
@@ -93,14 +97,16 @@ export async function deleteGroup(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
     const groupRepository = conn.getRepository(Group);
-    const group = await Group.getGroupInfo(groupRepository, groupId);
+    const userRepository = conn.getRepository(User);
+    const group = await Group.getGroupInfo(groupRepository, userRepository, groupId);
 
     if (!group
         || group.owner.id !== requestingUser.id) {
         throw new ApiException(403, "You are not allowed to delete this Group");
     }
 
-    await groupRepository.remove(group);
+    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
+    await Group.removeGroup(groupRepository, groupsToUsersRepository, group.id);
 
     res.status(200).json({
         message: "Group successfully deleted"
