@@ -129,7 +129,7 @@ export async function createUser(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
     await conn.manager.save(user);
 
-    let reqUrl = getReqUrl(req)
+    let reqUrl = process.env.API_HOST || getReqUrl(req);
     if (!reqUrl.endsWith('/')) {
     	reqUrl += '/';
     }
