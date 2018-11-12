@@ -106,7 +106,7 @@ export async function deleteGroup(req: Request, res: Response) {
     }
 
     const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
-    await Group.removeGroup(groupRepository, groupsToUsersRepository, group.id);
+    await Group.deleteGroup(groupRepository, groupsToUsersRepository, group.id);
 
     res.status(200).json({
         message: "Group successfully deleted"

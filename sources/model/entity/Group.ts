@@ -89,7 +89,7 @@ export class Group {
             .getMany();
     }
 
-    static async removeGroup(
+    static async deleteGroup(
         groupRepository: Repository<Group>,
         groupToUsersRepository: Repository<GroupsToUsers>,
         groupId: number
