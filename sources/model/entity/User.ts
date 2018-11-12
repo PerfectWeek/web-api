@@ -97,7 +97,7 @@ export class User {
         return await groupsRepository
             .createQueryBuilder()
             .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.group_id = "Group"."id"`)
-            .where({user_id: userId})
+            .where("gtu.user_id = :user_id", {user_id: userId})
             .getMany();
     }
 }

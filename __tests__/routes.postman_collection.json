@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7fff70f5-628f-481a-8e79-710f6ed60bcd",
+		"_postman_id": "f0ddcba5-c8ee-467a-be67-e4e0e0fffd0d",
 		"name": "PW",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -41,19 +41,8 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "id",
-									"value": "3",
-									"type": "text"
-								},
-								{
-									"key": "verified",
-									"value": "true",
-									"type": "text"
-								}
-							]
+							"mode": "raw",
+							"raw": ""
 						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/",
@@ -105,19 +94,8 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "id",
-									"value": "3",
-									"type": "text"
-								},
-								{
-									"key": "verified",
-									"value": "true",
-									"type": "text"
-								}
-							]
+							"mode": "raw",
+							"raw": ""
 						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
@@ -2102,7 +2080,8 @@
 									"});",
 									"",
 									"pm.test(\"Group name is correct\", function () {",
-									"    pm.expect(group.name).to.equal(\"group-PB\");",
+									"    const groupExpectedName = pm.environment.get(\"GROUP_BENOIT_PATRICK_NAME\");",
+									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"});",
 									"",
 									"pm.globals.set(\"GROUP_PB_ID\", body.group.id);",
@@ -2137,7 +2116,7 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "group-PB",
+									"value": "{{GROUP_BENOIT_PATRICK_NAME}}",
 									"type": "text"
 								},
 								{
@@ -2155,6 +2134,152 @@
 							],
 							"port": "{{TEST_API_PORT}}",
 							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Get Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group list contains 1 group\", function () {",
+									"    pm.expect(body.groups.length).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Group list contains GROUP_BENOIT_PATRICK\", function () {",
+									"    const group = body.groups[0];",
+									"",
+									"    const groupExpectedName = pm.environment.get(\"GROUP_BENOIT_PATRICK_NAME\");",
+									"    const groupExpectedId = pm.globals.get(\"GROUP_PB_ID\");",
+									"",
+									"    pm.expect(group.name).to.equal(groupExpectedName);",
+									"    pm.expect(group.id).to.equal(groupExpectedId);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{BENOIT_PSEUDO}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{BENOIT_PSEUDO}}",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Intruder Get Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group list contains 0 group\", function () {",
+									"    pm.expect(body.groups.length).to.equal(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{INTRUDER_PSEUDO}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{INTRUDER_PSEUDO}}",
 								"groups"
 							]
 						}
@@ -2199,7 +2324,8 @@
 									"});",
 									"",
 									"pm.test(\"Group name is correct\", function () {",
-									"    pm.expect(group.name).to.equal(\"group-PBI\");",
+									"    const groupExpectedName = pm.environment.get(\"GROUP_BENOIT_PATRICK_INTRUDER_NAME\");",
+									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"});",
 									"",
 									"pm.globals.set(\"GROUP_PBI_ID\", body.group.id);",
@@ -2234,7 +2360,7 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "group-PBI",
+									"value": "{{GROUP_BENOIT_PATRICK_INTRUDER_NAME}}",
 									"type": "text"
 								},
 								{
@@ -2262,6 +2388,142 @@
 							],
 							"port": "{{TEST_API_PORT}}",
 							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Get Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group list contains 2 groups\", function () {",
+									"    pm.expect(body.groups.length).to.equal(2);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{BENOIT_PSEUDO}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{BENOIT_PSEUDO}}",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Intruder Get Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group list contains 1 group\", function () {",
+									"    pm.expect(body.groups.length).to.equal(1);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{INTRUDER_PSEUDO}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{INTRUDER_PSEUDO}}",
 								"groups"
 							]
 						}
@@ -2300,7 +2562,8 @@
 									"});",
 									"",
 									"pm.test(\"Group name is correct\", function () {",
-									"    pm.expect(group.name).to.equal(\"group-PB\");",
+									"    const groupExpectedName = pm.environment.get(\"GROUP_BENOIT_PATRICK_NAME\");",
+									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"});",
 									""
 								],
