@@ -4,6 +4,8 @@
 
 import { User } from "../../model/entity/User";
 import { PendingUser } from "../../model/entity/PendingUser";
+import {Group} from "../../model/entity/Group";
+import {GroupView} from "./GroupView";
 
 export class UserView {
     //
@@ -30,5 +32,9 @@ export class UserView {
         return {
             pseudo: user.pseudo
         }
+    }
+
+    public static formatUserGroupList(groups: Group[]) : any {
+        return groups.map(GroupView.formatGroupRecap);
     }
 }
