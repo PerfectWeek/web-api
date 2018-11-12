@@ -26,7 +26,7 @@ export class User {
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
 
-    groups: Group[];
+    groups: Group[] = [];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
@@ -85,5 +85,19 @@ export class User {
             .delete()
             .where("id = :user_id", {user_id: user_id})
             .execute();
+    }
+
+    //
+    // Get all groups of a User
+    //
+    static async getAllGroups(
+        groupsRepository: Repository<Group>,
+        userId: number
+    ) : Promise<Group[]> {
+        return await groupsRepository
+            .createQueryBuilder()
+            .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.group_id = "Group"."id"`)
+            .where({user_id: userId})
+            .getMany();
     }
 }
