@@ -49,7 +49,7 @@ export class Group {
         group: Group
     ): Promise<Group> {
         await groupRepository.save(group);
-        const relations = group.members.map(user => new GroupsToUsers(group, user));
+        const relations = group.members.map(user => new GroupsToUsers(group.id, user.id));
         await groupToUsersRepository.save(relations);
         return group;
     }

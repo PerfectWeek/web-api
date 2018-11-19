@@ -9,8 +9,8 @@
         "build": "rimraf build && tsc",
         "test-postgres-run": "./scripts/test_database_run.sh",
         "test-postgres-down": "./scripts/test_database_delete.sh",
-        "migration-up": "tsc && typeorm migration:run",
-        "migration-down": "tsc && typeorm migration:revert"
+        "migration-up": "npm run build && typeorm migration:run",
+        "migration-down": "npm run build && typeorm migration:revert"
     },
     "repository": {
         "type": "git",
