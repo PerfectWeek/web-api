@@ -45,6 +45,8 @@ Additionally, you can set the following variables:
 | `API_HOST` | The host url on which the API will be accessible | 127.0.0.1 |
 | `API_PORT` | The port on which the API will be accessible | 3000 |
 | `EMAIL_ENABLED` | If a value is set, emails will be sent when creating user. If not, the link will be in the answer (debug only) | false |
+| `MG_API_KEY` | Mailgun Api Key (only if `EMAIL_ENABLED` is set to true) | null |
+| `MG_API_DOMAIN` | Mailgun Api Domain (only if `EMAIL_ENABLED` is set to true) | null |
 
 Once this is done, start the API with the following command
 
