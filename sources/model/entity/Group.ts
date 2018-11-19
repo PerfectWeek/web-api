@@ -19,7 +19,7 @@ export class Group {
     @JoinColumn()
     owner: User;
 
-    members: User[];
+    members: User[] = [];
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
@@ -49,7 +49,7 @@ export class Group {
         group: Group
     ): Promise<Group> {
         await groupRepository.save(group);
-        const relations = group.members.map(user => new GroupsToUsers(group, user))
+        const relations = group.members.map(user => new GroupsToUsers(group.id, user.id));
         await groupToUsersRepository.save(relations);
         return group;
     }
@@ -69,17 +69,27 @@ export class Group {
             .getOne();
 
         if (group) {
-            group.members = await userRepository
-                .createQueryBuilder()
-                .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.user_id = "User"."id"`)
-                .where("gtu.group_id = :group_id", {group_id: group.id})
-                .getMany();
+            group.members = await this.getGroupMembers(userRepository, groupId);
         }
 
         return group;
     }
 
-    static async removeGroup(
+    //
+    // Get Group members
+    //
+    static async getGroupMembers(
+        userRepository: Repository<User>,
+        groupId: number
+    ) : Promise<User[]> {
+        return await userRepository
+            .createQueryBuilder()
+            .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.user_id = "User"."id"`)
+            .where("gtu.group_id = :group_id", {group_id: groupId})
+            .getMany();
+    }
+
+    static async deleteGroup(
         groupRepository: Repository<Group>,
         groupToUsersRepository: Repository<GroupsToUsers>,
         groupId: number

@@ -15,6 +15,7 @@ import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
 import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
+import {Group} from "../../model/entity/Group";
 
 
 //
@@ -40,7 +41,7 @@ export async function deleteUser(req: Request, res: Response) {
 }
 
 //
-// Edit a user's informations
+// Edit a user's information
 //
 export async function editUser(req: Request, res: Response) {
     let user: User = getRequestingUser(req);
@@ -188,5 +189,30 @@ export async function getUser(req: Request, res: Response) {
     return res.status(200).json({
         message: "OK",
         user: UserView.formatUser(user)
+    });
+}
+
+//
+// Get all groups a User belongs to
+//
+export async function getUserGroups(req: Request, res: Response) {
+    const conn = await DbConnection.getConnection();
+    const userRepository = conn.getRepository(User);
+    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
+    const requesting_user = getRequestingUser(req);
+
+    if (!user) {
+        throw new ApiException(404, "User not found");
+    }
+    if (user.id !== requesting_user.id) {
+        throw new ApiException(403, "Action not allowed")
+    }
+
+    const groupRepository = conn.getRepository(Group);
+    const groups = await User.getAllGroups(groupRepository, user.id);
+
+    return res.status(200).json({
+        message: "OK",
+        groups: UserView.formatUserGroupList(groups)
     });
 }

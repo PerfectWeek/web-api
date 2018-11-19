@@ -16,4 +16,11 @@ export class GroupView {
             members: group.members.map(UserView.formatPublicUser)
         };
     }
+
+    public static formatGroupRecap(group: Group): any {
+        return {
+            id: group.id,
+            name: group.name
+        }
+    }
 }
