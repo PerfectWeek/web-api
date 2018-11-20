@@ -19,4 +19,6 @@ router.delete('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupControll
 
 router.post('/:group_id/add-users', AsyncHandler(loggedOnly), AsyncHandler(GroupController.addUsersToGroup));
 
+router.delete('/:group_id/kick-users', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUsersFromGroup));
+
 export default router;

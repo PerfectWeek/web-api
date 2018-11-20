@@ -14,6 +14,7 @@ import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
 import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 
+
 //
 // Create a new Group
 //
@@ -147,6 +148,30 @@ export async function addUsersToGroup(req: Request, res: Response) {
             },
             {
                 pseudo: "Nicolas",
+                role: "Admin"
+            },
+            {
+                pseudo: "Damien",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Henri",
+                role: "Spectator"
+            }
+        ]
+    });
+}
+
+
+//
+// Remove Users from a Group
+//
+export async function kickUsersFromGroup(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "OK",
+        members: [
+            {
+                pseudo: "Michel",
                 role: "Admin"
             },
             {
