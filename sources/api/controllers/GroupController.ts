@@ -93,6 +93,7 @@ export async function groupInfo(req: Request, res: Response) {
 // Edit a Group
 //
 export async function editGroup(req: Request, res: Response) {
+    // TODO
     return res.status(200).json({
         message: "OK",
         group: {
@@ -126,6 +127,35 @@ export async function deleteGroup(req: Request, res: Response) {
 
     res.status(200).json({
         message: "Group successfully deleted"
+    });
+}
+
+
+//
+// Get members of a Group
+//
+export async function getMembers(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        members: [
+            {
+                pseudo: "Michel",
+                role: "Admin"
+            },
+            {
+                pseudo: "Nicolas",
+                role: "Admin"
+            },
+            {
+                pseudo: "Damien",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Henri",
+                role: "Spectator"
+            }
+        ]
     });
 }
 
@@ -167,6 +197,7 @@ export async function addUsersToGroup(req: Request, res: Response) {
 // Remove Users from a Group
 //
 export async function kickUsersFromGroup(req: Request, res: Response) {
+    // TODO
     return res.status(200).json({
         message: "OK",
         members: [
