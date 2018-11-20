@@ -15,4 +15,6 @@ router.get('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.
 
 router.delete('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.deleteGroup));
 
+router.post('/:group_id/add-users', AsyncHandler(loggedOnly), AsyncHandler(GroupController.addUsersToGroup));
+
 export default router;

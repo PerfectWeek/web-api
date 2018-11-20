@@ -112,3 +112,36 @@ export async function deleteGroup(req: Request, res: Response) {
         message: "Group successfully deleted"
     });
 }
+
+
+//
+// Add a User to a Group
+//
+export async function addUsersToGroup(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        members: [
+            {
+                pseudo: "Michel",
+                role: "Admin"
+            },
+            {
+                pseudo: "Corentin",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Nicolas",
+                role: "Admin"
+            },
+            {
+                pseudo: "Damien",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Henri",
+                role: "Spectator"
+            }
+        ]
+    });
+}
