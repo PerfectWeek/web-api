@@ -89,6 +89,21 @@ export async function groupInfo(req: Request, res: Response) {
 
 
 //
+// Edit a Group
+//
+export async function editGroup(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "OK",
+        group: {
+            id: 12,
+            name: "Perfect Group",
+            owner: "Michel"
+        }
+    });
+}
+
+
+//
 // Delete a Group
 //
 export async function deleteGroup(req: Request, res: Response) {

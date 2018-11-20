@@ -3,7 +3,6 @@
 //
 
 import {Group} from "../../model/entity/Group";
-import {UserView} from "./UserView";
 
 export class GroupView {
 
@@ -12,8 +11,7 @@ export class GroupView {
         return {
             id: group.id,
             name: group.name,
-            owner: UserView.formatPublicUser(group.members[ownerIdx]),
-            members: group.members.map(UserView.formatPublicUser)
+            owner: group.members[ownerIdx].pseudo
         };
     }
 
