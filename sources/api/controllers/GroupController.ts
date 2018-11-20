@@ -194,6 +194,21 @@ export async function addUsersToGroup(req: Request, res: Response) {
 
 
 //
+// Edit User status in a Group
+//
+export async function editUserStatus(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        member: {
+            pseudo: "Damien",
+            status: "Admin"
+        }
+    });
+}
+
+
+//
 // Remove Users from a Group
 //
 export async function kickUsersFromGroup(req: Request, res: Response) {
