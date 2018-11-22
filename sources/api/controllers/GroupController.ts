@@ -1,7 +1,3 @@
-//
-// Created by benard-g on 2018/10/08
-//
-
 import {Response, Request} from "express";
 import {Repository} from "typeorm";
 import {getRequestingUser} from "../middleware/loggedOnly";
@@ -74,8 +70,7 @@ export async function groupInfo(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
     const groupRepository = conn.getRepository(Group);
-    const userRepository = conn.getRepository(User);
-    const group = await Group.getGroupInfo(groupRepository, userRepository, groupId);
+    const group = await Group.getGroupInfo(groupRepository, groupId);
 
     if (!group
         || group.members.findIndex(member => member.id === requestingUser.id) < 0) {
@@ -114,8 +109,7 @@ export async function deleteGroup(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
     const groupRepository = conn.getRepository(Group);
-    const userRepository = conn.getRepository(User);
-    const group = await Group.getGroupInfo(groupRepository, userRepository, groupId);
+    const group = await Group.getGroupInfo(groupRepository, groupId);
 
     if (!group
         || group.owner.id !== requestingUser.id) {
