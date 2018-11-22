@@ -19,7 +19,7 @@ info:
 #
 tags:
 - name: API
-  description: Get information about Perfect Week's API
+  description: Get information about PerfectWeek's API
 - name: Auth
   description: Authentication routes
 - name: User
@@ -36,7 +36,7 @@ paths:
     get:
       tags:
       - API
-      description: The PerfectWeek API endpoint
+      summary: The PerfectWeek API endpoint
       responses:
         '200':
           description: Success
@@ -48,6 +48,60 @@ paths:
                   name:
                     type: string
                     example: Perfect Week API
+
+  #
+  # User
+  #
+  /users:
+    post:
+      tags:
+      - User
+      summary: Create a new User
+      description: The User will be created as "pending" until its email is verified
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                message:
+                  type: string
+                  example: A link has been sent to your email address, please click on it in order to confirm you email
+                user:
+                  $ref: '#/components/schemas/RegistrationCredentials'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Pseudo or email already exists
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 
 ####################
 # Component
@@ -63,34 +117,49 @@ components:
       bearerFormat: JWT
 
   #
-  # Responses
-  #
-  responses:
-    AuthenticationFailed:
-      description: The authentication failed
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: Authentication Failed
-    Unauthorized:
-      description: The action is not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: Action not allowed
-
-  #
   # Schemas
   #
   schemas:
+    #
+    # Responses
+    #
+
+    # 401
+    AuthenticationFailed:
+      description: The authentication failed
+      type: object
+      properties:
+        message:
+          type: string
+          example: Authentication Failed
+    # 403
+    Unauthorized:
+      description: The action is not allowed
+      type: object
+      properties:
+        message:
+          type: string
+          example: Action not allowed
+    # 404
+    NotFound:
+      description: Route or Resource not found
+      type: object
+      properties:
+        message:
+          type: string
+          example: Route or Resource not found
+    # 500
+    InternalServerError:
+      description: Internal Server Error
+      type: object
+      properties:
+        message:
+          type: string
+          example: Internal Server Error
+
+    #
+    # Models
+    #
     RegistrationCredentials:
       type: object
       properties:
@@ -104,3 +173,13 @@ components:
         password:
           type: string
           example: AmazingPassword42
+
+    UserInfo:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: amazing_user
+        email:
+          type: string
+          example: amazing.user@gmail.com
