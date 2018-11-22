@@ -1,0 +1,106 @@
+openapi: 3.0.0
+
+servers:
+- url: https://api.kalastud.io
+  description: Production Server
+
+info:
+  title: PerfectWeek API
+  description: The PerfectWeek web API
+  version: 0.1.0
+  contact:
+    email: perfectweek_2020@labeip.epitech.eu
+  license:
+    name: MIT
+    url: 'https://github.com/PerfectWeek/web-api/blob/dev/LICENSE'
+
+####################
+# Tags
+#
+tags:
+- name: API
+  description: Get information about Perfect Week's API
+- name: Auth
+  description: Authentication routes
+- name: User
+  description: User management
+
+####################
+# Routes
+#
+paths:
+  #
+  # API
+  #
+  /:
+    get:
+      tags:
+      - API
+      description: The PerfectWeek API endpoint
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Perfect Week API
+
+####################
+# Component
+#
+components:
+  #
+  # Security
+  #
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  #
+  # Responses
+  #
+  responses:
+    AuthenticationFailed:
+      description: The authentication failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Authentication Failed
+    Unauthorized:
+      description: The action is not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Action not allowed
+
+  #
+  # Schemas
+  #
+  schemas:
+    RegistrationCredentials:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          format: '[a-zA-Z][a-zA-Z0-9]*'
+          example: amazing_user
+        email:
+          type: string
+          example: amazing.user@gmail.com
+        password:
+          type: string
+          example: AmazingPassword42
