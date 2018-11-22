@@ -13,6 +13,16 @@ router.post('/', AsyncHandler(loggedOnly), AsyncHandler(GroupController.createGr
 
 router.get('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.groupInfo));
 
+router.put('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.editGroup));
+
 router.delete('/:group_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.deleteGroup));
+
+router.get('/:group_id/members', AsyncHandler(loggedOnly), AsyncHandler(GroupController.getMembers));
+
+router.post('/:group_id/add-members', AsyncHandler(loggedOnly), AsyncHandler(GroupController.addUsersToGroup));
+
+router.put('/:group_id/members/:user_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.editUserStatus));
+
+router.delete('/:group_id/kick-members', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUsersFromGroup));
 
 export default router;

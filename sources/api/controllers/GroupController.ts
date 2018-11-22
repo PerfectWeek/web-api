@@ -14,6 +14,7 @@ import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
 import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 
+
 //
 // Create a new Group
 //
@@ -89,6 +90,22 @@ export async function groupInfo(req: Request, res: Response) {
 
 
 //
+// Edit a Group
+//
+export async function editGroup(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        group: {
+            id: 12,
+            name: "Perfect Group",
+            owner: "Michel"
+        }
+    });
+}
+
+
+//
 // Delete a Group
 //
 export async function deleteGroup(req: Request, res: Response) {
@@ -110,5 +127,107 @@ export async function deleteGroup(req: Request, res: Response) {
 
     res.status(200).json({
         message: "Group successfully deleted"
+    });
+}
+
+
+//
+// Get members of a Group
+//
+export async function getMembers(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        members: [
+            {
+                pseudo: "Michel",
+                role: "Admin"
+            },
+            {
+                pseudo: "Nicolas",
+                role: "Admin"
+            },
+            {
+                pseudo: "Damien",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Henri",
+                role: "Spectator"
+            }
+        ]
+    });
+}
+
+
+//
+// Add a User to a Group
+//
+export async function addUsersToGroup(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        members: [
+            {
+                pseudo: "Michel",
+                role: "Admin"
+            },
+            {
+                pseudo: "Corentin",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Nicolas",
+                role: "Admin"
+            },
+            {
+                pseudo: "Damien",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Henri",
+                role: "Spectator"
+            }
+        ]
+    });
+}
+
+
+//
+// Edit User status in a Group
+//
+export async function editUserStatus(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        member: {
+            pseudo: "Damien",
+            status: "Admin"
+        }
+    });
+}
+
+
+//
+// Remove Users from a Group
+//
+export async function kickUsersFromGroup(req: Request, res: Response) {
+    // TODO
+    return res.status(200).json({
+        message: "OK",
+        members: [
+            {
+                pseudo: "Michel",
+                role: "Admin"
+            },
+            {
+                pseudo: "Damien",
+                role: "Spectator"
+            },
+            {
+                pseudo: "Henri",
+                role: "Spectator"
+            }
+        ]
     });
 }
