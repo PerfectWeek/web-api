@@ -51,9 +51,9 @@ export class Group {
         groupToUserRepository: Repository<GroupsToUsers>,
         group: Group
     ): Promise<Group> {
-        const relations = group.members.map(user => new GroupsToUsers(group.id, user.id));
+        const createdGroup = await groupRepository.save(group);
 
-        await groupRepository.save(group);
+        const relations = group.members.map(user => new GroupsToUsers(createdGroup.id, user.id));
         await groupToUserRepository.save(relations);
 
         return group;
