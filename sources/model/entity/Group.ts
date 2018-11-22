@@ -72,11 +72,17 @@ export class Group {
         groupRepository: Repository<Group>,
         groupId: number
     ) : Promise<Group> {
-        return groupRepository
+        let group = await groupRepository
             .createQueryBuilder("groups")
             .leftJoinAndSelect("groups.owner", "owner")
             .where({group_id: groupId})
             .getOne();
+        if (!group) {
+            return null;
+        }
+
+        group.members = [];
+        return group;
     }
 
     /**

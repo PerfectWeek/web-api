@@ -70,7 +70,8 @@ export async function groupInfo(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
     const groupRepository = conn.getRepository(Group);
-    const group = await Group.getGroupInfo(groupRepository, groupId);
+    const userRepository = conn.getRepository(User);
+    const group = await Group.getGroupAndMembers(groupRepository, userRepository, groupId);
 
     if (!group
         || group.members.findIndex(member => member.id === requestingUser.id) < 0) {
