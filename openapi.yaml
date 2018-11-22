@@ -50,6 +50,42 @@ paths:
                     example: Perfect Week API
 
   #
+  # Auth
+  #
+  /auth/validate-email/{uuid}:
+    get:
+      tags:
+      - Auth
+      summary: Validate an email
+      description: Finalize User creation
+      parameters:
+      - in: path
+        name: uuid
+        description: Unique identifier generated for email validation
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: User successfuly validated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  #
   # User
   #
   /users:
@@ -120,6 +156,33 @@ components:
   # Schemas
   #
   schemas:
+
+    #
+    # Models
+    #
+    RegistrationCredentials:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          format: '[a-zA-Z][a-zA-Z0-9]*'
+          example: amazing_user
+        email:
+          type: string
+          example: amazing.user@gmail.com
+        password:
+          type: string
+          example: AmazingPassword42
+
+    UserInfo:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: amazing_user
+        email:
+          type: string
+          example: amazing.user@gmail.com
     #
     # Responses
     #
@@ -156,30 +219,3 @@ components:
         message:
           type: string
           example: Internal Server Error
-
-    #
-    # Models
-    #
-    RegistrationCredentials:
-      type: object
-      properties:
-        pseudo:
-          type: string
-          format: '[a-zA-Z][a-zA-Z0-9]*'
-          example: amazing_user
-        email:
-          type: string
-          example: amazing.user@gmail.com
-        password:
-          type: string
-          example: AmazingPassword42
-
-    UserInfo:
-      type: object
-      properties:
-        pseudo:
-          type: string
-          example: amazing_user
-        email:
-          type: string
-          example: amazing.user@gmail.com
