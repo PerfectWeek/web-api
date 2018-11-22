@@ -1,19 +1,17 @@
-//
-// Created by benard-g on 2018/10/08
-//
-
-//
-// Remove duplicates entries in a list, keeping only the first occurrence
-//
+/**
+ * @brief Remove duplicate entries in a list
+ *
+ * @param list The list to filter
+ */
 export function removeDuplicates(list: string[]) : string[] {
-    let seenKeys: any = {};
+    let seenKeys = new Set<string>();
 
     return list.filter(value => {
-        if (seenKeys.hasOwnProperty(value)) {
+        if (seenKeys.has(value)) {
             return false;
         }
 
-        seenKeys[value] = true;
+        seenKeys.add(value);
         return true;
     });
 }
