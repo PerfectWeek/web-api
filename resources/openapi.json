@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.0",
+  "servers": [],
+  "info": {
+    "title": "PerfectWeek API",
+    "description": "The PerfectWeek web API",
+    "version": "0.1.0",
+    "contact": {
+      "email": "perfectweek_2020@labeip.epitech.eu"
+    },
+    "license": {
+      "name": "LICENSE",
+      "url": "https://github.com/PerfectWeek/web-api/blob/dev/LICENSE"
+    }
+  },
+  "tags": [
+    {
+      "name": "API",
+      "description": "Get information about PerfectWeek's API"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "description": "The PerfectWeek API endpoint",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Perfect Week API"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
