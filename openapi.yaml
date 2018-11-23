@@ -71,7 +71,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                properties:
+                  message:
+                    type: string
+                    example: User has been successfully created
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
         '404':
           description: User not found
           content:
@@ -84,6 +89,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Log a User in
+      description: Generation an authentication token for the User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginCredentials'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Authentication successful
+                  access_token:
+                    type: string
+                    example: eyJhbGciIsInR5cCpXVCJ9.eyJpZCI6MSwiaF0Ijox.vNcwZK1V5SWzMnBB-jmnkX2u3C
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+        '403':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Bad User or password
 
   #
   # User
@@ -99,19 +141,19 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                message:
-                  type: string
-                  example: A link has been sent to your email address, please click on it in order to confirm you email
-                user:
-                  $ref: '#/components/schemas/RegistrationCredentials'
+              $ref: '#/components/schemas/RegistrationCredentials'
       responses:
         '201':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                properties:
+                  message:
+                    type: string
+                    example: A link has been sent to your email address, please click on it in order to confirm you email
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
         '400':
           description: Bad request
           content:
@@ -121,7 +163,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Invalid request
+                    example: Invalid fields in User
         '409':
           description: Conflict
           content:
@@ -167,6 +209,16 @@ components:
           type: string
           format: '[a-zA-Z][a-zA-Z0-9]*'
           example: amazing_user
+        email:
+          type: string
+          example: amazing.user@gmail.com
+        password:
+          type: string
+          example: AmazingPassword42
+
+    LoginCredentials:
+      type: object
+      properties:
         email:
           type: string
           example: amazing.user@gmail.com
