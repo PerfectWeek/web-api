@@ -181,6 +181,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /users/{pseudo}:
+    get:
+      tags:
+      - User
+      summary: Get information about a specific User
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: pseudo
+        required: true
+        description: The User pseudo
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+
 ####################
 # Component
 #
@@ -246,7 +288,7 @@ components:
       properties:
         message:
           type: string
-          example: Authentication Failed
+          example: You must be authenticated to perform this action
     # 403
     Unauthorized:
       description: The action is not allowed
