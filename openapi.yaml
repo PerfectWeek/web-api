@@ -463,6 +463,51 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /groups/{group-id}:
+    get:
+      tags:
+      - Group
+      summary: Get information about a Group
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: group-id
+        required: true
+        description: The Group id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  group:
+                    $ref: '#/components/schemas/GroupInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 ####################
 # Component
