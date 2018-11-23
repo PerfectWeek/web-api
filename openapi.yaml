@@ -24,6 +24,8 @@ tags:
   description: Authentication routes
 - name: User
   description: User management
+- name: Group
+  description: Group management
 
 ####################
 # Routes
@@ -402,6 +404,65 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  #
+  # Group
+  #
+  /groups:
+    post:
+      tags:
+      - Group
+      summary: Create a new Group
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCredentials'
+      responses:
+        '201':
+          description: Group created
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Group created
+                  group:
+                    $ref: '#/components/schemas/GroupInfo'
+        '400':
+          description: Invalid Group
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invalid fields in Group
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 ####################
 # Component
@@ -467,6 +528,31 @@ components:
         name:
           type: string
           example: amazing_group
+
+    GroupCredentials:
+      type: object
+      properties:
+        name:
+          type: string
+          example: amazing_group
+        members:
+          type: array
+          items:
+            type: string
+            example: some_user_pseudo
+
+    GroupInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: amazing_group
+        owner:
+          type: string
+          example: some_user_pseudo
 
 
     #
