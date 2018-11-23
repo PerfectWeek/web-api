@@ -11,7 +11,7 @@ router.all('/', (req: Request, res: Response) => {
 });
 
 router.get('/swagger.json', (req: Request, res: Response) => {
-    res.json(swaggerOpenApi);
+    res.status(200).json(swaggerOpenApi);
 });
 
 export default router;
