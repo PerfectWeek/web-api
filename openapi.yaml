@@ -126,6 +126,12 @@ paths:
                   message:
                     type: string
                     example: Bad User or password
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 
   #
   # User
@@ -222,6 +228,13 @@ paths:
                   message:
                     type: string
                     example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
     put:
       tags:
       - User
@@ -284,6 +297,54 @@ paths:
                   message:
                     type: string
                     example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    delete:
+      tags:
+      - User
+      summary: Permanently delete a User
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: pseudo
+        required: true
+        description: The User pseudo
+        schema:
+          type: string
+      responses:
+        '200':
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User deleted
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 
 ####################
 # Component
