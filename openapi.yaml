@@ -573,7 +573,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Group successfully edited
+          description: Group successfully deleted
           content:
             application/json:
               schema:
@@ -581,6 +581,53 @@ paths:
                   message:
                     type: string
                     example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /groups/{group-id}/members:
+    get:
+      tags:
+      - Group
+      summary: Get all members of a Group
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: group-id
+        required: true
+        description: The Group id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GroupMember'
         '401':
           description: Authentication failed
           content:
@@ -700,6 +747,18 @@ components:
         owner:
           type: string
           example: some_user_pseudo
+
+    GroupMember:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: amazing_user
+        role:
+          type: string
+          enum:
+          - Admin
+          - Spectator
 
 
     #
