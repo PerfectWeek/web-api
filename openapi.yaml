@@ -696,6 +696,75 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /groups/{group-id}/members/{pseudo}:
+    put:
+      tags:
+      - Group
+      summary: Edit a member's role inside a Group
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: group-id
+        required: true
+        description: The Group id
+        schema:
+          type: string
+      - in: path
+        name: pseudo
+        required: true
+        description: The Member pseudo
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  $ref: '#/components/schemas/GroupMemberRole'
+      responses:
+        '200':
+          description: Role edited
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  member:
+                    $ref: '#/components/schemas/GroupMember'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: User not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 ####################
 # Component
@@ -797,6 +866,12 @@ components:
           type: string
           example: some_user_pseudo
 
+    GroupMemberRole:
+      type: string
+      enum:
+      - Admin
+      - Spectator
+
     GroupMember:
       type: object
       properties:
@@ -804,11 +879,7 @@ components:
           type: string
           example: amazing_user
         role:
-          type: string
-          enum:
-          - Admin
-          - Spectator
-
+          $ref: '#/components/schemas/GroupMemberRole'
 
     #
     # Responses
