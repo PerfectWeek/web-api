@@ -600,6 +600,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /groups/{group-id}/add-members:
+    post:
+      tags:
+      - Group
+      summary: Add new User to a Group
+      description: >
+        Add new User to a Group and returns the new list of members
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: group-id
+        required: true
+        description: The Group id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Users added
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GroupMember'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
   /groups/{group-id}/members:
     get:
       tags:
