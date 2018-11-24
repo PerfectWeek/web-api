@@ -23,6 +23,6 @@ router.post('/:group_id/add-members', AsyncHandler(loggedOnly), AsyncHandler(Gro
 
 router.put('/:group_id/members/:user_id', AsyncHandler(loggedOnly), AsyncHandler(GroupController.editUserStatus));
 
-router.delete('/:group_id/kick-members', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUsersFromGroup));
+router.post('/:group_id/kick-members', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUsersFromGroup));
 
 export default router;

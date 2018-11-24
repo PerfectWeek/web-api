@@ -642,6 +642,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: User not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
         '500':
           description: Internal server error
           content:
@@ -737,6 +746,76 @@ paths:
                     example: OK
                   member:
                     $ref: '#/components/schemas/GroupMember'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: User not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /groups/{group-id}/kick-members:
+    post:
+      tags:
+      - Group
+      summary: Remove Users from a Group
+      description: >
+        Remove members from a roup and returns the updated member list
+      security:
+      - BearerAuth: []
+      parameters:
+      - in: path
+        name: group-id
+        required: true
+        description: The Group id
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                members:
+                  type: array
+                  items:
+                    type: string
+                    example: user_to_kick
+      responses:
+        '200':
+          description: Users successfully kicked
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GroupMember'
         '401':
           description: Authentication failed
           content:
