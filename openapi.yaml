@@ -508,6 +508,56 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+    put:
+      tags:
+      - Group
+      summary: Edit a Group information
+      security:
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupEdit'
+      parameters:
+      - in: path
+        name: group-id
+        required: true
+        description: The Group id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Group successfully edited
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  group:
+                    $ref: '#/components/schemas/GroupInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 ####################
 # Component
@@ -573,6 +623,16 @@ components:
         name:
           type: string
           example: amazing_group
+
+    GroupEdit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: A new Group Name
+        owner:
+          type: string
+          example: new_owner_pseudo
 
     GroupCredentials:
       type: object
