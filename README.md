@@ -56,4 +56,4 @@ npm start
 
 ## Documentation
 
-The API documentation can be found on [the documentation page](https://app.swaggerhub.com/apis-docs/PerfectWeek/PerfectWeek/0.1.0)
+The API documentation can be found on [the documentation page](https://doc.api.kalastud.io/)
