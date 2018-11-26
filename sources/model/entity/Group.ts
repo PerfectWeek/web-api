@@ -17,6 +17,9 @@ export class Group {
 
     members: User[] = [];
 
+    @Column({name: "nb_members"})
+    nbMembers: number;
+
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
 
@@ -27,6 +30,7 @@ export class Group {
         this.name = name;
         this.owner = owner;
         this.members = members;
+        this.nbMembers = 0;
     }
 
     /**
