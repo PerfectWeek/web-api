@@ -7,11 +7,11 @@ import {Group} from "../../model/entity/Group";
 export class GroupView {
 
     public static formatGroup(group: Group): any {
-        const ownerIdx = group.members.findIndex(member => member.id == group.owner.id);
         return {
             id: group.id,
             name: group.name,
-            owner: group.members[ownerIdx].pseudo
+            owner: group.owner.pseudo,
+            nb_members: group.nbMembers
         };
     }
 
