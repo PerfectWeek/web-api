@@ -1448,6 +1448,10 @@
           "owner": {
             "type": "string",
             "example": "some_user_pseudo"
+          },
+          "nb_members": {
+            "type": "integer",
+            "example": 3
           }
         }
       },
