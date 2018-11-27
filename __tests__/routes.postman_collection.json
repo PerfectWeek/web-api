@@ -1998,7 +1998,7 @@
 									"",
 									"pm.test(\"Message is Bad Request\", function () {",
 									"    const body = pm.response.json();",
-									"    pm.expect(body.message).to.equal(\"A Group can't be empty\");",
+									"    pm.expect(body.message).to.equal(\"Invalid fields in Group\");",
 									"});",
 									""
 								],
@@ -2022,7 +2022,7 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
+								"value": "application/json",
 								"type": "text"
 							}
 						],
