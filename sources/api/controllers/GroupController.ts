@@ -197,7 +197,7 @@ export async function editUserStatus(req: Request, res: Response) {
         message: "OK",
         member: {
             pseudo: "Damien",
-            status: "Admin"
+            role: "Admin"
         }
     });
 }
