@@ -10,7 +10,6 @@ export class GroupView {
         return {
             id: group.id,
             name: group.name,
-            owner: group.owner.pseudo,
             nb_members: group.nbMembers
         };
     }
