@@ -501,6 +501,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Group not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Group not Found
         '500':
           description: Internal server error
           content:
@@ -616,6 +625,17 @@ paths:
         description: The Group id
         schema:
           type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                members:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/GroupMember'
+
       responses:
         '200':
           description: Users added
@@ -916,9 +936,6 @@ components:
         name:
           type: string
           example: A new Group Name
-        owner:
-          type: string
-          example: new_owner_pseudo
 
     GroupCredentials:
       type: object
@@ -941,9 +958,6 @@ components:
         name:
           type: string
           example: amazing_group
-        owner:
-          type: string
-          example: some_user_pseudo
         nb_members:
           type: integer
           example: 3
