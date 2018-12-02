@@ -1,8 +1,8 @@
 openapi: 3.0.0
 
 servers:
-- url: https://api.kalastud.io
-  description: Production Server
+  - url: https://api.kalastud.io
+    description: Production Server
 
 info:
   title: PerfectWeek API
@@ -18,14 +18,14 @@ info:
 # Tags
 #
 tags:
-- name: API
-  description: Get information about PerfectWeek's API
-- name: Auth
-  description: Authentication routes
-- name: User
-  description: User management
-- name: Group
-  description: Group management
+  - name: API
+    description: Get information about PerfectWeek's API
+  - name: Auth
+    description: Authentication routes
+  - name: User
+    description: User management
+  - name: Group
+    description: Group management
 
 ####################
 # Routes
@@ -37,8 +37,9 @@ paths:
   /:
     get:
       tags:
-      - API
+        - API
       summary: The PerfectWeek API endpoint
+      operationId: apiInfo
       responses:
         '200':
           description: Success
@@ -57,16 +58,17 @@ paths:
   /auth/validate-email/{uuid}:
     get:
       tags:
-      - Auth
+        - Auth
       summary: Validate an email
       description: Finalize User creation
+      operationId: confirmUserEmail
       parameters:
-      - in: path
-        name: uuid
-        description: Unique identifier generated for email validation
-        required: true
-        schema:
-          type: string
+        - in: path
+          name: uuid
+          description: Unique identifier generated for email validation
+          required: true
+          schema:
+            type: string
       responses:
         '201':
           description: User successfuly validated
@@ -95,9 +97,10 @@ paths:
   /auth/login:
     post:
       tags:
-      - Auth
+        - Auth
       summary: Log a User in
       description: Generation an authentication token for the User
+      operationId: userLogin
       requestBody:
         required: true
         content:
@@ -141,9 +144,10 @@ paths:
   /users:
     post:
       tags:
-      - User
+        - User
       summary: Create a new User
       description: The User will be created as "pending" until its email is verified
+      operationId: createUser
       requestBody:
         required: true
         content:
@@ -192,17 +196,18 @@ paths:
   /users/{pseudo}:
     get:
       tags:
-      - User
+        - User
       summary: Get information about a specific User
+      operationId: getUserInfo
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: pseudo
-        required: true
-        description: The User pseudo
-        schema:
-          type: string
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -239,17 +244,18 @@ paths:
 
     put:
       tags:
-      - User
+        - User
       summary: Edit User information
+      operationId: editUserInfo
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: pseudo
-        required: true
-        description: The User pseudo
-        schema:
-          type: string
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -308,17 +314,18 @@ paths:
 
     delete:
       tags:
-      - User
+        - User
       summary: Permanently delete a User
+      operationId: deleteUser
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: pseudo
-        required: true
-        description: The User pseudo
-        schema:
-          type: string
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
       responses:
         '200':
           description: User deleted
@@ -351,17 +358,18 @@ paths:
   /users/{pseudo}/groups:
     get:
       tags:
-      - User
+        - User
       summary: Get all Groups a User belongs to
+      operationId: getUserGroups
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: pseudo
-        required: true
-        description: The User pseudo
-        schema:
-          type: string
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -410,10 +418,11 @@ paths:
   /groups:
     post:
       tags:
-      - Group
+        - Group
       summary: Create a new Group
+      operationId: createGroup
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -466,17 +475,18 @@ paths:
   /groups/{group-id}:
     get:
       tags:
-      - Group
+        - Group
       summary: Get information about a Group
+      operationId: getGroupInfo
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -519,10 +529,11 @@ paths:
 
     put:
       tags:
-      - Group
+        - Group
       summary: Edit a Group information
+      operationId: editGroupInfo
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -530,12 +541,12 @@ paths:
             schema:
               $ref: '#/components/schemas/GroupEdit'
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
       responses:
         '200':
           description: Group successfully edited
@@ -569,17 +580,18 @@ paths:
 
     delete:
       tags:
-      - Group
+        - Group
       summary: Delete a Group
+      operationId: deleteGroup
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
       responses:
         '200':
           description: Group successfully deleted
@@ -612,19 +624,20 @@ paths:
   /groups/{group-id}/add-members:
     post:
       tags:
-      - Group
+        - Group
       summary: Add new User to a Group
+      operationId: addMembersToGroup
       description: >
         Add new User to a Group and returns the new list of members
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -635,7 +648,6 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/GroupMember'
-
       responses:
         '200':
           description: Users added
@@ -681,17 +693,18 @@ paths:
   /groups/{group-id}/members:
     get:
       tags:
-      - Group
+        - Group
       summary: Get all members of a Group
+      operationId: getGroupMemberInfo
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -728,23 +741,24 @@ paths:
   /groups/{group-id}/members/{pseudo}:
     put:
       tags:
-      - Group
+        - Group
       summary: Edit a member's role inside a Group
+      operationId: editGroupMemberInfo
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
-      - in: path
-        name: pseudo
-        required: true
-        description: The Member pseudo
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+        - in: path
+          name: pseudo
+          required: true
+          description: The Member pseudo
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -797,19 +811,20 @@ paths:
   /groups/{group-id}/kick-members:
     post:
       tags:
-      - Group
+        - Group
       summary: Remove Users from a Group
+      operationId: deleteMemberFromGroup
       description: >
         Remove members from a roup and returns the updated member list
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       parameters:
-      - in: path
-        name: group-id
-        required: true
-        description: The Group id
-        schema:
-          type: string
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -965,8 +980,8 @@ components:
     GroupMemberRole:
       type: string
       enum:
-      - Admin
-      - Spectator
+        - Admin
+        - Spectator
 
     GroupMember:
       type: object

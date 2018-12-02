@@ -1,7 +1,7 @@
 import {Router, Request, Response} from "express";
 
 
-const swaggerOpenApi = require('../../../resources/openapi.json');
+const swaggerOpenApi = require('../../../resources/openapi/openapi.json');
 const router = Router();
 
 router.all('/', (req: Request, res: Response) => {
