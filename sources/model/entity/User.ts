@@ -1,13 +1,11 @@
-//
-// Created by benard-g on 2018/09/03
-//
-
 import {Column, Entity, Index, PrimaryGeneratedColumn, Repository} from "typeorm";
+
 import {Encrypt} from "../../utils/encrypt";
 import {ApiException} from "../../utils/apiException";
 import {UserValidator} from "../../utils/validator/UserValidator";
 import {Group} from "./Group";
 import {GroupsToUsers} from "./GroupsToUsers";
+
 
 @Entity("users")
 export class User {
@@ -74,6 +72,7 @@ export class User {
         groupsToUsersRepository: Repository<GroupsToUsers>,
         user_id: number
     ) : Promise<any> {
+        // TODO: Remove user from its groups and delete those becoming empty
         await groupsToUsersRepository
             .createQueryBuilder()
             .delete()
