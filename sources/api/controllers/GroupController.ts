@@ -1,5 +1,6 @@
-import {Response, Request} from "express";
+import {Request, Response} from "express";
 import {Repository} from "typeorm";
+
 import {getRequestingUser} from "../middleware/loggedOnly";
 import {removeDuplicates} from "../../utils/removeDuplicates";
 import {removeIfExists} from "../../utils/removeIfExists";
@@ -8,7 +9,7 @@ import {Group} from "../../model/entity/Group";
 import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
-import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
+import {GroupsToUsers, Role} from "../../model/entity/GroupsToUsers";
 
 
 //
@@ -32,14 +33,14 @@ export async function createGroup(req: Request, res: Response) {
     let groupMembers: User[] = <any[]>(await Promise.all(userPromises));
     groupMembers.push(requestingUser);
 
-    const group = new Group(groupName, requestingUser, groupMembers);
+    const group = new Group(groupName);
     if (!group.isValid()) {
         throw new ApiException(400, "Invalid fields in Group");
     }
 
     const groupRepository = conn.getRepository(Group);
     const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
-    const createdGroup = await Group.createGroup(groupRepository, groupsToUsersRepository, group);
+    const createdGroup = await Group.createGroup(groupRepository, groupsToUsersRepository, group, groupMembers);
 
     return res.status(201).json({
         message: "Group created",
@@ -66,13 +67,16 @@ export async function groupInfo(req: Request, res: Response) {
     const groupId = req.params.group_id;
 
     const conn = await DbConnection.getConnection();
-    const groupRepository = conn.getRepository(Group);
-    const userRepository = conn.getRepository(User);
-    const group = await Group.getGroupAndMembers(groupRepository, userRepository, groupId);
-
-    if (!group
-        || group.members.findIndex(member => member.id === requestingUser.id) < 0) {
+    const groupToUserRepository = conn.getRepository(GroupsToUsers);
+    const groupMember = await GroupsToUsers.getRelation(groupToUserRepository, groupId, requestingUser.id);
+    if (!groupMember) {
         throw new ApiException(403, "Group not accessible");
+    }
+
+    const groupRepository = conn.getRepository(Group);
+    const group = await Group.getGroupInfo(groupRepository, groupId);
+    if (!group) {
+        throw new ApiException(404, "Group not found");
     }
 
     res.status(200).json({
@@ -92,7 +96,7 @@ export async function editGroup(req: Request, res: Response) {
         group: {
             id: 12,
             name: "Perfect Group",
-            owner: "Michel"
+            nb_members: 4
         }
     });
 }
@@ -106,16 +110,16 @@ export async function deleteGroup(req: Request, res: Response) {
     const groupId = req.params.group_id;
 
     const conn = await DbConnection.getConnection();
-    const groupRepository = conn.getRepository(Group);
-    const group = await Group.getGroupInfo(groupRepository, groupId);
+    const groupToUserRepository = conn.getRepository(GroupsToUsers);
+    const groupMember = await GroupsToUsers.getRelation(groupToUserRepository, groupId, requestingUser.id);
 
-    if (!group
-        || group.owner.id !== requestingUser.id) {
+    if (!groupMember
+        || groupMember.role !== Role.Admin) {
         throw new ApiException(403, "You are not allowed to delete this Group");
     }
 
-    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
-    await Group.deleteGroup(groupRepository, groupsToUsersRepository, group.id);
+    const groupRepository = conn.getRepository(Group);
+    await Group.deleteGroup(groupRepository, groupToUserRepository, groupId);
 
     res.status(200).json({
         message: "Group successfully deleted"
