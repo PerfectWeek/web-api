@@ -6,11 +6,12 @@
     "scripts": {
         "start": "npm run build && node build/main.js",
         "test": "npm run build && jest",
-        "build": "rimraf build && tsc",
+        "build": "rimraf build && tsc && npm run swagger-generate",
         "test-postgres-run": "./scripts/test_database_run.sh",
         "test-postgres-down": "./scripts/test_database_delete.sh",
         "migration-up": "npm run build && typeorm migration:run",
-        "migration-down": "npm run build && typeorm migration:revert"
+        "migration-down": "npm run build && typeorm migration:revert",
+        "swagger-generate": "./scripts/swagger_generator.sh"
     },
     "repository": {
         "type": "git",
