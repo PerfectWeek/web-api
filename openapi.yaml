@@ -625,10 +625,10 @@ paths:
     post:
       tags:
         - Group
-      summary: Add new User to a Group
+      summary: Add new Users to a Group
       operationId: addMembersToGroup
       description: >
-        Add new User to a Group and returns the new list of members
+        Add new Users to a Group and returns the new list of members
       security:
         - BearerAuth: []
       parameters:
@@ -648,7 +648,6 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/GroupMember'
-
       responses:
         '200':
           description: Users added
@@ -814,7 +813,6 @@ paths:
         - Group
       summary: Remove a member from a Group
       operationId: deleteMemberFromGroup
-        - Group
       description: >
         Remove a member from a group and returns the updated members list
       security:
