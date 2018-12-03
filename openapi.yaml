@@ -104,7 +104,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/LoginCredentials'
       responses:
@@ -151,7 +151,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegistrationCredentials'
       responses:
@@ -163,7 +163,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: A link has been sent to your email address, please click on it in order to confirm you email
+                    example: A link has been sent to your email address, please click on it in order to confirm your email
                   user:
                     $ref: '#/components/schemas/UserInfo'
         '400':
@@ -259,7 +259,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/UserInfo'
       responses:
@@ -426,7 +426,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/GroupCredentials'
       responses:
@@ -537,7 +537,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/GroupEdit'
       parameters:
@@ -625,10 +625,10 @@ paths:
     post:
       tags:
         - Group
-      summary: Add new User to a Group
+      summary: Add new Users to a Group
       operationId: addMembersToGroup
       description: >
-        Add new User to a Group and returns the new list of members
+        Add new Users to a Group and returns the new list of members
       security:
         - BearerAuth: []
       parameters:
@@ -641,7 +641,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               properties:
                 members:
@@ -762,7 +762,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
@@ -808,14 +808,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
-  /groups/{group-id}/kick-members:
-    post:
+    delete:
       tags:
         - Group
-      summary: Remove Users from a Group
+      summary: Remove a member from a Group
       operationId: deleteMemberFromGroup
       description: >
-        Remove members from a roup and returns the updated member list
+        Remove a member from a group and returns the updated members list
       security:
         - BearerAuth: []
       parameters:
@@ -825,21 +824,15 @@ paths:
           description: The Group id
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                members:
-                  type: array
-                  items:
-                    type: string
-                    example: user_to_kick
+        - in: path
+          name: pseudo
+          required: true
+          description: The member pseudo
+          schema:
+            type: string
       responses:
         '200':
-          description: Users successfully kicked
+          description: User successfully kicked
           content:
             application/json:
               schema:

@@ -207,7 +207,7 @@ export async function editUserStatus(req: Request, res: Response) {
 //
 // Remove Users from a Group
 //
-export async function kickUsersFromGroup(req: Request, res: Response) {
+export async function kickUserFromGroup(req: Request, res: Response) {
     // TODO
     return res.status(200).json({
         message: "OK",
