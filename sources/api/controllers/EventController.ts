@@ -9,8 +9,8 @@ export async function getEventInfo(req: Request, res: Response) {
             name: "Nouvel An",
             description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
             calendar_id: 2,
-            start_time: Date.parse("31-12-2018T20:00:00"),
-            end_time: Date.parse("01-01-2019T06:00:00")
+            start_time: "31-12-2018T20:00:00",
+            end_time: "01-01-2019T06:00:00"
         }
     });
 }
@@ -18,7 +18,7 @@ export async function getEventInfo(req: Request, res: Response) {
 export async function getEventAttendees(req: Request, res: Response) {
     return res.status(200).json({
         message: "OK",
-        members: [
+        attendees: [
             {
                 pseudo: "Michel"
             },
@@ -39,7 +39,7 @@ export async function getEventAttendees(req: Request, res: Response) {
 export async function inviteUser(req: Request, res: Response) {
     return res.status(200).json({
         message: "OK",
-        members: [
+        attendees: [
             {
                 pseudo: "Michel"
             },
@@ -68,8 +68,8 @@ export async function editEvent(req: Request, res: Response) {
             name: "Nouvel An",
             description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
             calendar_id: 2,
-            start_time: Date.parse("31-12-2018T21:00:00"),
-            end_time: Date.parse("01-01-2019T07:00:00")
+            start_time: "31-12-2018T21:00:00",
+            end_time: "01-01-2019T07:00:00"
         }
     });
 }
