@@ -22,5 +22,7 @@ export class EventsToAttendees {
     public constructor(event_id: number, attendee_id: number) {
         this.event_id = event_id;
         this.attendee_id = attendee_id;
+        this.event = undefined;
+        this.attendee = undefined;
     }
 }
