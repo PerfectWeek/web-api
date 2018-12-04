@@ -933,7 +933,7 @@ paths:
   #
   # Calendar
   #
-  /calendar:
+  /calendars:
     post:
       tags:
         - Calendar
@@ -960,7 +960,7 @@ paths:
                   calendar:
                     $ref: '#/components/schemas/CalendarInfo'
         '400':
-          description: Invalid Group
+          description: Invalid Calendar
           content:
             application/json:
               schema:
@@ -989,6 +989,250 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+
+  /calendars/{calendar-id}:
+    get:
+      tags:
+        - Calendar
+      summary: Get information about a Calendar
+      operationId: getCalendarInfo
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Calendar not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Group not Found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    put:
+      tags:
+        - Calendar
+      summary: Edit a Calendar information
+      operationId: editCalendarInfo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalendarEdit'
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Calendar successfully edited
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    delete:
+      tags:
+        - Calendar
+      summary: Delete a Calendar
+      operationId: deleteCalendar
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Calendar successfully deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /calendars/{calendar-id}/events:
+    post:
+      tags:
+        - Calendar
+      summary: Create an Event
+      operationId: createEvent
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    get:
+      tags:
+        - Calendar
+      summary: Get all events of a Calendar
+      operationId: getCalendarEvents
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 ####################
 # Component
@@ -1128,6 +1372,30 @@ components:
         name:
           type: string
           example: amazing_calendar
+
+    CalendarEdit:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: qlf tu coco
+
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: qlf tu coco
+        start_time:
+          type: string
+          example: 12-12-2012T12:12:!2
+
 
 
     #
