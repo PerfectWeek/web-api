@@ -930,6 +930,66 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
 
 
+  #
+  # Calendar
+  #
+  /calendar:
+    post:
+      tags:
+        - Calendar
+      summary: Create a new Calendar
+      operationId: createCalendar
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalendarCredentials'
+      responses:
+        '201':
+          description: Calendar created
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Calendar created
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '400':
+          description: Invalid Group
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invalid fields in Calendar
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 ####################
 # Component
 #
@@ -1043,6 +1103,23 @@ components:
           $ref: '#/components/schemas/GroupMemberRole'
 
     CalendarRecap:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: amazing_calendar
+
+    CalendarCredentials:
+      type: object
+      properties:
+        name:
+          type: string
+          example: amazing_calendar
+
+    CalendarInfo:
       type: object
       properties:
         id:
