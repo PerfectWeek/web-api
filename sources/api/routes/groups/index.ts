@@ -25,4 +25,6 @@ router.put('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHan
 
 router.post('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUserFromGroup));
 
+router.get('/:group_id/calendar', AsyncHandler(loggedOnly), AsyncHandler(GroupController.getGroupCalendar));
+
 export default router;
