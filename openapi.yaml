@@ -1037,7 +1037,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Group not Found
+                    example: Event not Found
         '500':
           description: Internal server error
           content:
@@ -1232,6 +1232,253 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  #
+  # Event
+  #
+  /events/{event-id}:
+    get:
+      tags:
+        - Event
+      summary: Get information about an Event
+      operationId: getEventInfo
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  event:
+                    $ref: '#/components/schemas/EventInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Event not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Event not Found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    put:
+      tags:
+        - Event
+      summary: Edit an Event information
+      operationId: editEventInfo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventInfo'
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event successfully edited
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  event:
+                    $ref: '#/components/schemas/EventInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    delete:
+      tags:
+        - Event
+      summary: Delete an Event
+      operationId: deleteEvent
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event successfully deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /events/{event-id}/attendees:
+    get:
+      tags:
+        - Event
+      summary: Get all attendees to an Event
+      operationId: getEventsAttendees
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  attendees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventAttendees'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /events/{event-id}/invite-user:
+    post:
+      tags:
+        - Event
+      summary: Invite user to Event
+      operationId: inviteUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  attendees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventAttendees'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 
 
 ####################
@@ -1394,7 +1641,40 @@ components:
           example: qlf tu coco
         start_time:
           type: string
-          example: 12-12-2012T12:12:!2
+          example: 12-12-2012T12:12:12
+        end_time:
+          type: string
+          example: 13-12-2012T12:12:12
+
+    EventInfo:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 43
+        name:
+          type: string
+          example: nouvel an
+        description:
+          type: string
+          example: soiree
+        calendar_id:
+          type: number
+          example : 3
+        start_time:
+          type: string
+          example: 12-12-2012T12:12:12
+        end_time:
+          type: string
+          example: 13-12-2012T12:12:12
+
+
+    EventAttendees:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: alif
 
 
 
