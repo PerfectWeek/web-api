@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Repository } from "typeorm";
 import { Event } from "./Event"
 import { CalendarsToOwners } from "./CalendarsToOwners";
+import { User } from "./User";
 
 @Entity("calendars")
 export class Calendar {
@@ -36,6 +37,22 @@ export class Calendar {
         return this.name.length > 0;
     }
 
+
+    /**
+     * @brief Check if User owns the Calendar
+     *
+     * @param calendar
+     * @param user
+     */
+    public isCalendarOwner(user: User) {
+        for (let cto of this.owners) {
+            if (cto.owner_id === user.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @brief Get Calendar information
      *
@@ -45,7 +62,7 @@ export class Calendar {
      * @returns The expected Calendar information on success
      * @returns null on error
      */
-    static async getCalendar(
+    static async findCalendarById(
         calendarRepository: Repository<Calendar>,
         calendarId: number
     ): Promise<Calendar> {
@@ -71,7 +88,7 @@ export class Calendar {
         calendarsToOwnersRepository: Repository<CalendarsToOwners>,
         calendarId: number
     ): Promise<Calendar> {
-        let calendar = await this.getCalendar(calendarRepository, calendarId);
+        let calendar = await this.findCalendarById(calendarRepository, calendarId);
         if (!calendar) {
             return null;
         }
@@ -112,7 +129,6 @@ export class Calendar {
         calendarsToOwnersRepository: Repository<CalendarsToOwners>,
         calendarId: number
     ): Promise<any> {
-        console.log("ANUS");
         await calendarsToOwnersRepository
             .createQueryBuilder()
             .delete()
