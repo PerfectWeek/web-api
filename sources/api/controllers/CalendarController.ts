@@ -19,6 +19,11 @@ export async function createCalendar(req: Request, res: Response) {
     const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
 
     const calendar = new Calendar(req.body.name, [], []);
+
+    if (!calendar.isValid()) {
+        throw new ApiException(400, "Invalid fields in Calendar");
+    }
+
     const createdCalendar = await calendarRepository.save(calendar);
 
     const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, requestingUser.id);
@@ -58,12 +63,34 @@ export async function getCalendarInfo(req: Request, res: Response) {
 }
 
 export async function editCalendar(req: Request, res: Response) {
+    const connection = await DbConnection.getConnection();
+    const calendarRepository = connection.getRepository(Calendar);
+    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
+    const requestingUser = getRequestingUser(req);
+
+    const id = req.params.calendar_id;
+    let calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+
+    if (!isCalendarOwner(calendar, requestingUser)) {
+        return res.status(403).json({
+            message: "Calendar not accessible"
+        });
+    }
+
+    if (!calendar) {
+        return res.status(404).json({
+            message: "Calendar not found"
+        });
+    }
+    calendar.name = req.body.name;
+    if (!calendar.isValid()) {
+        throw new ApiException(400, "Invalid fields in Calendar");
+    }
+    calendar = await calendarRepository.save(calendar);
+
     return res.status(200).json({
         message: "Calendar successfully edited",
-        calendar: {
-            id: 2,
-            name: "QLF"
-        }
+        calendar: CalendarView.formatCalendar(calendar)
     });
 }
 
