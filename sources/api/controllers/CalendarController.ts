@@ -81,8 +81,6 @@ export async function deleteCalendar(req: Request, res: Response) {
     const id = req.params.calendar_id;
 
     const connection = await DbConnection.getConnection();
-    const calendarRepository = connection.getRepository(Calendar);
-    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
     const requestingUser = getRequestingUser(req);
 
     const calendar = await Calendar.getCalendarWithOwners(connection, id);
