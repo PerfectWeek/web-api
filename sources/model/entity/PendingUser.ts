@@ -1,7 +1,9 @@
-import {Column, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Connection, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
+
 import { Encrypt } from "../../utils/encrypt";
 import { ApiException } from "../../utils/apiException";
 import { UserValidator } from "../../utils/validator/UserValidator"
+
 
 @Entity("pending_users")
 export class PendingUser {
@@ -31,31 +33,52 @@ export class PendingUser {
     public constructor(pseudo: string, email: string, ciphered_password: string, validation_uuid: string) {
         this.pseudo = pseudo;
         this.email = email;
-        this.cipheredPassword = ciphered_password
+        this.cipheredPassword = ciphered_password;
         this.validationUuid = validation_uuid;
     }
 
-    //
-    // Check if a User satisfies the basic rules (pseudo format, email format, ...)
-    //
-    public isValid() : boolean {
+    /**
+     * @brief Check if a User satisfies the basic validation rules (pseudo format, email format, ...)
+     *
+     * @return true if the PendingUser is valid
+     * @return false otherwise
+     */
+    public isValid(): boolean {
         return UserValidator.pseudo_regex.test(this.pseudo)
             && UserValidator.email_regex.test(this.email);
     }
 
-    //
-    // Check if the given password is valid for this User
-    //
-    public async checkPassword(password: string): Promise<boolean> {
-        return await Encrypt.matchPassword(password, this.cipheredPassword);
+    /**
+     * @brief Cypher the password before storing it
+     *
+     * @param password
+     *
+     * @return The cyphered password
+     */
+    public static async cipherPassword(password: string): Promise<string> {
+        if (password.length < 8) {
+            throw new ApiException(403, "Password must be at least 8 characters long");
+        }
+
+        return Encrypt.hashPassword(password);
     }
 
-    //
-    // Cipher the given password
-    //
-    public static async cipherPassword(password: string) : Promise<string> {
-        if (password.length < 8)
-            throw new ApiException(403, "Password must be at least 8 characters long");
-        return Encrypt.hashPassword(password);
+    /**
+     * @brief Find a PendingUser by its Validation UUID
+     *
+     * @param conn              The database Connection
+     * @param validationUuid
+     *
+     * @return The corresponding PendingUser if it exists
+     * @return null otherwise
+     */
+    public static async findPendingUserByValidationUuid(
+        conn: Connection,
+        validationUuid: string
+    ): Promise<PendingUser> {
+        const pendingUserRepository = conn.getRepository(PendingUser);
+
+        return pendingUserRepository
+            .findOne({where: {validationUuid: validationUuid}});
     }
 }
