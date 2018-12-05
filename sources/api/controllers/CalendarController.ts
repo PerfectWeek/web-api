@@ -9,9 +9,6 @@ import { User } from "../../model/entity/User";
 
 
 export async function createCalendar(req: Request, res: Response) {
-    if (!req.body.name) {
-        throw new ApiException(400, "Invalid request");
-    }
     const requestingUser = getRequestingUser(req);
 
     const connection = await DbConnection.getConnection();
