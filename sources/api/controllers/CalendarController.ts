@@ -11,6 +11,32 @@ export async function createCalendar(req: Request, res: Response) {
     });
 }
 
+export async function getCalendarInfo(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "OK",
+        calendar: {
+            id: 2,
+            name: "La famille",
+        }
+    });
+}
+
+export async function editCalendar(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "Calendar successfully edited",
+        calendar: {
+            id: 2,
+            name: "QLF"
+        }
+    });
+}
+
+export async function deleteCalendar(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "Calendar successfully deleted"
+    })
+}
+
 export async function createEvent(req: Request, res: Response) {
     return res.status(201).json({
         message: "Event created",
@@ -18,19 +44,10 @@ export async function createEvent(req: Request, res: Response) {
             id: 5,
             name: "Nouvel An",
             description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
+            location: "Le pub Universitaire",
             calendar_id: 2,
             start_time: Date.parse("31-12-2018T20:00:00"),
             end_time: Date.parse("01-01-2019T06:00:00")
-        }
-    });
-}
-
-export async function getCalendarInfo(req: Request, res: Response) {
-    return res.status(200).json({
-        message: "OK",
-        calendar: {
-            id: 2,
-            name: "La famille",
         }
     });
 }
@@ -59,20 +76,4 @@ export async function getCalendarEvents(req: Request, res: Response) {
             },
         ]
     });
-}
-
-export async function editCalendar(req: Request, res: Response) {
-    return res.status(200).json({
-        message: "Calendar successfully edited",
-        calendar: {
-            id: 2,
-            name: "QLF"
-        }
-    });
-}
-
-export async function deleteCalendar(req: Request, res: Response) {
-    return res.status(200).json({
-        message: "Calendar successfully deleted"
-    })
 }

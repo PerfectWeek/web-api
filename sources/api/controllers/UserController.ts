@@ -228,24 +228,18 @@ export async function getUserCalendars(req: Request, res: Response) {
         message: "OK",
         calendars: [
             {
-                calendar_id: 2,
-                owner_id: 1,
                 calendar: {
                     id: 2,
                     name: "smb"
                 }
             },
             {
-                calendar_id: 3,
-                owner_id: 1,
                 calendar: {
                     id: 3,
                     name: "sm2b"
                 }
             },
             {
-                calendar_id: 4,
-                owner_id: 1,
                 calendar: {
                     id: 4,
                     name: "ca fait beaucoup la non ?"
