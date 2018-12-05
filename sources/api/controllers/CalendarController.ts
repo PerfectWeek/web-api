@@ -5,6 +5,7 @@ import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 import { CalendarView } from "../views/CalendarView";
+import { User } from "../../model/entity/User";
 
 
 export async function createCalendar(req: Request, res: Response) {
@@ -34,9 +35,16 @@ export async function getCalendarInfo(req: Request, res: Response) {
     const connection = await DbConnection.getConnection();
     const calendarRepository = connection.getRepository(Calendar);
     const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
+    const requestingUser = getRequestingUser(req);
 
     const id = req.params.calendar_id;
     const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+
+    if (!isCalendarOwner(calendar, requestingUser)) {
+        return res.status(403).json({
+            message: "Calendar not accessible"
+        });
+    }
 
     if (!calendar) {
         return res.status(404).json({
@@ -63,6 +71,15 @@ export async function deleteCalendar(req: Request, res: Response) {
     return res.status(200).json({
         message: "Calendar successfully deleted"
     })
+}
+
+function isCalendarOwner(calendar: Calendar, user: User) {
+    for (let cto of calendar.owners) {
+        if (cto.owner_id === user.id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 export async function createEvent(req: Request, res: Response) {
