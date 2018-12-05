@@ -1,13 +1,46 @@
 import { Request, Response } from "express"
+import { ApiException } from "../../utils/apiException";
+import { getRequestingUser } from "../middleware/loggedOnly";
+import { DbConnection } from "../../utils/DbConnection";
+import { Calendar } from "../../model/entity/Calendar";
+import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { User } from "../../model/entity/User";
+import { CalendarView } from "../views/CalendarView";
 
 
 export async function createCalendar(req: Request, res: Response) {
+    if (!req.body.name) {
+        throw new ApiException(400, "Invalid request");
+    }
+    const requestingUser = getRequestingUser(req);
+
+    const connection = await DbConnection.getConnection();
+    const calendarRepository = connection.getRepository(Calendar);
+    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
+
+    const userCalendars = await User.getAllCalendars(calendarsToOwnersRepository, requestingUser.id);
+
+    let calendarExists = false;
+    for (let calendar of userCalendars) {
+        if (calendar.calendar.name === req.body.name) {
+            calendarExists = true;
+        }
+    }
+
+    if (calendarExists) {
+        throw new ApiException(409, "A calendar with this name already exists");
+    }
+
+    const calendar = new Calendar(req.body.name, [], []);
+    const createdCalendar = await calendarRepository.save(calendar);
+
+    const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, requestingUser.id);
+
+    await calendarsToOwnersRepository.save(calendarsToOwners);
+
     return res.status(201).json({
         message: "Calendar created",
-        calendar: {
-            id: 4,
-            name: "Groupe Travail"
-        }
+        group: CalendarView.formatCalendar(createdCalendar)
     });
 }
 
