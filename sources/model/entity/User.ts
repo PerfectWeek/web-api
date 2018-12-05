@@ -5,6 +5,7 @@ import {ApiException} from "../../utils/apiException";
 import {UserValidator} from "../../utils/validator/UserValidator";
 import {Group} from "./Group";
 import {GroupsToUsers} from "./GroupsToUsers";
+import { CalendarsToOwners } from "./CalendarsToOwners";
 
 
 @Entity("users")
@@ -39,24 +40,24 @@ export class User {
         this.cipheredPassword = ciphered_password;
     }
 
-    //
-    // Check if a User satisfies the basic rules (pseudo format, email format, ...)
-    //
+     /**
+     * @brief Check if a User satisfies the basic rules (pseudo format, email format, ...)
+     */
     public isValid() : boolean {
         return UserValidator.pseudo_regex.test(this.pseudo)
             && UserValidator.email_regex.test(this.email);
     }
 
-    //
-    // Check if the given password is valid for this User
-    //
+    /**
+     * @brief Check if the given password is valid for this User
+     */
     public async checkPassword(password: string): Promise<boolean> {
         return await Encrypt.matchPassword(password, this.cipheredPassword);
     }
 
-    //
-    // Cipher the given password
-    //
+    /**
+     * @brief cipher the given password
+     */
     public static async cipherPassword(password: string) : Promise<string> {
         if (password.length < 8)
             throw new ApiException(403, "Password must be at least 8 characters long");
@@ -64,9 +65,13 @@ export class User {
     }
 
 
-    //
-    // Delete a User
-    //
+    /**
+     * @brief Delete a User
+     *
+     * @param userRepository
+     * @param groupsToUsersRepository
+     * @param user_id
+     */
     static async deleteUser(
         userRepository: Repository<User>,
         groupsToUsersRepository: Repository<GroupsToUsers>,
@@ -86,9 +91,35 @@ export class User {
             .execute();
     }
 
-    //
-    // Get all groups of a User
-    //
+    /**
+     * @brief Get all calendars for a User
+     *
+     * @param calendarRepository
+     * @param userId
+     *
+     * @returns The expected calendar list on success
+     * @returns null on error
+     */
+    static async getAllCalendars(
+        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        userId: number
+    ) : Promise<CalendarsToOwners[]> {
+        return await calendarsToOwnersRepository
+            .createQueryBuilder("cto")
+            .innerJoinAndMapOne("cto.calendar", "calendars", "calendar", "calendar.id = cto.calendar_id")
+            .where("cto.owner_id = :userId", {userId: userId})
+            .getMany();
+    }
+
+    /**
+     * @brief Get all groups for a User
+     *
+     * @param groupsRepository
+     * @param userId
+     *
+     * @returns The expected group list on success
+     * @returns null on error
+     */
     static async getAllGroups(
         groupsRepository: Repository<Group>,
         userId: number
