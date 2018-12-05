@@ -26,6 +26,10 @@ tags:
     description: User management
   - name: Group
     description: Group management
+  - name: Calendar
+    description: Calendar management
+  - name: Event
+    description: Event management
 
 ####################
 # Routes
@@ -928,7 +932,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-
   /groups/{group-id}/calendar:
     get:
       tags:
@@ -1029,15 +1032,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthenticationFailed'
-        '404':
-          description: User not found
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: User not found
         '500':
           description: Internal server error
           content:
@@ -1206,11 +1200,11 @@ paths:
         - in: path
           name: calendar-id
           required: true
-          description: The Calendar id
+          description: The Calendar in which the Event will be added
           schema:
             type: string
       responses:
-        '200':
+        '201':
           description: Success
           content:
             application/json:
@@ -1220,8 +1214,6 @@ paths:
                     type: string
                     example: OK
                   events:
-                    type: array
-                    items:
                       $ref: '#/components/schemas/CalendarEvent'
         '401':
           description: Authentication failed
@@ -1241,6 +1233,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+
     get:
       tags:
         - Calendar
@@ -1357,7 +1350,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/EventInfo'
+              $ref: '#/components/schemas/EventEdit'
       parameters:
         - in: path
           name: event-id
@@ -1487,6 +1480,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /events/{event-id}/attendees/{attendee-pseudo}:
+    delete:
+      tags:
+        - Event
+      summary: Delete an Attendee to an Event
+      operationId: deleteEventAttendee
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+        - in: path
+          name: attendee-pseudo
+          required: true
+          description: The Attendee Pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  attendees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventAttendees'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
   /events/{event-id}/invite-user:
     post:
       tags:
@@ -1502,6 +1549,12 @@ paths:
           description: The Event id
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InviteUser'
       responses:
         '200':
           description: Success
@@ -1678,9 +1731,6 @@ components:
     CalendarEdit:
       type: object
       properties:
-        id:
-          type: integer
-          example: 42
         name:
           type: string
           example: qlf tu coco
@@ -1713,6 +1763,9 @@ components:
         description:
           type: string
           example: soiree
+        location:
+          type: string
+          example: Le pub Universitaire, Quebec City
         calendar_id:
           type: number
           example : 3
@@ -1723,8 +1776,37 @@ components:
           type: string
           example: 13-12-2012T12:12:12
 
+    EventEdit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: nouvel an
+        description:
+          type: string
+          example: soiree
+        start_time:
+          type: string
+          example: 12-12-2012T12:12:12
+        end_time:
+          type: string
+          example: 13-12-2012T12:12:12
 
     EventAttendees:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: alif
+
+    InviteUser:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: alif
+
+    DeleteAttendee:
       type: object
       properties:
         pseudo:
