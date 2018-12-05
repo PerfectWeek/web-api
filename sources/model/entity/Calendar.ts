@@ -45,12 +45,7 @@ export class Calendar {
      * @param user
      */
     public isCalendarOwner(user: User) {
-        for (let cto of this.owners) {
-            if (cto.owner_id === user.id) {
-                return true;
-            }
-        }
-        return false;
+        return this.owners.findIndex(cto => cto.owner_id === user.id) !== -1;
     }
 
     /**
