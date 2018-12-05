@@ -224,6 +224,9 @@ export async function getUserGroups(req: Request, res: Response) {
 }
 
 export async function getUserCalendars(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+
     return res.status(200).json({
         message: "OK",
         calendars: [
