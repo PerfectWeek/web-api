@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, Column, ManyToOne, Repository, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Calendar } from "./Calendar";
 import { EventsToAttendees } from "./EventsToAttendees";
 
@@ -9,23 +9,23 @@ export class Event {
     id: number;
 
     @Column({length: 256})
-    name: string
+    name: string;
 
     @Column()
-    description: string
+    description: string;
 
     @Column()
-    location: string
+    location: string;
 
     @ManyToOne(type => Calendar, calendar => calendar.events)
     @JoinColumn({name: "calendar_id"})
-    calendar: Calendar
-    
+    calendar: Calendar;
+
     @Column({name: "start_time", type: "timestamp with time zone"})
-    startTime: Date
+    startTime: Date;
 
     @Column({name: "end_time", type: "timestamp with time zone"})
-    endTime: Date
+    endTime: Date;
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
@@ -33,7 +33,7 @@ export class Event {
     @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     updatedAt: Date;
 
-    attendees: EventsToAttendees[]
+    attendees: EventsToAttendees[];
 
 
     public constructor(name: string, description: string, location: string,
