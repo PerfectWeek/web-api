@@ -1,7 +1,3 @@
-//
-// Created by benard_g on 2018/06/09
-//
-
 import { User } from "../../model/entity/User";
 import { PendingUser } from "../../model/entity/PendingUser";
 import {Group} from "../../model/entity/Group";
