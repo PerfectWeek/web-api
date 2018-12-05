@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Repository } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Connection } from "typeorm";
 import { Event } from "./Event"
 import { CalendarsToOwners } from "./CalendarsToOwners";
 import { User } from "./User";
@@ -56,17 +56,17 @@ export class Calendar {
     /**
      * @brief Get Calendar information
      *
-     * @param calendarRepository
+     * @param connection
      * @param calendarId
      *
      * @returns The expected Calendar information on success
      * @returns null on error
      */
     static async findCalendarById(
-        calendarRepository: Repository<Calendar>,
+        connection: Connection,
         calendarId: number
     ): Promise<Calendar> {
-        return calendarRepository
+        return connection.getRepository(Calendar)
             .createQueryBuilder("calendars")
             .leftJoinAndSelect("calendars.events", "events")
             .where({ id: calendarId })
@@ -76,40 +76,38 @@ export class Calendar {
     /**
      * @brief Get Calendar with owners
      *
-     * @param calendarRepository
-     * @param calendarsToOwnersRepository
+     * @param connection
      * @param calendarId
      *
      * @returns The expected Calendar on success
      * @returns null on error
      */
     static async getCalendarWithOwners(
-        calendarRepository: Repository<Calendar>,
-        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        connection: Connection,
         calendarId: number
     ): Promise<Calendar> {
-        let calendar = await this.findCalendarById(calendarRepository, calendarId);
+        let calendar = await this.findCalendarById(connection, calendarId);
         if (!calendar) {
             return null;
         }
-        calendar.owners = await this.getCalendarOwners(calendarsToOwnersRepository, calendarId);
+        calendar.owners = await this.getCalendarOwners(connection, calendarId);
         return calendar;
     }
 
     /**
      * @brief Get Calendar owners
      *
-     * @param calendarsToOwnersRepository
+     * @param connection
      * @param calendarId
      *
      * @returns The expected CalendarToOwners list on success
      * @returns null on error
      */
     static async getCalendarOwners(
-        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        connection: Connection,
         calendarId: number
     ): Promise<CalendarsToOwners[]> {
-        return calendarsToOwnersRepository
+        return connection.getRepository(CalendarsToOwners)
             .createQueryBuilder("cto")
             .innerJoinAndMapOne("cto.owner", "users", "user", "user.id = cto.owner_id")
             .where("cto.calendar_id = :calendar_id", { calendar_id: calendarId })
@@ -119,23 +117,21 @@ export class Calendar {
     /**
      * @brief Delete Calendar
      *
-     * @param calendarRepository
-     * @param calendarsToOwnersRepository
+     * @param connection
      * @param calendarId
      *
      */
     static async deleteCalendar(
-        calendarRepository: Repository<Calendar>,
-        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        connection: Connection,
         calendarId: number
     ): Promise<any> {
-        await calendarsToOwnersRepository
+        await connection.getRepository(CalendarsToOwners)
             .createQueryBuilder()
             .delete()
             .where({ calendar_id: calendarId })
             .execute();
 
-        await calendarRepository
+        await connection.getRepository(Calendar)
             .createQueryBuilder()
             .delete()
             .where({ id: calendarId })

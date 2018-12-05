@@ -5,7 +5,6 @@ import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 import { CalendarView } from "../views/CalendarView";
-import { User } from "../../model/entity/User";
 
 
 export async function createCalendar(req: Request, res: Response) {
@@ -17,8 +16,6 @@ export async function createCalendar(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
     const connection = await DbConnection.getConnection();
-    const calendarRepository = connection.getRepository(Calendar);
-    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
 
     const calendar = new Calendar(name, [], []);
 
@@ -26,10 +23,10 @@ export async function createCalendar(req: Request, res: Response) {
         throw new ApiException(400, "Invalid fields in Calendar");
     }
 
-    const createdCalendar = await calendarRepository.save(calendar);
+    const createdCalendar = await connection.manager.save(calendar);
 
     const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, requestingUser.id);
-    await calendarsToOwnersRepository.save(calendarsToOwners);
+    await connection.manager.save(calendarsToOwners);
 
     return res.status(201).json({
         message: "Calendar created",
@@ -41,11 +38,9 @@ export async function getCalendarInfo(req: Request, res: Response) {
     const id = req.params.calendar_id;
 
     const connection = await DbConnection.getConnection();
-    const calendarRepository = connection.getRepository(Calendar);
-    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
     const requestingUser = getRequestingUser(req);
 
-    const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+    const calendar = await Calendar.getCalendarWithOwners(connection, id);
 
     if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
         throw new ApiException(404, "Calendar not found");
@@ -65,18 +60,16 @@ export async function editCalendar(req: Request, res: Response) {
     }
 
     const connection = await DbConnection.getConnection();
-    const calendarRepository = connection.getRepository(Calendar);
-    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
     const requestingUser = getRequestingUser(req);
 
-    let calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+    let calendar = await Calendar.getCalendarWithOwners(connection, id);
 
     if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
         throw new ApiException(404, "Calendar not found");
     }
 
     calendar.name = name;
-    calendar = await calendarRepository.save(calendar);
+    calendar = await connection.manager.save(calendar);
 
     return res.status(200).json({
         message: "Calendar successfully edited",
@@ -92,13 +85,13 @@ export async function deleteCalendar(req: Request, res: Response) {
     const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
     const requestingUser = getRequestingUser(req);
 
-    const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+    const calendar = await Calendar.getCalendarWithOwners(connection, id);
 
     if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
         throw new ApiException(404, "Calendar not found");
     }
 
-    await Calendar.deleteCalendar(calendarRepository, calendarsToOwnersRepository, calendar.id);
+    await Calendar.deleteCalendar(connection, calendar.id);
 
     return res.status(200).json({
         message: "Calendar successfully deleted"
