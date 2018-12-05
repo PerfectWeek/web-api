@@ -29,7 +29,7 @@ export async function createCalendar(req: Request, res: Response) {
 
     return res.status(201).json({
         message: "Calendar created",
-        group: CalendarView.formatCalendar(createdCalendar)
+        calendar: CalendarView.formatCalendar(createdCalendar)
     });
 }
 
@@ -42,13 +42,7 @@ export async function getCalendarInfo(req: Request, res: Response) {
     const id = req.params.calendar_id;
     const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
 
-    if (!isCalendarOwner(calendar, requestingUser)) {
-        return res.status(403).json({
-            message: "Calendar not accessible"
-        });
-    }
-
-    if (!calendar) {
+    if (!calendar || !isCalendarOwner(calendar, requestingUser)) {
         return res.status(404).json({
             message: "Calendar not found"
         });
@@ -69,17 +63,12 @@ export async function editCalendar(req: Request, res: Response) {
     const id = req.params.calendar_id;
     let calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
 
-    if (!isCalendarOwner(calendar, requestingUser)) {
-        return res.status(403).json({
-            message: "Calendar not accessible"
-        });
-    }
-
-    if (!calendar) {
+    if (!calendar || !isCalendarOwner(calendar, requestingUser)) {
         return res.status(404).json({
             message: "Calendar not found"
         });
     }
+
     calendar.name = req.body.name;
     if (!calendar.isValid()) {
         throw new ApiException(400, "Invalid fields in Calendar");
@@ -101,13 +90,7 @@ export async function deleteCalendar(req: Request, res: Response) {
     const id = req.params.calendar_id;
     const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
 
-    if (!isCalendarOwner(calendar, requestingUser)) {
-        return res.status(403).json({
-            message: "Calendar not accessible"
-        });
-    }
-
-    if (!calendar) {
+    if (!calendar || !isCalendarOwner(calendar, requestingUser)) {
         return res.status(404).json({
             message: "Calendar not found"
         });
