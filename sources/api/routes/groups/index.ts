@@ -23,7 +23,7 @@ router.post('/:group_id/add-members', AsyncHandler(loggedOnly), AsyncHandler(Gro
 
 router.put('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHandler(GroupController.editUserStatus));
 
-router.post('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUserFromGroup));
+router.delete('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUserFromGroup));
 
 router.get('/:group_id/calendar', AsyncHandler(loggedOnly), AsyncHandler(GroupController.getGroupCalendar));
 
