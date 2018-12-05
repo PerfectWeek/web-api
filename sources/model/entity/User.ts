@@ -1,10 +1,8 @@
-import {Column, Entity, Index, PrimaryGeneratedColumn, Repository} from "typeorm";
+import {Column, Connection, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
 
 import {Encrypt} from "../../utils/encrypt";
-import {ApiException} from "../../utils/apiException";
 import {UserValidator} from "../../utils/validator/UserValidator";
 import {Group} from "./Group";
-import {GroupsToUsers} from "./GroupsToUsers";
 
 
 @Entity("users")
@@ -24,13 +22,13 @@ export class User {
     @Column({name: "ciphered_password"})
     cipheredPassword: string;
 
-    groups: Group[] = [];
-
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
 
     @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     updatedAt: Date;
+
+    groups: Group[] = [];
 
 
     public constructor(pseudo: string, email: string, ciphered_password: string) {
@@ -39,64 +37,129 @@ export class User {
         this.cipheredPassword = ciphered_password;
     }
 
-    //
-    // Check if a User satisfies the basic rules (pseudo format, email format, ...)
-    //
-    public isValid() : boolean {
+    /**
+     * @brief Check if a User satisfies the basic validation rules (pseudo format, email, ...)
+     *
+     * @return true is the User is valid
+     * @return false otherwise
+     */
+    public isValid(): boolean {
         return UserValidator.pseudo_regex.test(this.pseudo)
             && UserValidator.email_regex.test(this.email);
     }
 
-    //
-    // Check if the given password is valid for this User
-    //
+    /**
+     * @brief Check if the given password is valid for this User
+     *
+     * @param password
+     *
+     * @return true if the password is valid
+     * @return false otherwise
+     */
     public async checkPassword(password: string): Promise<boolean> {
-        return await Encrypt.matchPassword(password, this.cipheredPassword);
+        return Encrypt.matchPassword(password, this.cipheredPassword);
     }
 
-    //
-    // Cipher the given password
-    //
-    public static async cipherPassword(password: string) : Promise<string> {
-        if (password.length < 8)
-            throw new ApiException(403, "Password must be at least 8 characters long");
-        return Encrypt.hashPassword(password);
+    /**
+     * @brief Check if a User with the same pseudo or email already exists
+     *
+     * @param conn      The database Connection
+     * @param email
+     * @param pseudo
+     *
+     * @return true if the User already exists
+     * @return false otherwise
+     */
+    public static async alreadyExists(
+        conn: Connection,
+        email: string,
+        pseudo: string
+    ) : Promise<boolean> {
+        const userRepository = conn.getRepository(User);
+
+        let queryBuilder = userRepository
+            .createQueryBuilder("user")
+            .where("FALSE");
+
+        if (email) {
+            queryBuilder = queryBuilder.orWhere("user.email = :email", {email: email});
+        }
+        if (pseudo) {
+            queryBuilder = queryBuilder.orWhere("user.pseudo = :pseudo", {pseudo: pseudo});
+        }
+
+        const userCount = await queryBuilder.getCount();
+        return userCount > 0;
     }
 
+    /**
+     * @brief Find a User by email
+     *
+     * @param conn  The database Connection
+     * @param email
+     *
+     * @return The corresponding User on success
+     * @return null otherwise
+     */
+    public static async findByEmail(
+        conn: Connection,
+        email: string
+    ): Promise<User> {
+        const userRepository = conn.getRepository(User);
 
-    //
-    // Delete a User
-    //
-    static async deleteUser(
-        userRepository: Repository<User>,
-        groupsToUsersRepository: Repository<GroupsToUsers>,
-        user_id: number
-    ) : Promise<any> {
-        // TODO: Remove user from its groups and delete those becoming empty
-        await groupsToUsersRepository
-            .createQueryBuilder()
-            .delete()
-            .where("user_id = :user_id", {user_id: user_id})
-            .execute();
-
-        await userRepository
-            .createQueryBuilder()
-            .delete()
-            .where("id = :user_id", {user_id: user_id})
-            .execute();
+        return userRepository
+            .findOne({where: {email: email}});
     }
 
-    //
-    // Get all groups of a User
-    //
-    static async getAllGroups(
-        groupsRepository: Repository<Group>,
+    /**
+     * @brief Find a User by pseudo
+     *
+     * @param conn  The database Connection
+     * @param pseudo
+     *
+     * @return The corresponding User on success
+     * @return null otherwise
+     */
+    public static async findByPseudo(
+        conn: Connection,
+        pseudo: string
+    ): Promise<User> {
+        const userRepository = conn.getRepository(User);
+
+        return userRepository
+            .findOne({where: {pseudo: pseudo}});
+    }
+
+    /**
+     * @brief Delete a User
+     *
+     * @param conn      The database Connection
+     * @param userId    The id of the User you want to remove
+     */
+    public static async deleteUser(
+        conn: Connection,
         userId: number
-    ) : Promise<Group[]> {
-        return await groupsRepository
-            .createQueryBuilder()
-            .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.group_id = "Group"."id"`)
-            .where("gtu.user_id = :user_id", {user_id: userId})
-            .getMany();
+    ): Promise<any> {
+        await conn.transaction(async entityManager => {
+            const userRepository = entityManager.getRepository(User);
+
+            // TODO: Remove User from all its Events
+            // TODO: Remove User from all its Calendars
+            // TODO: Remove Calendars with no Owners
+
+            await userRepository
+                .createQueryBuilder("user")
+                .delete()
+                .where("user.id = :id", {id: userId})
+                .execute();
+        });
+    }
+
+    public static async getAllGroups(
+        conn: Connection,
+        userId: number
+    ): Promise<Group[]> {
+        // TODO: Get all Groups
+        return [];
     }
 }
