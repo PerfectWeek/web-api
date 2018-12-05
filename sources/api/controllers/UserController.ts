@@ -16,6 +16,7 @@ import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
 import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 import {Group} from "../../model/entity/Group";
+import { CalendarsToOwnersView } from '../views/CalendarsToOwnersView';
 
 
 //
@@ -202,9 +203,13 @@ export async function deleteUser(req: Request, res: Response) {
 // Get all groups a User belongs to
 //
 export async function getUserGroups(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
+    if (!pseudo) {
+        throw new ApiException(400, "Bad request");
+    }
+
     const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
+    const user = await User.findUserByPseudo(conn, pseudo);
     const requesting_user = getRequestingUser(req);
 
     if (!user) {
@@ -224,30 +229,23 @@ export async function getUserGroups(req: Request, res: Response) {
 }
 
 export async function getUserCalendars(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
+    if (!pseudo) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const conn = await DbConnection.getConnection();
+    const user = await User.findUserByPseudo(conn, pseudo);
     const requestingUser = getRequestingUser(req);
 
+    if (user.pseudo !== requestingUser.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    const calendars = await User.getAllCalendars(conn, user.id);
 
     return res.status(200).json({
         message: "OK",
-        calendars: [
-            {
-                calendar: {
-                    id: 2,
-                    name: "smb"
-                }
-            },
-            {
-                calendar: {
-                    id: 3,
-                    name: "sm2b"
-                }
-            },
-            {
-                calendar: {
-                    id: 4,
-                    name: "ca fait beaucoup la non ?"
-                }
-            }
-        ]
+        calendars: CalendarsToOwnersView.formatCalendarsToOwnersList(calendars)
     });
 }
