@@ -56,6 +56,7 @@ export async function getCalendarInfo(req: Request, res: Response) {
             message: "Calendar not found"
         });
     }
+
     return res.status(200).json({
         message: "OK",
         calendar: CalendarView.formatCalendar(calendar)
@@ -95,6 +96,28 @@ export async function editCalendar(req: Request, res: Response) {
 }
 
 export async function deleteCalendar(req: Request, res: Response) {
+    const connection = await DbConnection.getConnection();
+    const calendarRepository = connection.getRepository(Calendar);
+    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
+    const requestingUser = getRequestingUser(req);
+
+    const id = req.params.calendar_id;
+    const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+
+    if (!isCalendarOwner(calendar, requestingUser)) {
+        return res.status(403).json({
+            message: "Calendar not accessible"
+        });
+    }
+
+    if (!calendar) {
+        return res.status(404).json({
+            message: "Calendar not found"
+        });
+    }
+
+    await Calendar.deleteCalendar(calendarRepository, calendarsToOwnersRepository, calendar.id);
+
     return res.status(200).json({
         message: "Calendar successfully deleted"
     })
