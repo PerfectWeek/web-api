@@ -30,6 +30,14 @@ export class Calendar {
     }
 
     /**
+     * @brief Check if Calendar is valid
+     */
+    public isValid() : boolean {
+        return this.name.length > 0
+            && this.owners.length > 0;
+    }
+
+    /**
      * @brief Get Calendar information
      *
      * @param calendarRepository
