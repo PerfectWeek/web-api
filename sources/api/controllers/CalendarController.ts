@@ -1,37 +1,96 @@
-import { Request, Response } from "express"
+import { Request, Response } from "express";
+import { ApiException } from "../../utils/apiException";
+import { getRequestingUser } from "../middleware/loggedOnly";
+import { DbConnection } from "../../utils/DbConnection";
+import { Calendar } from "../../model/entity/Calendar";
+import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { CalendarView } from "../views/CalendarView";
 
 
 export async function createCalendar(req: Request, res: Response) {
+    const name: string = req.body.name;
+    if (!name) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const requestingUser = getRequestingUser(req);
+
+    const connection = await DbConnection.getConnection();
+
+    const calendar = new Calendar(name, [], []);
+
+    if (!calendar.isValid()) {
+        throw new ApiException(400, "Invalid fields in Calendar");
+    }
+
+    const createdCalendar = await connection.manager.save(calendar);
+
+    const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, requestingUser.id);
+    await connection.manager.save(calendarsToOwners);
+
     return res.status(201).json({
         message: "Calendar created",
-        calendar: {
-            id: 4,
-            name: "Groupe Travail"
-        }
+        calendar: CalendarView.formatCalendar(createdCalendar)
     });
 }
 
 export async function getCalendarInfo(req: Request, res: Response) {
+    const id = req.params.calendar_id;
+
+    const connection = await DbConnection.getConnection();
+    const requestingUser = getRequestingUser(req);
+
+    const calendar = await Calendar.getCalendarWithOwners(connection, id);
+
+    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+        throw new ApiException(404, "Calendar not found");
+    }
+
     return res.status(200).json({
         message: "OK",
-        calendar: {
-            id: 2,
-            name: "La famille",
-        }
+        calendar: CalendarView.formatCalendar(calendar)
     });
 }
 
 export async function editCalendar(req: Request, res: Response) {
+    const id = req.params.calendar_id;
+    const name = req.body.name;
+    if (!name) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const connection = await DbConnection.getConnection();
+    const requestingUser = getRequestingUser(req);
+
+    let calendar = await Calendar.getCalendarWithOwners(connection, id);
+
+    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+        throw new ApiException(404, "Calendar not found");
+    }
+
+    calendar.name = name;
+    calendar = await connection.manager.save(calendar);
+
     return res.status(200).json({
         message: "Calendar successfully edited",
-        calendar: {
-            id: 2,
-            name: "QLF"
-        }
+        calendar: CalendarView.formatCalendar(calendar)
     });
 }
 
 export async function deleteCalendar(req: Request, res: Response) {
+    const id = req.params.calendar_id;
+
+    const connection = await DbConnection.getConnection();
+    const requestingUser = getRequestingUser(req);
+
+    const calendar = await Calendar.getCalendarWithOwners(connection, id);
+
+    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+        throw new ApiException(404, "Calendar not found");
+    }
+
+    await Calendar.deleteCalendar(connection, calendar.id);
+
     return res.status(200).json({
         message: "Calendar successfully deleted"
     })

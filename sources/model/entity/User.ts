@@ -1,8 +1,9 @@
-import {Column, Connection, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Connection, Entity, Index, PrimaryGeneratedColumn, Repository} from "typeorm";
 
 import {Encrypt} from "../../utils/encrypt";
 import {UserValidator} from "../../utils/validator/UserValidator";
 import {Group} from "./Group";
+import { CalendarsToOwners } from "./CalendarsToOwners";
 
 
 @Entity("users")
@@ -155,7 +156,36 @@ export class User {
         });
     }
 
-    public static async getAllGroups(
+    /**
+     * @brief Get all calendars for a User
+     *
+     * @param calendarsToOwnersRepository
+     * @param userId
+     *
+     * @returns The expected calendar list on success
+     * @returns null on error
+     */
+    static async getAllCalendars(
+        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        userId: number
+    ) : Promise<CalendarsToOwners[]> {
+        return await calendarsToOwnersRepository
+            .createQueryBuilder("cto")
+            .innerJoinAndMapOne("cto.calendar", "calendars", "calendar", "calendar.id = cto.calendar_id")
+            .where("cto.owner_id = :userId", {userId: userId})
+            .getMany();
+    }
+
+    /**
+     * @brief Get all groups for a User
+     *
+     * @param conn      The database Connection
+     * @param userId
+     *
+     * @returns The expected group list on success
+     * @returns null on error
+     */
+    static async getAllGroups(
         conn: Connection,
         userId: number
     ): Promise<Group[]> {
