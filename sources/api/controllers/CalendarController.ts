@@ -1,10 +1,9 @@
-import { Request, Response } from "express"
+import { Request, Response } from "express";
 import { ApiException } from "../../utils/apiException";
 import { getRequestingUser } from "../middleware/loggedOnly";
 import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
-import { User } from "../../model/entity/User";
 import { CalendarView } from "../views/CalendarView";
 
 
@@ -32,12 +31,21 @@ export async function createCalendar(req: Request, res: Response) {
 }
 
 export async function getCalendarInfo(req: Request, res: Response) {
+    const connection = await DbConnection.getConnection();
+    const calendarRepository = connection.getRepository(Calendar);
+    const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
+
+    const id = req.params.calendar_id;
+    const calendar = await Calendar.getCalendarWithOwners(calendarRepository, calendarsToOwnersRepository, id);
+
+    if (!calendar) {
+        return res.status(404).json({
+            message: "Calendar not found"
+        });
+    }
     return res.status(200).json({
         message: "OK",
-        calendar: {
-            id: 2,
-            name: "La famille",
-        }
+        calendar: CalendarView.formatCalendar(calendar)
     });
 }
 
