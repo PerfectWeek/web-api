@@ -33,8 +33,7 @@ export class Calendar {
      * @brief Check if Calendar is valid
      */
     public isValid() : boolean {
-        return this.name.length > 0
-            && this.owners.length > 0;
+        return this.name.length > 0;
     }
 
     /**
