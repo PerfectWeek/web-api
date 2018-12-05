@@ -14,6 +14,9 @@ export class Calendar {
     @OneToMany(type => Event, event => event.calendar)
     events: Event[]
 
+    @Column({name: "nb_owners", default: 0})
+    nbOwners: number;
+
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     createdAt: Date;
 
@@ -27,5 +30,6 @@ export class Calendar {
         this.name = name;
         this.events = events;
         this.owners = owners;
+        this.nbOwners = 0;
     }
 }
