@@ -18,19 +18,6 @@ export async function createCalendar(req: Request, res: Response) {
     const calendarRepository = connection.getRepository(Calendar);
     const calendarsToOwnersRepository = connection.getRepository(CalendarsToOwners);
 
-    const userCalendars = await User.getAllCalendars(calendarsToOwnersRepository, requestingUser.id);
-
-    let calendarExists = false;
-    for (let calendar of userCalendars) {
-        if (calendar.calendar.name === req.body.name) {
-            calendarExists = true;
-        }
-    }
-
-    if (calendarExists) {
-        throw new ApiException(409, "A calendar with this name already exists");
-    }
-
     const calendar = new Calendar(req.body.name, [], []);
     const createdCalendar = await calendarRepository.save(calendar);
 
