@@ -8,16 +8,16 @@ export class Calendar {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({length: 256})
+    @Column({ length: 256 })
     name: string
 
     @OneToMany(type => Event, event => event.calendar)
     events: Event[]
 
-    @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
+    @Column({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
+    @Column({ name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
     updatedAt: Date;
 
     owners: CalendarsToOwners[];
@@ -32,7 +32,7 @@ export class Calendar {
     /**
      * @brief Check if Calendar is valid
      */
-    public isValid() : boolean {
+    public isValid(): boolean {
         return this.name.length > 0;
     }
 
@@ -48,11 +48,11 @@ export class Calendar {
     static async getCalendar(
         calendarRepository: Repository<Calendar>,
         calendarId: number
-    ) : Promise<Calendar> {
+    ): Promise<Calendar> {
         return calendarRepository
             .createQueryBuilder("calendars")
             .leftJoinAndSelect("calendars.events", "events")
-            .where({id: calendarId})
+            .where({ id: calendarId })
             .getOne();
     }
 
@@ -70,7 +70,7 @@ export class Calendar {
         calendarRepository: Repository<Calendar>,
         calendarsToOwnersRepository: Repository<CalendarsToOwners>,
         calendarId: number
-    ) : Promise<Calendar> {
+    ): Promise<Calendar> {
         let calendar = await this.getCalendar(calendarRepository, calendarId);
         if (!calendar) {
             return null;
@@ -91,11 +91,38 @@ export class Calendar {
     static async getCalendarOwners(
         calendarsToOwnersRepository: Repository<CalendarsToOwners>,
         calendarId: number
-    ) : Promise<CalendarsToOwners[]> {
+    ): Promise<CalendarsToOwners[]> {
         return calendarsToOwnersRepository
             .createQueryBuilder("cto")
             .innerJoinAndMapOne("cto.owner", "users", "user", "user.id = cto.owner_id")
-            .where("cto.calendar_id = :calendar_id", {calendar_id: calendarId})
+            .where("cto.calendar_id = :calendar_id", { calendar_id: calendarId })
             .getMany();
+    }
+
+    /**
+     * @brief Delete Calendar
+     *
+     * @param calendarRepository
+     * @param calendarsToOwnersRepository
+     * @param calendarId
+     *
+     */
+    static async deleteCalendar(
+        calendarRepository: Repository<Calendar>,
+        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        calendarId: number
+    ): Promise<any> {
+        console.log("ANUS");
+        await calendarsToOwnersRepository
+            .createQueryBuilder()
+            .delete()
+            .where({ calendar_id: calendarId })
+            .execute();
+
+        await calendarRepository
+            .createQueryBuilder()
+            .delete()
+            .where({ id: calendarId })
+            .execute();
     }
 }
