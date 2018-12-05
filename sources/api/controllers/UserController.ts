@@ -1,9 +1,5 @@
-//
-// Created by benard_g on 2018/06/03
-//
-
 import {Request, Response} from 'express';
-import * as jwt from 'jsonwebtoken'
+import * as Jwt from 'jsonwebtoken'
 
 import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
@@ -13,61 +9,60 @@ import {EmailSender} from '../../utils/emailSender';
 import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
-import { getReqUrl } from '../../utils/getReqUrl';
-import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
-import {Group} from "../../model/entity/Group";
+import {getReqUrl} from '../../utils/getReqUrl';
 
 
 //
 // Create a new User and save it in the DataBase
 //
 export async function createUser(req: Request, res: Response) {
-    if (!req.body.pseudo || !req.body.password || !req.body.email)
-        throw new ApiException(400, "Invalid request");
+    const email = req.body.email;
+    const pseudo = req.body.pseudo;
+    const password = req.body.password;
+    if (!email || !pseudo || !password) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const conn = await DbConnection.getConnection();
 
     // Check if user exists before creating PendingUser
-    const connection = await DbConnection.getConnection();
-    const UserRepository = connection.getRepository(User);
-
-    const userExists = await UserRepository.createQueryBuilder('user')
-        .where("user.email = :email", { email: req.body.email })
-        .orWhere("user.pseudo = :pseudo", { pseudo: req.body.pseudo }).getOne();
-
-    if (userExists) {
+    const userAlreadyExists = await User.alreadyExists(conn, email, pseudo);
+    if (userAlreadyExists) {
         throw new ApiException(409, "Pseudo or email already exists");
     }
 
-    const validation_link: string = AccountVerification.generateLink();
-    const user: PendingUser = new PendingUser(
-        req.body.pseudo,
-        req.body.email,
-        await PendingUser.cipherPassword(req.body.password),
+    // Create a new PendingUser
+    const validation_link = AccountVerification.generateLink();
+    const pendingUser = new PendingUser(
+        pseudo,
+        email,
+        await PendingUser.cipherPassword(password),
         validation_link
     );
-    if (!user.isValid())
+    if (!pendingUser.isValid())
         throw new ApiException(400, "Invalid fields in User");
 
-    // Save the created User
-    const conn = await DbConnection.getConnection();
-    await conn.manager.save(user);
+    // Save the created PendingUser
+    const createdPendingUser = await conn.manager.save(pendingUser);
 
+    // Generate link for account verification
     let reqUrl = process.env.API_HOST || getReqUrl(req);
     if (!reqUrl.endsWith('/')) {
         reqUrl += '/';
     }
-
     const link = reqUrl + 'auth/validate-email/' + validation_link;
-    EmailSender.sendEmail(user.email, 'Account Verification', link);
 
-    let response : any = {
-        message:
-            'A link has been sent to your email address, please click on it in order to confirm you email',
-        user: UserView.formatPendingUser(user)
+    // Send a verification email
+    EmailSender.sendEmail(createdPendingUser.email, 'Account Verification', link);
+
+    let response: any = {
+        message: 'A link has been sent to your email address, please click on it in order to confirm your email',
+        user: UserView.formatPendingUser(createdPendingUser)
     };
-
     if (!process.env.EMAIL_ENABLED) {
         response['link'] = link;
     }
+
     return res.status(201).json(response);
 }
 
@@ -76,24 +71,28 @@ export async function createUser(req: Request, res: Response) {
 // Validate email for a specific User
 //
 export async function confirmUserEmail(req: Request, res: Response) {
+    const validationUuid: string = req.params.uuid;
+
     const conn = await DbConnection.getConnection();
-    const pendingUserRepository = conn.getRepository(PendingUser);
-    const pendingUser = await pendingUserRepository.findOne({where: {validationUuid: req.params.uuid}});
 
-    if (!pendingUser)
+    // Find PendingUser using validation link
+    const pendingUser = await PendingUser.findPendingUserByValidationUuid(conn, validationUuid);
+    if (!pendingUser) {
         throw new ApiException(404, "User not found");
+    }
 
+    // Create valid User
     const user: User = new User(
         pendingUser.pseudo,
         pendingUser.email,
-        pendingUser.cipheredPassword,
+        pendingUser.cipheredPassword
     );
-    await conn.manager.save(user);
+    const createdUser = await conn.manager.save(user);
     await conn.manager.remove(pendingUser);
 
     return res.status(201).json({
         message: "User has been successfully created",
-        user: UserView.formatUser(user)
+        user: UserView.formatUser(createdUser)
     });
 }
 
@@ -102,18 +101,22 @@ export async function confirmUserEmail(req: Request, res: Response) {
 // Log a user in and return a session token
 //
 export async function login(req: Request, res: Response) {
+    const email: string = req.body.email;
+    const password: string = req.body.password;
+    if (!email || !password) {
+        throw new ApiException(400, "Bad request");
+    }
+
     const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
 
-    const email = req.body.email;
-    const user = await userRepository.findOne({where: {email: email}});
-
-    const password = req.body.password;
-    if (!user || !await user.checkPassword(password))
+    const user = await User.findByEmail(conn, email);
+    if (!user
+        || !await user.checkPassword(password)) {
         throw new ApiException(403, "Bad user or password");
+    }
 
     const token_payload = {id: user.id};
-    const token = jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
+    const token = Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
 
     res.status(200).json({
         message: 'Authentication successful',
@@ -127,12 +130,14 @@ export async function login(req: Request, res: Response) {
 // Get information about a specific User
 //
 export async function getUser(req: Request, res: Response) {
-    const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
+    const pseudo: string = req.params.pseudo;
 
-    if (!user)
+    const conn = await DbConnection.getConnection();
+
+    const user = await User.findByPseudo(conn, pseudo);
+    if (!user) {
         throw new ApiException(404, "User not found");
+    }
 
     return res.status(200).json({
         message: "OK",
@@ -145,13 +150,13 @@ export async function getUser(req: Request, res: Response) {
 // Edit a User's information
 //
 export async function editUser(req: Request, res: Response) {
-    let user: User = getRequestingUser(req);
-    const old_pseudo = user.pseudo;
-
+    let user = getRequestingUser(req);
     if (user.pseudo !== req.params.pseudo) {
         throw new ApiException(403, "Action not allowed");
     }
 
+    const old_pseudo = user.pseudo;
+    const old_email = user.email;
     user.pseudo = req.body.pseudo || user.pseudo;
     user.email = req.body.email || user.email;
 
@@ -161,16 +166,20 @@ export async function editUser(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
 
-    if (old_pseudo !== user.pseudo
-        && await conn.getRepository(User).findOne({where: {pseudo: user.pseudo}})) {
-        throw new ApiException(400, "Invalid pseudo: already taken");
+    const alreadyExists = await User.alreadyExists(
+        conn,
+        user.email === old_email ? null : user.email,
+        user.pseudo === old_pseudo ? null : old_pseudo
+    );
+    if (alreadyExists) {
+        throw new ApiException(409, "Pseudo or email already exists");
     }
 
-    await conn.manager.save(user);
+    const updatedUser = await conn.manager.save(user);
 
     return res.status(200).json({
         message: "User updated",
-        user: UserView.formatUser(user)
+        user: UserView.formatUser(updatedUser)
     });
 }
 
@@ -180,17 +189,12 @@ export async function editUser(req: Request, res: Response) {
 //
 export async function deleteUser(req: Request, res: Response) {
     let user: User = getRequestingUser(req);
-
     if (user.pseudo !== req.params.pseudo) {
-        return res.status(403).json({
-            message: "Action not allowed"
-        });
+        throw new ApiException(403, "Action not allowed");
     }
 
     const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
-    await User.deleteUser(userRepository, groupsToUsersRepository, user.id);
+    await User.deleteUser(conn, user.id);
 
     return res.status(200).json({
         message: "User deleted"
@@ -202,26 +206,21 @@ export async function deleteUser(req: Request, res: Response) {
 // Get all groups a User belongs to
 //
 export async function getUserGroups(req: Request, res: Response) {
+    let user: User = getRequestingUser(req);
+    if (user.pseudo !== req.params.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
     const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
-    const requesting_user = getRequestingUser(req);
 
-    if (!user) {
-        throw new ApiException(404, "User not found");
-    }
-    if (user.id !== requesting_user.id) {
-        throw new ApiException(403, "Action not allowed")
-    }
-
-    const groupRepository = conn.getRepository(Group);
-    const groups = await User.getAllGroups(groupRepository, user.id);
+    const groups = await User.getAllGroups(conn, user.id);
 
     return res.status(200).json({
         message: "OK",
         groups: UserView.formatUserGroupList(groups)
     });
 }
+
 
 export async function getUserCalendars(req: Request, res: Response) {
     return res.status(200).json({
