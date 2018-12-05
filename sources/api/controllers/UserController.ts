@@ -128,9 +128,10 @@ export async function login(req: Request, res: Response) {
 // Get information about a specific User
 //
 export async function getUser(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
+
     const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
+    const user = await User.findUserByPseudo(conn, pseudo);
 
     if (!user)
         throw new ApiException(404, "User not found");
@@ -146,10 +147,11 @@ export async function getUser(req: Request, res: Response) {
 // Edit a User's information
 //
 export async function editUser(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
     let user: User = getRequestingUser(req);
     const old_pseudo = user.pseudo;
 
-    if (user.pseudo !== req.params.pseudo) {
+    if (user.pseudo !== pseudo) {
         throw new ApiException(403, "Action not allowed");
     }
 
@@ -180,9 +182,10 @@ export async function editUser(req: Request, res: Response) {
 // Delete user
 //
 export async function deleteUser(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
     let user: User = getRequestingUser(req);
 
-    if (user.pseudo !== req.params.pseudo) {
+    if (user.pseudo !== pseudo) {
         return res.status(403).json({
             message: "Action not allowed"
         });
@@ -204,9 +207,6 @@ export async function deleteUser(req: Request, res: Response) {
 //
 export async function getUserGroups(req: Request, res: Response) {
     const pseudo = req.params.pseudo;
-    if (!pseudo) {
-        throw new ApiException(400, "Bad request");
-    }
 
     const conn = await DbConnection.getConnection();
     const user = await User.findUserByPseudo(conn, pseudo);
@@ -230,9 +230,6 @@ export async function getUserGroups(req: Request, res: Response) {
 
 export async function getUserCalendars(req: Request, res: Response) {
     const pseudo = req.params.pseudo;
-    if (!pseudo) {
-        throw new ApiException(400, "Bad request");
-    }
 
     const conn = await DbConnection.getConnection();
     const user = await User.findUserByPseudo(conn, pseudo);
