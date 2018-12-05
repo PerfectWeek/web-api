@@ -14,6 +14,8 @@ router.post('/', AsyncHandler(UserController.createUser));
 
 router.get('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.getUser));
 
+router.get('/:pseudo/calendars', AsyncHandler(loggedOnly), AsyncHandler(UserController.getUserCalendars));
+
 router.get('/:pseudo/groups', AsyncHandler(loggedOnly), AsyncHandler(UserController.getUserGroups));
 
 router.put('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.editUser));

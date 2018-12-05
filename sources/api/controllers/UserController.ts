@@ -222,3 +222,29 @@ export async function getUserGroups(req: Request, res: Response) {
         groups: UserView.formatUserGroupList(groups)
     });
 }
+
+export async function getUserCalendars(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "OK",
+        calendars: [
+            {
+                calendar: {
+                    id: 2,
+                    name: "smb"
+                }
+            },
+            {
+                calendar: {
+                    id: 3,
+                    name: "sm2b"
+                }
+            },
+            {
+                calendar: {
+                    id: 4,
+                    name: "ca fait beaucoup la non ?"
+                }
+            }
+        ]
+    });
+}

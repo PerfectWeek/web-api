@@ -227,3 +227,14 @@ export async function kickUserFromGroup(req: Request, res: Response) {
         ]
     });
 }
+
+// TODO See if we keep this route
+export async function getGroupCalendar(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "OK",
+        calendar: {
+            id: 4,
+            name: "Groupe Travail"
+        }
+    });
+}

@@ -26,6 +26,10 @@ tags:
     description: User management
   - name: Group
     description: Group management
+  - name: Calendar
+    description: Calendar management
+  - name: Event
+    description: Event management
 
 ####################
 # Routes
@@ -384,6 +388,63 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/GroupRecap'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /users/{pseudo}/calendars:
+    get:
+      tags:
+        - User
+      summary: Get all Calendars a User owns
+      operationId: getUserCalendars
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  calendars:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CalendarRecap'
         '401':
           description: Authentication failed
           content:
@@ -871,6 +932,661 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /groups/{group-id}/calendar:
+    get:
+      tags:
+        - Group
+      summary: Get information about a Group Calendar
+      operationId: getGroupCalendar
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Group not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Event not Found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
+  #
+  # Calendar
+  #
+  /calendars:
+    post:
+      tags:
+        - Calendar
+      summary: Create a new Calendar
+      operationId: createCalendar
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalendarCredentials'
+      responses:
+        '201':
+          description: Calendar created
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Calendar created
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '400':
+          description: Invalid Calendar
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invalid fields in Calendar
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /calendars/{calendar-id}:
+    get:
+      tags:
+        - Calendar
+      summary: Get information about a Calendar
+      operationId: getCalendarInfo
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Calendar not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Event not Found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    put:
+      tags:
+        - Calendar
+      summary: Edit a Calendar information
+      operationId: editCalendarInfo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalendarEdit'
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Calendar successfully edited
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  calendar:
+                    $ref: '#/components/schemas/CalendarInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    delete:
+      tags:
+        - Calendar
+      summary: Delete a Calendar
+      operationId: deleteCalendar
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Calendar successfully deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /calendars/{calendar-id}/events:
+    post:
+      tags:
+        - Calendar
+      summary: Create an Event
+      operationId: createEvent
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar in which the Event will be added
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  events:
+                      $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    get:
+      tags:
+        - Calendar
+      summary: Get all events of a Calendar
+      operationId: getCalendarEvents
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  #
+  # Event
+  #
+  /events/{event-id}:
+    get:
+      tags:
+        - Event
+      summary: Get information about an Event
+      operationId: getEventInfo
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  event:
+                    $ref: '#/components/schemas/EventInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Event not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Event not Found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    put:
+      tags:
+        - Event
+      summary: Edit an Event information
+      operationId: editEventInfo
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventEdit'
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event successfully edited
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  event:
+                    $ref: '#/components/schemas/EventInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+    delete:
+      tags:
+        - Event
+      summary: Delete an Event
+      operationId: deleteEvent
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event successfully deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /events/{event-id}/attendees:
+    get:
+      tags:
+        - Event
+      summary: Get all attendees to an Event
+      operationId: getEventsAttendees
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  attendees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventAttendees'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /events/{event-id}/attendees/{attendee-pseudo}:
+    delete:
+      tags:
+        - Event
+      summary: Delete an Attendee to an Event
+      operationId: deleteEventAttendee
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+        - in: path
+          name: attendee-pseudo
+          required: true
+          description: The Attendee Pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  attendees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventAttendees'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /events/{event-id}/invite-user:
+    post:
+      tags:
+        - Event
+      summary: Invite user to Event
+      operationId: inviteUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InviteUser'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  attendees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventAttendees'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 
 
 ####################
@@ -984,6 +1700,120 @@ components:
           example: amazing_user
         role:
           $ref: '#/components/schemas/GroupMemberRole'
+
+    CalendarRecap:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: amazing_calendar
+
+    CalendarCredentials:
+      type: object
+      properties:
+        name:
+          type: string
+          example: amazing_calendar
+
+    CalendarInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: amazing_calendar
+
+    CalendarEdit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: qlf tu coco
+
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: qlf tu coco
+        start_time:
+          type: string
+          example: 12-12-2012T12:12:12
+        end_time:
+          type: string
+          example: 13-12-2012T12:12:12
+
+    EventInfo:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 43
+        name:
+          type: string
+          example: nouvel an
+        description:
+          type: string
+          example: soiree
+        location:
+          type: string
+          example: Le pub Universitaire, Quebec City
+        calendar_id:
+          type: number
+          example : 3
+        start_time:
+          type: string
+          example: 12-12-2012T12:12:12
+        end_time:
+          type: string
+          example: 13-12-2012T12:12:12
+
+    EventEdit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: nouvel an
+        description:
+          type: string
+          example: soiree
+        start_time:
+          type: string
+          example: 12-12-2012T12:12:12
+        end_time:
+          type: string
+          example: 13-12-2012T12:12:12
+
+    EventAttendees:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: alif
+
+    InviteUser:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: alif
+
+    DeleteAttendee:
+      type: object
+      properties:
+        pseudo:
+          type: string
+          example: alif
+
+
 
     #
     # Responses
