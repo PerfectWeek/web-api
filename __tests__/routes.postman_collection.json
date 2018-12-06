@@ -3854,6 +3854,102 @@
 					"response": []
 				},
 				{
+					"name": "POST /calendars/calendar_id/events | Create another event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var calendar_id = pm.globals.get(\"CALENDAR_ID\"); ",
+									"    pm.expect(jsonData.message).to.eql(\"Event created\");",
+									"    pm.expect(jsonData.event.name).to.eql(\"Nouvel An\");",
+									"    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
+									"    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
+									"    pm.expect(jsonData.event.location).to.eql(\"Le pub Universitaire\");",
+									"    pm.expect(jsonData.event.start_time).to.eql(\"2018-12-31T20:00:00\");",
+									"    pm.expect(jsonData.event.end_time).to.eql(\"2019-01-01T06:00:00\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Nouvel An",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Le pub Universitaire",
+									"type": "text"
+								},
+								{
+									"key": "start_time",
+									"value": "2018-12-31T20:00:00",
+									"type": "text"
+								},
+								{
+									"key": "end_time",
+									"value": "2019-01-01T06:00:00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST /calendars/calendar_id/events | Create event missing field",
 					"event": [
 						{
@@ -3927,6 +4023,70 @@
 								}
 							]
 						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /calendars/calendar_id/events | Get calendar's event list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"    pm.expect(jsonData.events.length).to.eql(2);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
 							"protocol": "http",
