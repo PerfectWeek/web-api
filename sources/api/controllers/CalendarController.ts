@@ -5,6 +5,8 @@ import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 import { CalendarView } from "../views/CalendarView";
+import { Event } from "../../model/entity/Event";
+import { EventView } from "../views/EventView";
 
 
 export async function createCalendar(req: Request, res: Response) {
@@ -97,17 +99,34 @@ export async function deleteCalendar(req: Request, res: Response) {
 }
 
 export async function createEvent(req: Request, res: Response) {
-    return res.status(201).json({
+    const requestingUser = getRequestingUser(req);
+    const name = req.body.name;
+    const description = req.body.description;
+    const location = req.body.location;
+    const start_time = req.body.start_time;
+    const end_time = req.body.end_time;
+    const calendar_id = req.params.calendar_id;
+    if (!name || !description || !location || !start_time || !end_time) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const conn = await DbConnection.getConnection();
+    let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
+
+    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+        throw new ApiException(404, "Calendar not found");
+    }
+
+    let event = new Event(name, description, location, calendar, start_time, end_time);
+    if (!event.isValid()) {
+        throw new ApiException(400, "Invalid fields in Event");
+    }
+
+    await conn.manager.save(event);
+
+    return res.status(200).json({
         message: "Event created",
-        event: {
-            id: 5,
-            name: "Nouvel An",
-            description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
-            location: "Le pub Universitaire",
-            calendar_id: 2,
-            start_time: "2018-12-31T20:00:00",
-            end_time: "2019-01-01T06:00:00"
-        }
+        event: EventView.formatEvent(event),
     });
 }
 
