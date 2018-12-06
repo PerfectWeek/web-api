@@ -100,6 +100,7 @@ export async function deleteCalendar(req: Request, res: Response) {
 
 export async function createEvent(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
+
     const name = req.body.name;
     const description = req.body.description;
     const location = req.body.location;
@@ -111,9 +112,9 @@ export async function createEvent(req: Request, res: Response) {
     }
 
     const conn = await DbConnection.getConnection();
-    let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
+    const calendar = await Calendar.findCalendarById(conn, calendar_id);
 
-    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+    if (!calendar || !CalendarsToOwners.isCalendarOwner(conn, requestingUser.id, calendar_id)) {
         throw new ApiException(404, "Calendar not found");
     }
 
