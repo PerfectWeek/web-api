@@ -105,8 +105,8 @@ export async function createEvent(req: Request, res: Response) {
             description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
             location: "Le pub Universitaire",
             calendar_id: 2,
-            start_time: Date.parse("31-12-2018T20:00:00"),
-            end_time: Date.parse("01-01-2019T06:00:00")
+            start_time: "2018-12-31T20:00:00",
+            end_time: "2019-01-01T06:00:00"
         }
     });
 }
@@ -118,20 +118,20 @@ export async function getCalendarEvents(req: Request, res: Response) {
             {
                 id: 2,
                 name: "Nouvel an",
-                start_time: "31-12-2018T20:00:00",
-                end_time: "01-12-2019T05:00:00"
+                start_time: "2018-12-31T20:00:00",
+                end_time: "2019-01-01T05:00:00"
             },
             {
                 id: 3,
                 name: "Noel",
-                start_time: "25-12-2018T00:00:00",
-                end_time: "25-12-2018T00:00:00"
+                start_time: "2018-12-25T00:00:00",
+                end_time: "2018-12-25T01:00:00"
             },
             {
                 id: 4,
                 name: "Grosse ress chez benard",
-                start_time: "28-12-2018T18:00:00",
-                end_time: "30-12-2018T19:30:00"
+                start_time: "2018-12-28T18:00:00",
+                end_time: "2018-12-30T19:30:00"
             },
         ]
     });

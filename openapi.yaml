@@ -1749,10 +1749,10 @@ components:
           example: qlf tu coco
         start_time:
           type: string
-          example: 12-12-2012T12:12:12
+          example: "2012-12-12T12:12:12"
         end_time:
           type: string
-          example: 13-12-2012T12:12:12
+          example: "2012-12-12T12:12:12"
 
     EventInfo:
       type: object
@@ -1774,10 +1774,10 @@ components:
           example : 3
         start_time:
           type: string
-          example: 12-12-2012T12:12:12
+          example: "2012-12-12T12:12:12"
         end_time:
           type: string
-          example: 13-12-2012T12:12:12
+          example: "2012-12-12T12:12:12"
 
     EventEdit:
       type: object
@@ -1790,10 +1790,10 @@ components:
           example: soiree
         start_time:
           type: string
-          example: 12-12-2012T12:12:12
+          example: "2012-12-12T12:12:12"
         end_time:
           type: string
-          example: 13-12-2012T12:12:12
+          example: "2012-12-12T12:12:12"
 
     EventAttendees:
       type: object

@@ -10,8 +10,8 @@ export async function getEventInfo(req: Request, res: Response) {
             description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
             location: "Le pub Universitaire",
             calendar_id: 2,
-            start_time: "31-12-2018T20:00:00",
-            end_time: "01-01-2019T06:00:00"
+            start_time: "2018-12-31T20:00:00",
+            end_time: "2019-01-01T06:00:00"
         }
     });
 }
@@ -70,8 +70,8 @@ export async function editEvent(req: Request, res: Response) {
             description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
             location: "Le pub Universitaire",
             calendar_id: 2,
-            start_time: "31-12-2018T21:00:00",
-            end_time: "01-01-2019T07:00:00"
+            start_time: "2018-12-31T21:00:00",
+            end_time: "2019-01-01T07:00:00"
         }
     });
 }
