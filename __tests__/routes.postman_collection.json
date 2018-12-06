@@ -3224,7 +3224,7 @@
 									"    calendar_id = pm.globals.get(\"CALENDAR_ID\");",
 									"    pm.expect(jsonData.message).to.include(\"OK\");",
 									"    pm.expect(jsonData.calendars.length).to.eql(2);",
-									"    pm.expect(jsonData.calendars[1].id).to.eql(calendar_id);",
+									"    pm.expect(jsonData.calendars[1].calendar.id).to.eql(calendar_id);",
 									"});",
 									"",
 									"",
