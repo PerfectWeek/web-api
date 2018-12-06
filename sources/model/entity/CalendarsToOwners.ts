@@ -1,6 +1,8 @@
 import {Entity, PrimaryColumn, ManyToOne, JoinColumn, Index, Connection} from "typeorm";
+
 import { Calendar } from "./Calendar";
 import { User } from "./User";
+
 
 @Entity("calendars_to_owners")
 export class CalendarsToOwners {
@@ -26,7 +28,14 @@ export class CalendarsToOwners {
         this.owner = undefined;
     }
 
-    public static async findRelation(
+    /**
+     * @brief Find a relation between a Calendar and a User
+     *
+     * @param conn          The database Connection
+     * @param calendarId
+     * @param ownerId
+     */
+    public static async findCalendarRelation(
         conn: Connection,
         calendarId: number,
         ownerId: number
@@ -36,6 +45,27 @@ export class CalendarsToOwners {
             .select()
             .where("cto.calendar_id = :calendar_id", {calendar_id: calendarId})
             .andWhere("cto.owner_id = :owner_id", {owner_id: ownerId})
+            .getOne();
+    }
+
+    /**
+     * @brief Find  relation between a Group and a User
+     *
+     * @param conn      The database Connection
+     * @param groupId
+     * @param userId
+     */
+    public static async findGroupRelation(
+        conn: Connection,
+        groupId: number,
+        userId: number
+    ): Promise<CalendarsToOwners> {
+        return conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder("cto")
+            .innerJoin("calendars", "calendar", "cto.calendar_id = calendar.id")
+            .innerJoin("groups", "group", "calendar.id = group.calendar_id")
+            .where("cto.owner_id = :owner_id", {owner_id: userId})
+            .andWhere("group.id = :group_id", {group_id: groupId})
             .getOne();
     }
 }

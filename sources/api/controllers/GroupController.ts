@@ -88,7 +88,7 @@ export async function groupInfo(req: Request, res: Response) {
     }
 
     // Check if the requesting User can access this Group
-    const calendarToOwner = await CalendarsToOwners.findRelation(conn, group.calendar.id, requestingUser.id);
+    const calendarToOwner = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
     if (!calendarToOwner) {
         throw new ApiException(404, "Group not found");
     }
@@ -120,25 +120,23 @@ export async function editGroup(req: Request, res: Response) {
 // Delete a Group
 //
 export async function deleteGroup(req: Request, res: Response) {
-    return res.status(200);
-    // const requestingUser = getRequestingUser(req);
-    // const groupId = req.params.group_id;
-    //
-    // const conn = await DbConnection.getConnection();
-    // const groupToUserRepository = conn.getRepository(GroupsToUsers);
-    // const groupMember = await GroupsToUsers.getRelation(groupToUserRepository, groupId, requestingUser.id);
-    //
-    // if (!groupMember
-    //     || groupMember.role !== Role.Admin) {
-    //     throw new ApiException(403, "You are not allowed to delete this Group");
-    // }
-    //
-    // const groupRepository = conn.getRepository(Group);
-    // await Group.deleteGroup(groupRepository, groupToUserRepository, groupId);
-    //
-    // res.status(200).json({
-    //     message: "Group successfully deleted"
-    // });
+    const requestingUser = getRequestingUser(req);
+
+    const groupId: number = req.params.group_id;
+
+    const conn = await DbConnection.getConnection();
+
+    // Check if the Group exists and if the requesting User belongs to it
+    const calendarToOwner = await CalendarsToOwners.findGroupRelation(conn, groupId, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    await Group.deleteById(conn, groupId);
+
+    return res.status(200).json({
+        message: "Group removed"
+    });
 }
 
 
@@ -220,7 +218,7 @@ export async function editUserStatus(req: Request, res: Response) {
 
 
 //
-// Remove Users from a Group
+// Remove a User from a Group
 //
 export async function kickUserFromGroup(req: Request, res: Response) {
     // TODO
@@ -240,16 +238,5 @@ export async function kickUserFromGroup(req: Request, res: Response) {
                 role: "Spectator"
             }
         ]
-    });
-}
-
-// TODO See if we keep this route
-export async function getGroupCalendar(req: Request, res: Response) {
-    return res.status(200).json({
-        message: "OK",
-        calendar: {
-            id: 4,
-            name: "Groupe Travail"
-        }
     });
 }

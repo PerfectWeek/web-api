@@ -40,4 +40,21 @@ export class Group {
             .where({id: groupId})
             .getOne();
     }
+
+    /**
+     * @brief Delete a Group
+     *
+     * @param conn      The database Connection
+     * @param groupId   The Group to delete
+     */
+    public static async deleteById(
+        conn: Connection,
+        groupId: number
+    ): Promise<any> {
+        return conn.getRepository(Group)
+            .createQueryBuilder()
+            .delete()
+            .where({id: groupId})
+            .execute();
+    }
 }
