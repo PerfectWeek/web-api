@@ -11,7 +11,7 @@ export class CalendarView {
         };
     }
 
-    public static formatEventList(events: Event[]): any {
+    public static formatEventList(events: Event[]): any[] {
         return events.map(EventView.formatEventRecap);
     }
 }
