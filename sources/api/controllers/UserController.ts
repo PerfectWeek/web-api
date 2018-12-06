@@ -9,7 +9,10 @@ import {EmailSender} from '../../utils/emailSender';
 import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
-import {getReqUrl} from '../../utils/getReqUrl';
+import { getReqUrl } from '../../utils/getReqUrl';
+import { CalendarsToOwnersView } from '../views/CalendarsToOwnersView';
+import { Calendar } from '../../model/entity/Calendar';
+import { CalendarsToOwners } from '../../model/entity/CalendarsToOwners';
 
 
 //
@@ -89,6 +92,12 @@ export async function confirmUserEmail(req: Request, res: Response) {
     );
     const createdUser = await conn.manager.save(user);
     await conn.manager.remove(pendingUser);
+
+    // Create a default Calendar for the new User
+    const calendar = new Calendar("Main Calendar");
+    const createdCalendar = await conn.manager.save(calendar);
+    const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, user.id);
+    await conn.manager.save(calendarsToOwners);
 
     return res.status(201).json({
         message: "User has been successfully created",
@@ -222,28 +231,21 @@ export async function getUserGroups(req: Request, res: Response) {
 }
 
 
+//
+// Get all Calendars of a User
+//
 export async function getUserCalendars(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
+    const requestingUser = getRequestingUser(req);
+    if (pseudo !== requestingUser.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    const conn = await DbConnection.getConnection();
+    const calendars = await User.getAllCalendars(conn, requestingUser.id);
+
     return res.status(200).json({
         message: "OK",
-        calendars: [
-            {
-                calendar: {
-                    id: 2,
-                    name: "smb"
-                }
-            },
-            {
-                calendar: {
-                    id: 3,
-                    name: "sm2b"
-                }
-            },
-            {
-                calendar: {
-                    id: 4,
-                    name: "ca fait beaucoup la non ?"
-                }
-            }
-        ]
+        calendars: CalendarsToOwnersView.formatCalendarsToOwnersList(calendars)
     });
 }

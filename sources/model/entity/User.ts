@@ -1,4 +1,4 @@
-import {Column, Connection, Entity, Index, PrimaryGeneratedColumn, Repository} from "typeorm";
+import {Column, Connection, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
 
 import {Encrypt} from "../../utils/encrypt";
 import {UserValidator} from "../../utils/validator/UserValidator";
@@ -146,6 +146,12 @@ export class User {
 
             // TODO: Remove User from all its Events
             // TODO: Remove User from all its Calendars
+            await conn.getRepository(CalendarsToOwners)
+                .createQueryBuilder()
+                .delete()
+                .where("owner_id = :user_id", {user_id: userId})
+                .execute();
+
             // TODO: Remove Calendars with no Owners
 
             await userRepository
@@ -157,19 +163,19 @@ export class User {
     }
 
     /**
-     * @brief Get all calendars for a User
+     * @brief Get all calendars a User owns
      *
-     * @param calendarsToOwnersRepository
+     * @param conn
      * @param userId
      *
      * @returns The expected calendar list on success
      * @returns null on error
      */
     static async getAllCalendars(
-        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        conn: Connection,
         userId: number
     ) : Promise<CalendarsToOwners[]> {
-        return await calendarsToOwnersRepository
+        return conn.getRepository(CalendarsToOwners)
             .createQueryBuilder("cto")
             .innerJoinAndMapOne("cto.calendar", "calendars", "calendar", "calendar.id = cto.calendar_id")
             .where("cto.owner_id = :userId", {userId: userId})
