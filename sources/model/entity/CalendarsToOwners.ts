@@ -20,7 +20,7 @@ export class CalendarsToOwners {
     calendar: Calendar;
 
     owner: User;
-    
+
     public constructor(calendar_id: number, owner_id: number) {
         this.calendar_id = calendar_id;
         this.owner_id = owner_id;

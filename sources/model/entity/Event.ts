@@ -46,4 +46,10 @@ export class Event {
         this.endTime = endTime;
         this.attendees = [];
     }
+
+    public isValid() {
+        return this.name.length > 0
+            && this.calendar
+            && this.startTime <= this.endTime;
+    }
 }
