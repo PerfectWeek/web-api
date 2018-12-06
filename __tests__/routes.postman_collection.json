@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "05bc827d-6724-4f49-9d72-397dcae532c7",
+		"_postman_id": "a344825d-68a9-4514-93d7-b8c637b4948a",
 		"name": "PW",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,20 +14,19 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "78834bcb-8d16-405e-9e42-b47f8702969e",
 								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.name).to.eql(\"Perfect Week API du swag\");",
 									"});",
-									"",
-									"",
-									"",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
+									""
 								],
-								"id": "78834bcb-8d16-405e-9e42-b47f8702969e",
 								"type": "text/javascript"
 							}
 						}
@@ -246,18 +245,18 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"exec": [
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"Invalid request\");",
+									"    pm.expect(jsonData.message).to.eql(\"Bad request\");",
 									"});",
 									"",
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
 									"});"
 								],
-								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"type": "text/javascript"
 							}
 						}
@@ -796,13 +795,12 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/iulian | Get infos of existing user copy",
+					"name": "GET /users/iulian | Get infos of existing user",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "a30172d9-da00-41d7-9e28-73803984edde",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -814,7 +812,8 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -851,13 +850,12 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/mortimr | Get infos of previously existing user copy",
+					"name": "GET /users/mortimr | Get infos of previously existing user",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "0de0f08c-04e3-4e10-bb86-d2cd9d33a0b7",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -867,7 +865,8 @@
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
 									"});"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1998,7 +1997,7 @@
 									"",
 									"pm.test(\"Message is Bad Request\", function () {",
 									"    const body = pm.response.json();",
-									"    pm.expect(body.message).to.equal(\"Invalid fields in Group\");",
+									"    pm.expect(body.message).to.equal(\"Bad request\");",
 									"});",
 									""
 								],
@@ -4063,9 +4062,6 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -4086,7 +4082,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
 							"protocol": "http",

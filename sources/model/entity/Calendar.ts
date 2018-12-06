@@ -67,6 +67,7 @@ export class Calendar {
 
         const calendarsToOwners = owners.map(owner => new CalendarsToOwners(createdCalendar.id, owner.id));
         createdCalendar.owners = await calendarsToOwnersRepository.save(calendarsToOwners);
+        createdCalendar.nbOwners = calendar.owners.length;
 
         return createdCalendar;
     }

@@ -201,7 +201,11 @@ export class User {
         conn: Connection,
         userId: number
     ): Promise<Group[]> {
-        // TODO: Get all Groups
-        return [];
+        return conn.getRepository(Group)
+            .createQueryBuilder("group")
+            .innerJoinAndSelect("group.calendar", "calendar")
+            .innerJoin("calendars_to_owners", "cto", "cto.calendar_id = calendar.id")
+            .where("cto.owner_id = :owner_id", {owner_id: userId})
+            .getMany();
     }
 }

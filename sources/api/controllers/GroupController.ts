@@ -84,13 +84,13 @@ export async function groupInfo(req: Request, res: Response) {
     // Get the requested Group
     const group = await Group.findById(conn, groupId);
     if (!group) {
-        throw new ApiException(404, "Group not found");
+        throw new ApiException(403, "Group not accessible");
     }
 
     // Check if the requesting User can access this Group
     const calendarToOwner = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
     if (!calendarToOwner) {
-        throw new ApiException(404, "Group not found");
+        throw new ApiException(403, "Group not accessible");
     }
 
     return res.status(200).json({
@@ -135,7 +135,7 @@ export async function deleteGroup(req: Request, res: Response) {
     await Group.deleteById(conn, groupId);
 
     return res.status(200).json({
-        message: "Group removed"
+        message: "Group successfully deleted"
     });
 }
 

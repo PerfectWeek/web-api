@@ -7,6 +7,7 @@ export class GroupView {
         return {
             id: group.id,
             name: group.calendar.name,
+            description: group.description,
             nb_members: group.calendar.nbOwners,
             calendar_id: group.calendar.id
         };
