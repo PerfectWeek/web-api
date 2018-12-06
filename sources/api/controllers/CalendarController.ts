@@ -133,7 +133,7 @@ export async function createEvent(req: Request, res: Response) {
 export async function getCalendarEvents(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
-    const calendar_id = req.params.calendar_id;
+    const calendar_id: number = req.params.calendar_id;
 
     const conn = await DbConnection.getConnection();
 
