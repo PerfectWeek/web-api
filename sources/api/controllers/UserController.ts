@@ -226,14 +226,13 @@ export async function getUserGroups(req: Request, res: Response) {
 
 export async function getUserCalendars(req: Request, res: Response) {
     const pseudo = req.params.pseudo;
+    const requestingUser = getRequestingUser(req);
+    if (pseudo !== requestingUser.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
 
     const conn = await DbConnection.getConnection();
     const user = await User.findUserByPseudo(conn, pseudo);
-    const requestingUser = getRequestingUser(req);
-
-    if (user.pseudo !== requestingUser.pseudo) {
-        throw new ApiException(403, "Action not allowed");
-    }
 
     const calendars = await User.getAllCalendars(conn, user.id);
 

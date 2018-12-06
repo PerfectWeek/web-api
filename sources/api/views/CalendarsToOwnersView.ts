@@ -8,6 +8,8 @@ export class CalendarsToOwnersView {
     }
 
     static formatCalendarsToOwners(calendar: CalendarsToOwners): any {
-        return CalendarView.formatCalendar(calendar.calendar);
+        return {
+            calendar: CalendarView.formatCalendar(calendar.calendar)
+        }
     }
 }
