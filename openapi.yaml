@@ -1704,12 +1704,15 @@ components:
     CalendarRecap:
       type: object
       properties:
-        id:
-          type: integer
-          example: 42
-        name:
-          type: string
-          example: amazing_calendar
+        calendar:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 42
+            name:
+              type: string
+              example: amazing_calendar
 
     CalendarCredentials:
       type: object
@@ -1805,14 +1808,6 @@ components:
         pseudo:
           type: string
           example: alif
-
-    DeleteAttendee:
-      type: object
-      properties:
-        pseudo:
-          type: string
-          example: alif
-
 
 
     #
