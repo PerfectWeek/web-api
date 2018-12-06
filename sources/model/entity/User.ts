@@ -3,7 +3,8 @@ import {Column, Connection, Entity, Index, PrimaryGeneratedColumn} from "typeorm
 import {Encrypt} from "../../utils/encrypt";
 import {UserValidator} from "../../utils/validator/UserValidator";
 import {Group} from "./Group";
-import { CalendarsToOwners } from "./CalendarsToOwners";
+import {CalendarsToOwners} from "./CalendarsToOwners";
+import {Calendar} from "./Calendar";
 
 
 @Entity("users")
@@ -142,22 +143,27 @@ export class User {
         userId: number
     ): Promise<any> {
         await conn.transaction(async entityManager => {
-            const userRepository = entityManager.getRepository(User);
-
             // TODO: Remove User from all its Events
-            // TODO: Remove User from all its Calendars
+
+            // Remove the User from all its Calendars
             await conn.getRepository(CalendarsToOwners)
                 .createQueryBuilder()
                 .delete()
                 .where("owner_id = :user_id", {user_id: userId})
                 .execute();
 
-            // TODO: Remove Calendars with no Owners
-
-            await userRepository
-                .createQueryBuilder("user")
+            // Remove Calendars that don't belong to anyone
+            await entityManager.getRepository(Calendar)
+                .createQueryBuilder()
                 .delete()
-                .where("user.id = :id", {id: userId})
+                .where("nb_owners = 0")
+                .execute();
+
+            // Remove User
+            await entityManager.getRepository(User)
+                .createQueryBuilder()
+                .delete()
+                .where("id = :id", {id: userId})
                 .execute();
         });
     }
