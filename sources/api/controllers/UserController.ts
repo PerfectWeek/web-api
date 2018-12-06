@@ -14,9 +14,10 @@ import {AccountVerification} from '../../utils/accountVerification'
 import {DbConnection} from "../../utils/DbConnection";
 import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
-import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 import {Group} from "../../model/entity/Group";
 import { CalendarsToOwnersView } from '../views/CalendarsToOwnersView';
+import { Calendar } from '../../model/entity/Calendar';
+import { CalendarsToOwners } from '../../model/entity/CalendarsToOwners';
 
 
 //
@@ -91,6 +92,12 @@ export async function confirmUserEmail(req: Request, res: Response) {
     );
     await conn.manager.save(user);
     await conn.manager.remove(pendingUser);
+
+    const calendar = new Calendar("Main Calendar", [], []);
+    const createdCalendar = await conn.manager.save(calendar);
+
+    const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, user.id);
+    await conn.manager.save(calendarsToOwners);
 
     return res.status(201).json({
         message: "User has been successfully created",
@@ -189,9 +196,7 @@ export async function deleteUser(req: Request, res: Response) {
     }
 
     const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
-    await User.deleteUser(userRepository, groupsToUsersRepository, user.id);
+    await User.deleteUser(conn, user.id);
 
     return res.status(200).json({
         message: "User deleted"

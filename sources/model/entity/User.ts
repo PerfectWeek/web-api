@@ -68,23 +68,27 @@ export class User {
     /**
      * @brief Delete a User
      *
-     * @param userRepository
-     * @param groupsToUsersRepository
+     * @param conn
      * @param user_id
      */
     static async deleteUser(
-        userRepository: Repository<User>,
-        groupsToUsersRepository: Repository<GroupsToUsers>,
+        conn: Connection,
         user_id: number
     ) : Promise<any> {
         // TODO: Remove user from its groups and delete those becoming empty
-        await groupsToUsersRepository
+        await conn.getRepository(GroupsToUsers)
             .createQueryBuilder()
             .delete()
             .where("user_id = :user_id", {user_id: user_id})
             .execute();
 
-        await userRepository
+        await conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder()
+            .delete()
+            .where("owner_id = :user_id", {user_id: user_id})
+            .execute();
+
+        await conn.getRepository(User)
             .createQueryBuilder()
             .delete()
             .where("id = :user_id", {user_id: user_id})

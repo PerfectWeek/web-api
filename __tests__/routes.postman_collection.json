@@ -2949,7 +2949,7 @@
 					"response": []
 				},
 				{
-					"name": "GET /users/mortimr/calendars | Get mortimr's empty calendar list",
+					"name": "GET /users/mortimr/calendars | Get mortimr's calendar list",
 					"event": [
 						{
 							"listen": "test",
@@ -2959,7 +2959,7 @@
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.include(\"OK\");",
-									"    pm.expect(jsonData.calendars.length).to.eql(0);",
+									"    pm.expect(jsonData.calendars.length).to.eql(1);",
 									"});",
 									"",
 									"",
@@ -3006,7 +3006,7 @@
 					"response": []
 				},
 				{
-					"name": "POST /calendars | Create new Calendar",
+					"name": "POST /calendars | Create calendar",
 					"event": [
 						{
 							"listen": "test",
@@ -3016,7 +3016,7 @@
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.include(\"Calendar created\");",
-									"    pm.expect(jsonData.calendar.name).to.eql(\"vacances\");",
+									"    pm.expect(jsonData.calendar.name).to.eql(\"holidays\");",
 									"    pm.globals.set(\"CALENDAR_ID\", jsonData.calendar.id);",
 									"});",
 									"",
@@ -3046,8 +3046,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -3055,77 +3055,7 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "vacances",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "{{TEST_API_PORT}}",
-							"path": [
-								"calendars",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "POST /calendars | Create another calendar",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "4016d30c-0156-4301-b0a9-8a75503231f7",
-								"exec": [
-									"pm.test(\"Test body value\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.include(\"Calendar created\");",
-									"    pm.expect(jsonData.calendar.name).to.eql(\"vacances\");",
-									"    pm.globals.set(\"CALENDAR_ID\", jsonData.calendar.id);",
-									"});",
-									"",
-									"",
-									"pm.test(\"Status code is 201\", function () {",
-									"    pm.response.to.have.status(201);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "vacances",
+									"value": "holidays",
 									"type": "text"
 								}
 							]
@@ -3221,10 +3151,8 @@
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    calendar_id = pm.globals.get(\"CALENDAR_ID\");",
 									"    pm.expect(jsonData.message).to.include(\"OK\");",
 									"    pm.expect(jsonData.calendars.length).to.eql(2);",
-									"    pm.expect(jsonData.calendars[1].calendar.id).to.eql(calendar_id);",
 									"});",
 									"",
 									"",
@@ -3281,7 +3209,7 @@
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.include(\"OK\");",
-									"    pm.expect(jsonData.calendar.name).to.eql(\"vacances\");",
+									"    pm.expect(jsonData.calendar.name).to.eql(\"holidays\");",
 									"});",
 									"",
 									"",
