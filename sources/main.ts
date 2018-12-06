@@ -14,51 +14,55 @@ import { checkEnvVariable } from "./utils/checkEnvVariable";
 import { ApiException } from "./utils/apiException";
 
 
+const run = (): any => {
 // Check for mandatory env variables
-checkEnvVariable("DB_HOST");
-checkEnvVariable("DB_PORT");
-checkEnvVariable("DB_PASSWD");
+    checkEnvVariable("DB_HOST");
+    checkEnvVariable("DB_PORT");
+    checkEnvVariable("DB_PASSWD");
 
-checkEnvVariable("JWT_ENCODE_KEY");
+    checkEnvVariable("JWT_ENCODE_KEY");
 
 
 // Express
-const app = Express();
+    const app = Express();
 
 // Configure some useful middleware
-app.use(Morgan('dev'));
-app.use(Cors());
-app.use(CookieParser());
-app.use(BodyParser.urlencoded({ extended: true }));
-app.use(BodyParser.json());
+    app.use(Morgan('dev'));
+    app.use(Cors());
+    app.use(CookieParser());
+    app.use(BodyParser.urlencoded({extended: true}));
+    app.use(BodyParser.json());
 
 
 // Load all Routers
-loadRouters(app, "build/api/routes");
+    loadRouters(app, "build/sources/api/routes");
 
 // Handle invalid requests as 404
-app.use((req: Request, res: Response, next: Function) => {
-    res.status(404).json({
-        message: "Route or Resource not found"
+    app.use((req: Request, res: Response, next: Function) => {
+        res.status(404).json({
+            message: "Route or Resource not found"
+        });
     });
-});
 
 
 // Handle errors
-app.use((error: Error, req: Request, res: Response, next: Function) => {
-    res.status(error instanceof ApiException ? (<ApiException>error).code : 500)
-        .json({
-            message: error.message
-        });
-});
+    app.use((error: Error, req: Request, res: Response, next: Function) => {
+        res.status(error instanceof ApiException ? (<ApiException>error).code : 500)
+            .json({
+                message: error.message
+            });
+    });
 
+    return app;
+};
 
 // Start the server
 if (require.main === module) {
-    const api_port = process.env.API_PORT || 3000;
+    const app = run();
+    const api_port = process.env.PORT || 3000;
     app.listen(api_port, () => {
         console.debug('Server started on port ' + api_port);
     });
 } else {
-    module.exports = app;
+    module.exports = run;
 }

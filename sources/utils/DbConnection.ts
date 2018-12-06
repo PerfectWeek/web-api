@@ -5,8 +5,10 @@
 import {Connection, createConnection} from "typeorm";
 
 
-const hostname : string = process.env.HOST;
+const hostname : string = process.env.DB_HOST;
 const password : string = process.env.DB_PASSWD;
+const database : string = process.env.DB_NAME || "perfectweek";
+const username : string = process.env.DB_USER || "perfectweek";
 const port = parseInt(process.env.DB_PORT) || 5432;
 
 
@@ -18,9 +20,9 @@ export class DbConnection {
         type: 'postgres',
         host: hostname,
         port: port,
-        username: "perfectweek",
+        username: username,
         password: password,
-        database: "perfectweek",
+        database: database,
         synchronize: false,
         logging: false,
         entities: [
