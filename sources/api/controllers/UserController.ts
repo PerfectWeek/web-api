@@ -128,10 +128,9 @@ export async function login(req: Request, res: Response) {
 // Get information about a specific User
 //
 export async function getUser(req: Request, res: Response) {
-    const pseudo = req.params.pseudo;
-
     const conn = await DbConnection.getConnection();
-    const user = await User.findUserByPseudo(conn, pseudo);
+    const userRepository = conn.getRepository(User);
+    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
 
     if (!user)
         throw new ApiException(404, "User not found");
@@ -147,11 +146,10 @@ export async function getUser(req: Request, res: Response) {
 // Edit a User's information
 //
 export async function editUser(req: Request, res: Response) {
-    const pseudo = req.params.pseudo;
     let user: User = getRequestingUser(req);
     const old_pseudo = user.pseudo;
 
-    if (user.pseudo !== pseudo) {
+    if (user.pseudo !== req.params.pseudo) {
         throw new ApiException(403, "Action not allowed");
     }
 
@@ -182,10 +180,9 @@ export async function editUser(req: Request, res: Response) {
 // Delete user
 //
 export async function deleteUser(req: Request, res: Response) {
-    const pseudo = req.params.pseudo;
     let user: User = getRequestingUser(req);
 
-    if (user.pseudo !== pseudo) {
+    if (user.pseudo !== req.params.pseudo) {
         return res.status(403).json({
             message: "Action not allowed"
         });
@@ -206,10 +203,9 @@ export async function deleteUser(req: Request, res: Response) {
 // Get all groups a User belongs to
 //
 export async function getUserGroups(req: Request, res: Response) {
-    const pseudo = req.params.pseudo;
-
     const conn = await DbConnection.getConnection();
-    const user = await User.findUserByPseudo(conn, pseudo);
+    const userRepository = conn.getRepository(User);
+    const user = await userRepository.findOne({where: {pseudo: req.params.pseudo}});
     const requesting_user = getRequestingUser(req);
 
     if (!user) {
