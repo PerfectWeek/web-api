@@ -1,5 +1,6 @@
 import { Calendar } from "../../model/entity/Calendar";
 import { Event } from "../../model/entity/Event";
+import { EventView } from "./EventView";
 
 export class CalendarView {
 
@@ -10,16 +11,7 @@ export class CalendarView {
         };
     }
 
-    public static formatEventRecap(event: Event): any {
-        return {
-            id: event.id,
-            name: event.name,
-            start_time: event.startTime,
-            end_time: event.endTime,
-        };
-    }
-
     public static formatEventList(events: Event[]): any {
-        return events.map(this.formatEventRecap);
+        return events.map(EventView.formatEventRecap);
     }
 }

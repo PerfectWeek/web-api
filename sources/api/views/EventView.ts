@@ -13,4 +13,15 @@ export class EventView {
             end_time: event.endTime,
         };
     }
+
+    public static formatEventRecap(event: Event): any {
+        return {
+            id: event.id,
+            name: event.name,
+            start_time: event.startTime,
+            end_time: event.endTime,
+        };
+    }
+
+
 }
