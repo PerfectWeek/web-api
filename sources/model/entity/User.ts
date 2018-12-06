@@ -1,4 +1,4 @@
-import {Column, Entity, Index, PrimaryGeneratedColumn, Repository} from "typeorm";
+import {Column, Entity, Index, PrimaryGeneratedColumn, Repository, Connection} from "typeorm";
 
 import {Encrypt} from "../../utils/encrypt";
 import {ApiException} from "../../utils/apiException";
@@ -92,19 +92,19 @@ export class User {
     }
 
     /**
-     * @brief Get all calendars for a User
+     * @brief Get all calendars a User owns
      *
-     * @param calendarRepository
+     * @param connection
      * @param userId
      *
      * @returns The expected calendar list on success
      * @returns null on error
      */
     static async getAllCalendars(
-        calendarsToOwnersRepository: Repository<CalendarsToOwners>,
+        conn: Connection,
         userId: number
     ) : Promise<CalendarsToOwners[]> {
-        return await calendarsToOwnersRepository
+        return await conn.getRepository(CalendarsToOwners)
             .createQueryBuilder("cto")
             .innerJoinAndMapOne("cto.calendar", "calendars", "calendar", "calendar.id = cto.calendar_id")
             .where("cto.owner_id = :userId", {userId: userId})
@@ -129,5 +129,15 @@ export class User {
             .innerJoinAndSelect(GroupsToUsers, "gtu", `gtu.group_id = "Group"."id"`)
             .where("gtu.user_id = :user_id", {user_id: userId})
             .getMany();
+    }
+
+    static async findUserByPseudo(
+        conn: Connection,
+        userPseudo: string
+    ) : Promise<User> {
+        return await conn.getRepository(User)
+            .createQueryBuilder()
+            .where({pseudo: userPseudo})
+            .getOne();
     }
 }

@@ -2884,7 +2884,199 @@
 			"name": "[/calendars] Calendar features",
 			"item": [
 				{
+					"name": "POST /auth/login | Log In as mortirm",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Authentication successful\");",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"mortimr\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"mortimr@fake.com\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.globals.set(\"TOKEN\", pm.response.json().access_token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "mortimr@fake.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "hahahaha",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users/mortimr/calendars | Get mortimr's empty calendar list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9c11261f-53f2-4486-a36d-0ed4e8bb4746",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"OK\");",
+									"    pm.expect(jsonData.calendars.length).to.eql(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr/calendars",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"mortimr",
+								"calendars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST /calendars | Create new Calendar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4016d30c-0156-4301-b0a9-8a75503231f7",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"Calendar created\");",
+									"    pm.expect(jsonData.calendar.name).to.eql(\"vacances\");",
+									"    pm.globals.set(\"CALENDAR_ID\", jsonData.calendar.id);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "vacances",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /calendars | Create another calendar",
 					"event": [
 						{
 							"listen": "test",
@@ -3014,6 +3206,65 @@
 							"path": [
 								"calendars",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users/mortimr/calendars | Get mortimr's calendar list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9c11261f-53f2-4486-a36d-0ed4e8bb4746",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    calendar_id = pm.globals.get(\"CALENDAR_ID\");",
+									"    pm.expect(jsonData.message).to.include(\"OK\");",
+									"    pm.expect(jsonData.calendars.length).to.eql(2);",
+									"    pm.expect(jsonData.calendars[1].calendar.id).to.eql(calendar_id);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr/calendars",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"mortimr",
+								"calendars"
 							]
 						}
 					},

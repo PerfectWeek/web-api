@@ -16,6 +16,7 @@ import {PendingUser} from '../../model/entity/PendingUser';
 import { getReqUrl } from '../../utils/getReqUrl';
 import {GroupsToUsers} from "../../model/entity/GroupsToUsers";
 import {Group} from "../../model/entity/Group";
+import { CalendarsToOwnersView } from '../views/CalendarsToOwnersView';
 
 
 //
@@ -224,27 +225,17 @@ export async function getUserGroups(req: Request, res: Response) {
 }
 
 export async function getUserCalendars(req: Request, res: Response) {
+    const pseudo = req.params.pseudo;
+    const requestingUser = getRequestingUser(req);
+    if (pseudo !== requestingUser.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    const conn = await DbConnection.getConnection();
+    const calendars = await User.getAllCalendars(conn, requestingUser.id);
+
     return res.status(200).json({
         message: "OK",
-        calendars: [
-            {
-                calendar: {
-                    id: 2,
-                    name: "smb"
-                }
-            },
-            {
-                calendar: {
-                    id: 3,
-                    name: "sm2b"
-                }
-            },
-            {
-                calendar: {
-                    id: 4,
-                    name: "ca fait beaucoup la non ?"
-                }
-            }
-        ]
+        calendars: CalendarsToOwnersView.formatCalendarsToOwnersList(calendars)
     });
 }
