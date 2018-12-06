@@ -17,7 +17,7 @@ export async function createCalendar(req: Request, res: Response) {
 
     const connection = await DbConnection.getConnection();
 
-    const calendar = new Calendar(name, [], []);
+    const calendar = new Calendar(name);
 
     if (!calendar.isValid()) {
         throw new ApiException(400, "Invalid fields in Calendar");

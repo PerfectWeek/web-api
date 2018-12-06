@@ -1,4 +1,4 @@
-import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
 import {Calendar} from "./Calendar";
 
@@ -10,6 +10,7 @@ export class Group {
     id: number;
 
     @OneToOne(type => Calendar)
+    @JoinColumn({name: "calendar_id"})
     calendar: Calendar;
 
     @Column()
