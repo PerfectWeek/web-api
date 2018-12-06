@@ -26,7 +26,17 @@ export class CalendarsToOwners {
         this.owner = undefined;
     }
 
-    static async isCalendarOwner(
+   /**
+    * @brief Check if a User owns a given Calendar
+    *
+    * @param conn
+    * @param userId
+    * @param calendarId
+    *
+    * @returns true if he owns it
+    * @returns false if not
+    */
+    public static async isCalendarOwner(
         conn: Connection,
         userId: number,
         calendarId: number

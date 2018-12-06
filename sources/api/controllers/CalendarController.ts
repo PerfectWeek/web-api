@@ -112,8 +112,8 @@ export async function createEvent(req: Request, res: Response) {
     }
 
     const conn = await DbConnection.getConnection();
-    const calendar = await Calendar.findCalendarById(conn, calendar_id);
 
+    const calendar = await Calendar.findCalendarById(conn, calendar_id);
     if (!calendar || !CalendarsToOwners.isCalendarOwner(conn, requestingUser.id, calendar_id)) {
         throw new ApiException(404, "Calendar not found");
     }
