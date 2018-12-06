@@ -142,8 +142,6 @@ export async function getCalendarEvents(req: Request, res: Response) {
         throw new ApiException(404, "Calendar not found");
     }
 
-    console.log(calendar.events);
-
     return res.status(200).json({
         message: "OK",
         events: CalendarView.formatEventList(calendar.events),
