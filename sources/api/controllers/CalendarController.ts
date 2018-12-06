@@ -122,7 +122,6 @@ export async function createEvent(req: Request, res: Response) {
     if (!event.isValid()) {
         throw new ApiException(400, "Invalid fields in Event");
     }
-
     await conn.manager.save(event);
 
     return res.status(201).json({
@@ -133,11 +132,12 @@ export async function createEvent(req: Request, res: Response) {
 
 export async function getCalendarEvents(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
+
     const calendar_id = req.params.calendar_id;
 
     const conn = await DbConnection.getConnection();
-    let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
 
+    let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
     if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
         throw new ApiException(404, "Calendar not found");
     }
