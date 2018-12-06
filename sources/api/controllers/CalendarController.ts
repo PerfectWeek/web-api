@@ -124,7 +124,7 @@ export async function createEvent(req: Request, res: Response) {
 
     await conn.manager.save(event);
 
-    return res.status(200).json({
+    return res.status(201).json({
         message: "Event created",
         event: EventView.formatEvent(event),
     });
