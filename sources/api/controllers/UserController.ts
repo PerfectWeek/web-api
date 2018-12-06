@@ -178,7 +178,7 @@ export async function editUser(req: Request, res: Response) {
     const alreadyExists = await User.alreadyExists(
         conn,
         user.email === old_email ? null : user.email,
-        user.pseudo === old_pseudo ? null : old_pseudo
+        user.pseudo === old_pseudo ? null : user.pseudo
     );
     if (alreadyExists) {
         throw new ApiException(409, "Pseudo or email already exists");
