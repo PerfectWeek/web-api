@@ -29,8 +29,6 @@ export class Calendar {
 
     public constructor(name: string) {
         this.name = name;
-        this.events = [];
-        this.owners = [];
         this.nbOwners = 0;
     }
 

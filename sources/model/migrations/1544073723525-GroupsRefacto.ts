@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class GroupsRefacto1544045424849 implements MigrationInterface {
+export class GroupsRefacto1544073723525 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query("DROP TRIGGER IF EXISTS group_update ON groups");
@@ -13,6 +13,9 @@ export class GroupsRefacto1544045424849 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "groups" DROP COLUMN "nb_members"`);
         await queryRunner.query(`ALTER TABLE "calendars" ADD "nb_owners" integer NOT NULL DEFAULT 0`);
         await queryRunner.query(`ALTER TABLE "groups" ADD "description" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "groups" ADD "calendar_id" integer`);
+        await queryRunner.query(`ALTER TABLE "groups" ADD CONSTRAINT "UQ_30ae8e709a6a2548f647133a093" UNIQUE ("calendar_id")`);
+        await queryRunner.query(`ALTER TABLE "groups" ADD CONSTRAINT "FK_30ae8e709a6a2548f647133a093" FOREIGN KEY ("calendar_id") REFERENCES "calendars"("id")`);
 
         await queryRunner.query(`
             CREATE OR REPLACE FUNCTION calendar_adjust_owners_count()
@@ -41,6 +44,9 @@ export class GroupsRefacto1544045424849 implements MigrationInterface {
         await queryRunner.query("DROP TRIGGER IF EXISTS calendar_owners_update_count");
         await queryRunner.query("DROP FUNCTION IF EXISTS calendar_adjust_owners_count");
 
+        await queryRunner.query(`ALTER TABLE "groups" DROP CONSTRAINT "FK_30ae8e709a6a2548f647133a093"`);
+        await queryRunner.query(`ALTER TABLE "groups" DROP CONSTRAINT "UQ_30ae8e709a6a2548f647133a093"`);
+        await queryRunner.query(`ALTER TABLE "groups" DROP COLUMN "calendar_id"`);
         await queryRunner.query(`ALTER TABLE "groups" DROP COLUMN "description"`);
         await queryRunner.query(`ALTER TABLE "calendars" DROP COLUMN "nb_owners"`);
         await queryRunner.query(`ALTER TABLE "groups" ADD "nb_members" integer NOT NULL`);
