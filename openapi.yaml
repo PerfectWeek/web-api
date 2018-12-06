@@ -1214,7 +1214,7 @@ paths:
                     type: string
                     example: OK
                   events:
-                      $ref: '#/components/schemas/CalendarEvent'
+                      $ref: '#/components/schemas/EventInfo'
         '401':
           description: Authentication failed
           content:

@@ -12,10 +12,10 @@ router.get("/:calendar_id", AsyncHandler(loggedOnly), AsyncHandler(CalendarContr
 
 router.put("/:calendar_id", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.editCalendar));
 
+router.delete("/:calendar_id", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.deleteCalendar));
+
 router.post("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.createEvent));
 
 router.get("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.getCalendarEvents));
-
-router.delete("/:calendar_id", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.deleteCalendar));
 
 export default router;
