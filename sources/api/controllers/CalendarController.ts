@@ -122,7 +122,6 @@ export async function createEvent(req: Request, res: Response) {
     if (!event.isValid()) {
         throw new ApiException(400, "Invalid fields in Event");
     }
-
     await conn.manager.save(event);
 
     return res.status(201).json({
@@ -132,27 +131,19 @@ export async function createEvent(req: Request, res: Response) {
 }
 
 export async function getCalendarEvents(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    const calendar_id: number = req.params.calendar_id;
+
+    const conn = await DbConnection.getConnection();
+
+    let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
+    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+        throw new ApiException(404, "Calendar not found");
+    }
+
     return res.status(200).json({
         message: "OK",
-        events: [
-            {
-                id: 2,
-                name: "Nouvel an",
-                start_time: "2018-12-31T20:00:00",
-                end_time: "2019-01-01T05:00:00"
-            },
-            {
-                id: 3,
-                name: "Noel",
-                start_time: "2018-12-25T00:00:00",
-                end_time: "2018-12-25T01:00:00"
-            },
-            {
-                id: 4,
-                name: "Grosse ress chez benard",
-                start_time: "2018-12-28T18:00:00",
-                end_time: "2018-12-30T19:30:00"
-            },
-        ]
+        events: CalendarView.formatEventList(calendar.events),
     });
 }
