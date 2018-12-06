@@ -72,7 +72,7 @@ export class PendingUser {
      * @return The corresponding PendingUser if it exists
      * @return null otherwise
      */
-    public static async findPendingUserByValidationUuid(
+    public static async findByValidationUuid(
         conn: Connection,
         validationUuid: string
     ): Promise<PendingUser> {

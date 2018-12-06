@@ -79,7 +79,7 @@ export async function confirmUserEmail(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
 
     // Find PendingUser using validation link
-    const pendingUser = await PendingUser.findPendingUserByValidationUuid(conn, validationUuid);
+    const pendingUser = await PendingUser.findByValidationUuid(conn, validationUuid);
     if (!pendingUser) {
         throw new ApiException(404, "User not found");
     }

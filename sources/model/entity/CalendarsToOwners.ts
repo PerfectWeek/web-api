@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Index } from "typeorm";
+import {Entity, PrimaryColumn, ManyToOne, JoinColumn, Index, Connection} from "typeorm";
 import { Calendar } from "./Calendar";
 import { User } from "./User";
 
@@ -24,5 +24,18 @@ export class CalendarsToOwners {
         this.owner_id = owner_id;
         this.calendar = undefined;
         this.owner = undefined;
+    }
+
+    public static async findRelation(
+        conn: Connection,
+        calendarId: number,
+        ownerId: number
+    ): Promise<CalendarsToOwners> {
+        return conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder("cto")
+            .select()
+            .where("cto.calendar_id = :calendar_id", {calendar_id: calendarId})
+            .andWhere("cto.owner_id = :owner_id", {owner_id: ownerId})
+            .getOne();
     }
 }

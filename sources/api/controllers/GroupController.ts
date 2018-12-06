@@ -10,6 +10,7 @@ import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
 import {Calendar} from "../../model/entity/Calendar";
+import {CalendarsToOwners} from "../../model/entity/CalendarsToOwners";
 
 
 //
@@ -19,7 +20,7 @@ export async function createGroup(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
     const groupName: string = req.body.name;
-    const groupDescription = req.body.description || "";
+    const groupDescription: string = req.body.description || "";
     if (!groupName) {
         throw new ApiException(400, "Bad request");
     }
@@ -62,7 +63,6 @@ async function getAllUsers(conn: Connection, memberPseudo: string[]): Promise<Us
 
 async function getOneUser(conn: Connection, pseudo: string): Promise<User> {
     const user = await User.findByPseudo(conn, pseudo);
-
     if (!user) {
         throw new ApiException(404, `User "${pseudo}" not found`);
     }
@@ -75,27 +75,28 @@ async function getOneUser(conn: Connection, pseudo: string): Promise<User> {
 // Get information about a Group
 //
 export async function groupInfo(req: Request, res: Response) {
-    return res.status(200);
-    // const requestingUser = getRequestingUser(req);
-    // const groupId = req.params.group_id;
-    //
-    // const conn = await DbConnection.getConnection();
-    // const groupToUserRepository = conn.getRepository(GroupsToUsers);
-    // const groupMember = await GroupsToUsers.getRelation(groupToUserRepository, groupId, requestingUser.id);
-    // if (!groupMember) {
-    //     throw new ApiException(403, "Group not accessible");
-    // }
-    //
-    // const groupRepository = conn.getRepository(Group);
-    // const group = await Group.getGroupInfo(groupRepository, groupId);
-    // if (!group) {
-    //     throw new ApiException(404, "Group not found");
-    // }
-    //
-    // res.status(200).json({
-    //     message: "OK",
-    //     group: GroupView.formatGroup(group)
-    // });
+    const requestingUser = getRequestingUser(req);
+
+    const groupId: number = req.params.group_id;
+
+    const conn = await DbConnection.getConnection();
+
+    // Get the requested Group
+    const group = await Group.findById(conn, groupId);
+    if (!group) {
+        throw new ApiException(404, "Group not found");
+    }
+
+    // Check if the requesting User can access this Group
+    const calendarToOwner = await CalendarsToOwners.findRelation(conn, group.calendar.id, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(404, "Group not found");
+    }
+
+    return res.status(200).json({
+        message: "OK",
+        group: GroupView.formatGroup(group)
+    });
 }
 
 
