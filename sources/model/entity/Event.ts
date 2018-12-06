@@ -49,7 +49,6 @@ export class Event {
 
     public isValid() {
         return this.name.length > 0
-            && this.description.length > 0
             && this.calendar
             && this.startTime <= this.endTime;
     }
