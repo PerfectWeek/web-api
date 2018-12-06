@@ -232,9 +232,7 @@ export async function getUserCalendars(req: Request, res: Response) {
     }
 
     const conn = await DbConnection.getConnection();
-    const user = await User.findUserByPseudo(conn, pseudo);
-
-    const calendars = await User.getAllCalendars(conn, user.id);
+    const calendars = await User.getAllCalendars(conn, requestingUser.id);
 
     return res.status(200).json({
         message: "OK",
