@@ -146,7 +146,7 @@ export class User {
             // TODO: Remove User from all its Events
 
             // Remove the User from all its Calendars
-            await conn.getRepository(CalendarsToOwners)
+            await entityManager.getRepository(CalendarsToOwners)
                 .createQueryBuilder()
                 .delete()
                 .where("owner_id = :user_id", {user_id: userId})

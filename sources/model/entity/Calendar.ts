@@ -153,16 +153,18 @@ export class Calendar {
         conn: Connection,
         calendarId: number
     ): Promise<any> {
-        await conn.getRepository(CalendarsToOwners)
-            .createQueryBuilder()
-            .delete()
-            .where({ calendar_id: calendarId })
-            .execute();
+        await conn.transaction(async entityManager => {
+            await entityManager.getRepository(CalendarsToOwners)
+                .createQueryBuilder()
+                .delete()
+                .where("calendar_id = :calendar_id", {calendar_id: calendarId})
+                .execute();
 
-        await conn.getRepository(Calendar)
-            .createQueryBuilder()
-            .delete()
-            .where({ id: calendarId })
-            .execute();
+            await entityManager.getRepository(Calendar)
+                .createQueryBuilder()
+                .delete()
+                .where("id = :calendar_id", {calendar_id: calendarId})
+                .execute();
+        });
     }
 }
