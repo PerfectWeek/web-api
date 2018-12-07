@@ -6,15 +6,18 @@ export class GroupView {
     public static formatGroup(group: Group): any {
         return {
             id: group.id,
-            name: group.name,
-            nb_members: group.nbMembers
+            name: group.calendar.name,
+            description: group.description,
+            nb_members: group.calendar.nbOwners,
+            calendar_id: group.calendar.id
         };
     }
 
     public static formatGroupRecap(group: Group): any {
         return {
             id: group.id,
-            name: group.name
+            name: group.calendar.name,
+            nb_members: group.calendar.nbOwners
         }
     }
 }

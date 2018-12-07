@@ -1,7 +1,3 @@
-//
-// Created by benard-g on 2018/09/03
-//
-
 import {Connection, createConnection} from "typeorm";
 
 

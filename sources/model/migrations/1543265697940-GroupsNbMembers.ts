@@ -23,8 +23,8 @@ export class GroupsNbMembers1543265697940 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TRIGGER group_members_update_count
-            BEFORE INSERT OR DELETE ON groups_to_users
-                FOR EACH ROW EXECUTE PROCEDURE group_adjust_members_count();
+                BEFORE INSERT OR DELETE ON groups_to_users
+                    FOR EACH ROW EXECUTE PROCEDURE group_adjust_members_count();
         `);
     }
 

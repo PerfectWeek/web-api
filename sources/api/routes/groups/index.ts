@@ -1,9 +1,6 @@
-//
-// Created by benard_g on 2018/10/08
-//
-
 import {Router} from "express";
 import * as AsyncHandler from 'express-async-handler';
+
 import {loggedOnly} from "../../middleware/loggedOnly";
 import * as GroupController from "../../controllers/GroupController";
 
@@ -24,7 +21,5 @@ router.post('/:group_id/add-members', AsyncHandler(loggedOnly), AsyncHandler(Gro
 router.put('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHandler(GroupController.editUserStatus));
 
 router.delete('/:group_id/members/:user_pseudo', AsyncHandler(loggedOnly), AsyncHandler(GroupController.kickUserFromGroup));
-
-router.get('/:group_id/calendar', AsyncHandler(loggedOnly), AsyncHandler(GroupController.getGroupCalendar));
 
 export default router;

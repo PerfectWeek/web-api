@@ -1,7 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn, Repository} from "typeorm";
+import {Column, Connection, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
-import {GroupsToUsers, Role} from "./GroupsToUsers";
-import {User} from "./User";
+import {Calendar} from "./Calendar";
 
 
 @Entity("groups")
@@ -10,106 +9,52 @@ export class Group {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @OneToOne(type => Calendar)
+    @JoinColumn({name: "calendar_id"})
+    calendar: Calendar;
+
     @Column()
-    name: string;
+    description: string;
 
-    @Column({name: "nb_members"})
-    nbMembers: number;
-
-    @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
-    createdAt: Date;
-
-    @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
-    updatedAt: Date;
-
-    members: GroupsToUsers[] = [];
-
-
-    public constructor(name: string) {
-        this.name = name;
-        this.nbMembers = 0;
-        this.members = [];
+    public constructor(description: string, calendar: Calendar) {
+        this.description = description;
+        this.calendar = calendar;
     }
 
     /**
-     * @brief Check if a Group is valid and can be created
-     */
-    public isValid() : boolean {
-        return this.name.length > 0;
-    }
-
-    /**
-     * @brief Save a new Group in the database
+     * @brief Get Group by id
      *
-     * @param groupRepository           The Repository used to access Group resources
-     * @param groupToUserRepository     The Repository used to access GroupToUser resources
-     * @param group                     The Group to save
-     * @param members                   The members to add in the Group
-     *
-     * @return The created Group
-     */
-    static async createGroup(
-        groupRepository: Repository<Group>,
-        groupToUserRepository: Repository<GroupsToUsers>,
-        group: Group,
-        members: User[]
-    ): Promise<Group> {
-        const createdGroup = await groupRepository.save(group);
-
-        group.members = members.map(user => new GroupsToUsers(createdGroup.id, user.id, Role.Admin));
-        await groupToUserRepository.save(group.members);
-
-        group.nbMembers = group.members.length;
-        return group;
-    }
-
-    /**
-     * @brief Get a Group (member list is not filled)
-     *
-     * @param groupRepository
+     * @param conn      The database Connection
      * @param groupId
      *
-     * @return The requested Group information on success
-     * @return null on error
+     * @return The expected Group on success
+     * @return null otherwise
      */
-    static async getGroupInfo(
-        groupRepository: Repository<Group>,
+    public static async findById(
+        conn: Connection,
         groupId: number
-    ) : Promise<Group> {
-        let group = await groupRepository
-            .createQueryBuilder("groups")
-            .where({group_id: groupId})
+    ): Promise<Group> {
+        return conn.getRepository(Group)
+            .createQueryBuilder("group")
+            .innerJoinAndSelect("group.calendar", "calendar")
+            .where({id: groupId})
             .getOne();
-        if (!group) {
-            return null;
-        }
-
-        group.members = [];
-        return group;
     }
 
     /**
      * @brief Delete a Group
      *
-     * @param groupRepository           The Repository used to access Group resources
-     * @param groupToUserRepository     The Repository used to access GroupToUser resources
-     * @param groupId                   The id of the Group
+     * @param conn      The database Connection
+     * @param groupId   The Group to delete
      */
-    static async deleteGroup(
-        groupRepository: Repository<Group>,
-        groupToUserRepository: Repository<GroupsToUsers>,
+    public static async deleteById(
+        conn: Connection,
         groupId: number
-    ) : Promise<any> {
-        await groupToUserRepository
+    ): Promise<any> {
+        return conn.getRepository(Group)
             .createQueryBuilder()
             .delete()
-            .where("group_id = :group_id", {group_id: groupId})
-            .execute();
-
-        await groupRepository
-            .createQueryBuilder()
-            .delete()
-            .where("id = :group_id", {group_id: groupId})
+            .where({id: groupId})
             .execute();
     }
 }

@@ -1,6 +1,8 @@
-import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Index, Connection } from "typeorm";
+import {Entity, PrimaryColumn, ManyToOne, JoinColumn, Index, Connection} from "typeorm";
+
 import { Calendar } from "./Calendar";
 import { User } from "./User";
+
 
 @Entity("calendars_to_owners")
 export class CalendarsToOwners {
@@ -26,26 +28,44 @@ export class CalendarsToOwners {
         this.owner = undefined;
     }
 
-   /**
-    * @brief Check if a User owns a given Calendar
-    *
-    * @param conn
-    * @param userId
-    * @param calendarId
-    *
-    * @returns true if he owns it
-    * @returns false if not
-    */
-    public static async isCalendarOwner(
+    /**
+     * @brief Find a relation between a Calendar and a User
+     *
+     * @param conn          The database Connection
+     * @param calendarId
+     * @param ownerId
+     */
+    public static async findCalendarRelation(
         conn: Connection,
-        userId: number,
-        calendarId: number
-    ): Promise<boolean> {
-        const cto = await conn.getRepository(CalendarsToOwners)
-            .createQueryBuilder()
-            .where("owner_id = :userId", {userId: userId})
-            .andWhere("calendar_id = :calendarId", {calendarId: calendarId})
-            .getCount();
-        return cto > 0;
+        calendarId: number,
+        ownerId: number
+    ): Promise<CalendarsToOwners> {
+        return conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder("cto")
+            .select()
+            .where("cto.calendar_id = :calendar_id", {calendar_id: calendarId})
+            .andWhere("cto.owner_id = :owner_id", {owner_id: ownerId})
+            .getOne();
+    }
+
+    /**
+     * @brief Find  relation between a Group and a User
+     *
+     * @param conn      The database Connection
+     * @param groupId
+     * @param userId
+     */
+    public static async findGroupRelation(
+        conn: Connection,
+        groupId: number,
+        userId: number
+    ): Promise<CalendarsToOwners> {
+        return conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder("cto")
+            .innerJoin("calendars", "calendar", "cto.calendar_id = calendar.id")
+            .innerJoin("groups", "group", "calendar.id = group.calendar_id")
+            .where("cto.owner_id = :owner_id", {owner_id: userId})
+            .andWhere("group.id = :group_id", {group_id: groupId})
+            .getOne();
     }
 }

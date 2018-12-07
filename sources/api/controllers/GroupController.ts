@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {Repository} from "typeorm";
+import {Connection} from "typeorm";
 
 import {getRequestingUser} from "../middleware/loggedOnly";
 import {removeDuplicates} from "../../utils/removeDuplicates";
@@ -9,38 +9,43 @@ import {Group} from "../../model/entity/Group";
 import {User} from "../../model/entity/User";
 import {ApiException} from "../../utils/apiException";
 import {GroupView} from "../views/GroupView";
-import {GroupsToUsers, Role} from "../../model/entity/GroupsToUsers";
+import {Calendar} from "../../model/entity/Calendar";
+import {CalendarsToOwners} from "../../model/entity/CalendarsToOwners";
 
 
 //
-// Create a new Group
+// Create a new Group and its associated Calendar
 //
 export async function createGroup(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
-    const groupName = (req.body.name || "").trim();
-    let groupMemberNames = req.body.members || [];
-    groupMemberNames = removeDuplicates(groupMemberNames);
-    groupMemberNames = removeIfExists(groupMemberNames, requestingUser.pseudo);
-
-    const conn = await DbConnection.getConnection();
-    const userRepository = conn.getRepository(User);
-
-    const userPromises = groupMemberNames.map((memberPseudo: string) => {
-        return getUser(userRepository, memberPseudo);
-    });
-
-    let groupMembers: User[] = <any[]>(await Promise.all(userPromises));
-    groupMembers.push(requestingUser);
-
-    const group = new Group(groupName);
-    if (!group.isValid()) {
-        throw new ApiException(400, "Invalid fields in Group");
+    const groupName: string = req.body.name;
+    const groupDescription: string = req.body.description || "";
+    if (!groupName) {
+        throw new ApiException(400, "Bad request");
     }
 
-    const groupRepository = conn.getRepository(Group);
-    const groupsToUsersRepository = conn.getRepository(GroupsToUsers);
-    const createdGroup = await Group.createGroup(groupRepository, groupsToUsersRepository, group, groupMembers);
+    const groupMembersPseudos = makeGroupMemberNamesList(
+        req.body.members || [],
+        requestingUser.pseudo
+    );
+
+    const conn = await DbConnection.getConnection();
+
+    // Make sure all members exist
+    const groupMembers = await getAllUsers(conn, groupMembersPseudos);
+    groupMembers.push(requestingUser);
+
+    // Create Calendar
+    const calendar = new Calendar(groupName);
+    if (!calendar.isValid()) {
+        throw new ApiException(400, "Invalid fields for Calendar");
+    }
+    const createdCalendar = await Calendar.createCalendar(conn, calendar, groupMembers);
+
+    // Create Group
+    const group = new Group(groupDescription, createdCalendar);
+    const createdGroup = await conn.manager.save(group);
 
     return res.status(201).json({
         message: "Group created",
@@ -48,11 +53,21 @@ export async function createGroup(req: Request, res: Response) {
     });
 }
 
-async function getUser(userRepository: Repository<User>, pseudo: string) : Promise<User> {
-    const user = await userRepository.findOne({pseudo: pseudo});
+function makeGroupMemberNamesList(members: string[], requestingUserPseudo: string): string[] {
+    members = removeDuplicates(members);
+    members = removeIfExists(members, requestingUserPseudo);
+    return members;
+}
 
+async function getAllUsers(conn: Connection, memberPseudo: string[]): Promise<User[]> {
+    const userPromises = memberPseudo.map(memberPseudo => getOneUser(conn, memberPseudo));
+    return Promise.all(userPromises);
+}
+
+async function getOneUser(conn: Connection, pseudo: string): Promise<User> {
+    const user = await User.findByPseudo(conn, pseudo);
     if (!user) {
-        throw new ApiException(404, "User '" + pseudo + "' not found");
+        throw new ApiException(404, `User "${pseudo}" not found`);
     }
 
     return user;
@@ -64,22 +79,24 @@ async function getUser(userRepository: Repository<User>, pseudo: string) : Promi
 //
 export async function groupInfo(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
-    const groupId = req.params.group_id;
+
+    const groupId: number = req.params.group_id;
 
     const conn = await DbConnection.getConnection();
-    const groupToUserRepository = conn.getRepository(GroupsToUsers);
-    const groupMember = await GroupsToUsers.getRelation(groupToUserRepository, groupId, requestingUser.id);
-    if (!groupMember) {
+
+    // Get the requested Group
+    const group = await Group.findById(conn, groupId);
+    if (!group) {
         throw new ApiException(403, "Group not accessible");
     }
 
-    const groupRepository = conn.getRepository(Group);
-    const group = await Group.getGroupInfo(groupRepository, groupId);
-    if (!group) {
-        throw new ApiException(404, "Group not found");
+    // Check if the requesting User can access this Group
+    const calendarToOwner = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Group not accessible");
     }
 
-    res.status(200).json({
+    return res.status(200).json({
         message: "OK",
         group: GroupView.formatGroup(group)
     });
@@ -96,7 +113,9 @@ export async function editGroup(req: Request, res: Response) {
         group: {
             id: 12,
             name: "Perfect Group",
-            nb_members: 4
+            nb_members: 4,
+            calendar_id: 1,
+            description: "Wow ! Such Group !"
         }
     });
 }
@@ -107,21 +126,20 @@ export async function editGroup(req: Request, res: Response) {
 //
 export async function deleteGroup(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
-    const groupId = req.params.group_id;
+
+    const groupId: number = req.params.group_id;
 
     const conn = await DbConnection.getConnection();
-    const groupToUserRepository = conn.getRepository(GroupsToUsers);
-    const groupMember = await GroupsToUsers.getRelation(groupToUserRepository, groupId, requestingUser.id);
 
-    if (!groupMember
-        || groupMember.role !== Role.Admin) {
-        throw new ApiException(403, "You are not allowed to delete this Group");
+    // Check if the Group exists and if the requesting User belongs to it
+    const calendarToOwner = await CalendarsToOwners.findGroupRelation(conn, groupId, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Action not allowed");
     }
 
-    const groupRepository = conn.getRepository(Group);
-    await Group.deleteGroup(groupRepository, groupToUserRepository, groupId);
+    await Group.deleteById(conn, groupId);
 
-    res.status(200).json({
+    return res.status(200).json({
         message: "Group successfully deleted"
     });
 }
@@ -205,7 +223,7 @@ export async function editUserStatus(req: Request, res: Response) {
 
 
 //
-// Remove Users from a Group
+// Remove a User from a Group
 //
 export async function kickUserFromGroup(req: Request, res: Response) {
     // TODO
@@ -225,16 +243,5 @@ export async function kickUserFromGroup(req: Request, res: Response) {
                 role: "Spectator"
             }
         ]
-    });
-}
-
-// TODO See if we keep this route
-export async function getGroupCalendar(req: Request, res: Response) {
-    return res.status(200).json({
-        message: "OK",
-        calendar: {
-            id: 4,
-            name: "Groupe Travail"
-        }
     });
 }
