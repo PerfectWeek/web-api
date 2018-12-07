@@ -1877,7 +1877,7 @@
                       "example" : "OK"
                     },
                     "events" : {
-                      "$ref" : "#/components/schemas/CalendarEvent"
+                      "$ref" : "#/components/schemas/EventInfo"
                     }
                   }
                 }
@@ -2451,6 +2451,10 @@
           "name" : {
             "type" : "string",
             "example" : "amazing_group"
+          },
+          "nb_members" : {
+            "type" : "number",
+            "example" : 3
           }
         }
       },
@@ -2460,6 +2464,10 @@
           "name" : {
             "type" : "string",
             "example" : "A new Group Name"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "A new Group Description"
           }
         }
       },
@@ -2469,6 +2477,10 @@
           "name" : {
             "type" : "string",
             "example" : "amazing_group"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "A Group description"
           },
           "members" : {
             "type" : "array",
@@ -2490,6 +2502,14 @@
           "name" : {
             "type" : "string",
             "example" : "amazing_group"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "A Group with nice users"
+          },
+          "calendar_id" : {
+            "type" : "number",
+            "example" : 42
           },
           "nb_members" : {
             "type" : "integer",
