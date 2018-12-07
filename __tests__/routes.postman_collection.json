@@ -68,18 +68,18 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "fd24842e-7a6f-4872-b344-985f5a275b9c",
 								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.eql(\"You need to be authenticated to perform this action\");",
 									"});",
-									"",
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
-									"});"
+									""
 								],
-								"id": "fd24842e-7a6f-4872-b344-985f5a275b9c",
 								"type": "text/javascript"
 							}
 						}
@@ -119,15 +119,15 @@
 							"script": {
 								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.eql(\"Invalid fields in User\");",
 									"});",
-									"",
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.response.to.have.status(400);",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -176,23 +176,23 @@
 					"response": []
 				},
 				{
-					"name": "POST /users | Create new user with empty password",
+					"name": "POST /users | Create new user with invalid password",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"id": "e07be596-fba2-4a63-8f9a-3d711e913b9b",
 								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.eql(\"Password must be at least 8 characters long\");",
 									"});",
-									"",
-									"pm.test(\"Status code is 403\", function () {",
-									"    pm.response.to.have.status(403);",
-									"});"
+									""
 								],
-								"id": "e07be596-fba2-4a63-8f9a-3d711e913b9b",
 								"type": "text/javascript"
 							}
 						}
@@ -240,22 +240,22 @@
 					"response": []
 				},
 				{
-					"name": "POST /users | Create new user with empty pseudo",
+					"name": "POST /users | Create new user without pseudo",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.eql(\"Bad request\");",
 									"});",
-									"",
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.response.to.have.status(400);",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -272,11 +272,6 @@
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": [
-								{
-									"key": "pseudo",
-									"value": "",
-									"type": "text"
-								},
 								{
 									"key": "email",
 									"value": "mortimr@fake.com",
@@ -304,6 +299,124 @@
 					"response": []
 				},
 				{
+					"name": "POST /users | Create new user without email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Bad request\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"value": "pseudo",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "ANicePassword42",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /users | Create new user without password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Bad request\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "mortimr@fake.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "POST /users | Create new user mortimr",
 					"event": [
 						{
@@ -311,6 +424,9 @@
 							"script": {
 								"id": "8dbd60c6-d553-448d-8432-2598cca18422",
 								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
 									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -320,11 +436,7 @@
 									"    pm.expect(jsonData.user.pseudo).to.eql(\"mortimr\");",
 									"    pm.expect(jsonData.user.email).to.eql(\"mortimr@fake.com\");",
 									"});",
-									"",
-									"",
-									"pm.test(\"Status code is 201\", function () {",
-									"    pm.response.to.have.status(201);",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -418,7 +530,12 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
 								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.eql(\"Authentication successful\");",
@@ -427,14 +544,9 @@
 									"});",
 									"",
 									"",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
 									"pm.globals.set(\"TOKEN\", pm.response.json().access_token);",
 									""
 								],
-								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
 								"type": "text/javascript"
 							}
 						}
@@ -483,6 +595,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "adc10d4f-eccb-42e3-8405-6e1619296173",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -495,7 +608,6 @@
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
-								"id": "adc10d4f-eccb-42e3-8405-6e1619296173",
 								"type": "text/javascript"
 							}
 						}
@@ -2067,12 +2179,22 @@
 									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"});",
 									"",
+									"pm.test(\"Group description is correct\", function () {",
+									"   const expectedDescription = \"Group PB description\";",
+									"   pm.expect(group.description).to.equal(expectedDescription);",
+									"});",
+									"",
 									"pm.test(\"Group contains 2 members\", function () {",
 									"    const expectedCount = 2;",
 									"    pm.expect(group.nb_members).to.equal(expectedCount);",
 									"});",
 									"",
+									"pm.test(\"Group has calendar_id\", function () {",
+									"    pm.expect(group.description).to.not.equal(undefined);",
+									"});",
+									"",
 									"pm.globals.set(\"GROUP_PB_ID\", body.group.id);",
+									"pm.globals.set(\"GROUP_PB_CALENDAR_ID\", body.group.calendar_id);",
 									""
 								],
 								"type": "text/javascript"
@@ -2105,6 +2227,11 @@
 								{
 									"key": "name",
 									"value": "{{GROUP_BENOIT_PATRICK_NAME}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Group PB description",
 									"type": "text"
 								},
 								{
@@ -2156,9 +2283,11 @@
 									"",
 									"    const groupExpectedName = pm.environment.get(\"GROUP_BENOIT_PATRICK_NAME\");",
 									"    const groupExpectedId = pm.globals.get(\"GROUP_PB_ID\");",
+									"    const groupExpectedMemberCount = 2;",
 									"",
 									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"    pm.expect(group.id).to.equal(groupExpectedId);",
+									"    pm.expect(group.nb_members).to.equal(groupExpectedMemberCount);",
 									"});",
 									""
 								],
@@ -2298,12 +2427,18 @@
 									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"});",
 									"",
+									"pm.test(\"Group description is correct\", function () {",
+									"    const groupExpectedDescription = \"Nice group PBI\";",
+									"    pm.expect(group.description).to.equal(groupExpectedDescription);",
+									"});",
+									"",
 									"pm.test(\"Group contains 3 members\", function () {",
 									"    const expectedCount = 3;",
 									"    pm.expect(group.nb_members).to.equal(expectedCount);",
 									"});",
 									"",
-									"pm.globals.set(\"GROUP_PBI_ID\", body.group.id);",
+									"pm.globals.set(\"GROUP_PBI_ID\", group.id);",
+									"pm.globals.set(\"GROUP_PBI_CALENDAR_ID\", group.calendar_id);",
 									""
 								],
 								"type": "text/javascript"
@@ -2351,6 +2486,11 @@
 								{
 									"key": "members[2]",
 									"value": "{{INTRUDER_PSEUDO}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Nice group PBI",
 									"type": "text"
 								}
 							]
@@ -2525,9 +2665,19 @@
 									"    pm.expect(group.name).to.equal(groupExpectedName);",
 									"});",
 									"",
+									"pm.test(\"Group description is correct\", function () {",
+									"    const groupExpectedDescription = \"Group PB description\";",
+									"    pm.expect(group.description).to.equal(groupExpectedDescription);",
+									"});",
+									"",
 									"pm.test(\"Group contains 2 members\", function () {",
 									"    const expectedCount = 2;",
 									"    pm.expect(group.nb_members).to.equal(expectedCount);",
+									"});",
+									"",
+									"pm.test(\"Calendar ID is correct\", function () {",
+									"    const expectedId = pm.globals.get(\"GROUP_PB_CALENDAR_ID\");",
+									"    pm.expect(group.calendar_id).to.equal(expectedId);",
 									"});",
 									""
 								],
@@ -2705,6 +2855,61 @@
 							]
 						},
 						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group PB Get by Benoit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bf73e664-1967-41e3-8505-b6fe05a4afb5",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"",
+									"pm.test(\"Group message is unauthorized\", function () {",
+									"    pm.expect(body.message).to.equal(\"Group not accessible\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
