@@ -19,9 +19,9 @@ import { CalendarsToOwners } from '../../model/entity/CalendarsToOwners';
 // Create a new User and save it in the DataBase
 //
 export async function createUser(req: Request, res: Response) {
-    const email = req.body.email;
-    const pseudo = req.body.pseudo;
-    const password = req.body.password;
+    const email: string = req.body.email;
+    const pseudo: string = req.body.pseudo;
+    const password: string = req.body.password;
     if (!email || !pseudo || !password) {
         throw new ApiException(400, "Bad request");
     }
@@ -197,7 +197,7 @@ export async function editUser(req: Request, res: Response) {
 // Delete user
 //
 export async function deleteUser(req: Request, res: Response) {
-    let user: User = getRequestingUser(req);
+    let user = getRequestingUser(req);
     if (user.pseudo !== req.params.pseudo) {
         throw new ApiException(403, "Action not allowed");
     }
@@ -215,7 +215,7 @@ export async function deleteUser(req: Request, res: Response) {
 // Get all groups a User belongs to
 //
 export async function getUserGroups(req: Request, res: Response) {
-    let user: User = getRequestingUser(req);
+    let user = getRequestingUser(req);
     if (user.pseudo !== req.params.pseudo) {
         throw new ApiException(403, "Action not allowed");
     }
@@ -235,13 +235,15 @@ export async function getUserGroups(req: Request, res: Response) {
 // Get all Calendars of a User
 //
 export async function getUserCalendars(req: Request, res: Response) {
-    const pseudo = req.params.pseudo;
     const requestingUser = getRequestingUser(req);
+
+    const pseudo = req.params.pseudo;
     if (pseudo !== requestingUser.pseudo) {
         throw new ApiException(403, "Action not allowed");
     }
 
     const conn = await DbConnection.getConnection();
+
     const calendars = await User.getAllCalendars(conn, requestingUser.id);
 
     return res.status(200).json({

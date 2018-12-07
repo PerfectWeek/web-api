@@ -3,6 +3,7 @@ import { Event } from "./Event"
 import { CalendarsToOwners } from "./CalendarsToOwners";
 import { User } from "./User";
 
+
 @Entity("calendars")
 export class Calendar {
 
@@ -54,7 +55,15 @@ export class Calendar {
         return this.owners.findIndex(cto => cto.owner_id === user.id) !== -1;
     }
 
-
+    /**
+     * @brief Create a new Calendar with owners
+     *
+     * @param conn      The database Connection
+     * @param calendar
+     * @param owners
+     *
+     * @return The created Calendar
+     */
     public static async createCalendar(
         conn: Connection,
         calendar: Calendar,

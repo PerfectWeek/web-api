@@ -25,7 +25,10 @@ export async function createGroup(req: Request, res: Response) {
         throw new ApiException(400, "Bad request");
     }
 
-    const groupMembersPseudos = makeGroupMemberNamesList(req.body.members || [], requestingUser.pseudo);
+    const groupMembersPseudos = makeGroupMemberNamesList(
+        req.body.members || [],
+        requestingUser.pseudo
+    );
 
     const conn = await DbConnection.getConnection();
 

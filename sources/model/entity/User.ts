@@ -30,7 +30,7 @@ export class User {
     @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     updatedAt: Date;
 
-    groups: Group[] = [];
+    groups: Group[];
 
 
     public constructor(pseudo: string, email: string, ciphered_password: string) {
