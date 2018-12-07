@@ -5,7 +5,8 @@
         "outDir": "build",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "resolveJsonModule": true
     },
     "exclude": [
         "node_modules",

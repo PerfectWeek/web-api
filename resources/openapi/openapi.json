@@ -1,0 +1,2759 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "PerfectWeek API",
+    "description" : "The PerfectWeek web API",
+    "contact" : {
+      "email" : "perfectweek_2020@labeip.epitech.eu"
+    },
+    "license" : {
+      "name" : "MIT",
+      "url" : "https://github.com/PerfectWeek/web-api/blob/dev/LICENSE"
+    },
+    "version" : "0.1.0"
+  },
+  "servers" : [ {
+    "url" : "https://api.kalastud.io",
+    "description" : "Production Server"
+  } ],
+  "tags" : [ {
+    "name" : "API",
+    "description" : "Get information about PerfectWeek's API"
+  }, {
+    "name" : "Auth",
+    "description" : "Authentication routes"
+  }, {
+    "name" : "User",
+    "description" : "User management"
+  }, {
+    "name" : "Group",
+    "description" : "Group management"
+  }, {
+    "name" : "Calendar",
+    "description" : "Calendar management"
+  }, {
+    "name" : "Event",
+    "description" : "Event management"
+  } ],
+  "paths" : {
+    "/" : {
+      "get" : {
+        "tags" : [ "API" ],
+        "summary" : "The PerfectWeek API endpoint",
+        "operationId" : "apiInfo",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/validate-email/{uuid}" : {
+      "get" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Validate an email",
+        "description" : "Finalize User creation",
+        "operationId" : "confirmUserEmail",
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "description" : "Unique identifier generated for email validation",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "User successfuly validated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User has been successfully created"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotFound"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Log a User in",
+        "description" : "Generation an authentication token for the User",
+        "operationId" : "userLogin",
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginCredentials"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Authentication successful",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Authentication successful"
+                    },
+                    "access_token" : {
+                      "type" : "string",
+                      "example" : "eyJhbGciIsInR5cCpXVCJ9.eyJpZCI6MSwiaF0Ijox.vNcwZK1V5SWzMnBB-jmnkX2u3C"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Bad User or password"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users" : {
+      "post" : {
+        "tags" : [ "User" ],
+        "summary" : "Create a new User",
+        "description" : "The User will be created as \"pending\" until its email is verified",
+        "operationId" : "createUser",
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegistrationCredentials"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "A link has been sent to your email address, please click on it in order to confirm your email"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_409"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{pseudo}" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "Get information about a specific User",
+        "operationId" : "getUserInfo",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "User" ],
+        "summary" : "Edit User information",
+        "operationId" : "editUserInfo",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserInfo"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "User successfully updated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "User" ],
+        "summary" : "Permanently delete a User",
+        "operationId" : "deleteUser",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User deleted",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/users/{pseudo}/groups" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "Get all Groups a User belongs to",
+        "operationId" : "getUserGroups",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "groups" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/GroupRecap"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/users/{pseudo}/calendars" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "Get all Calendars a User owns",
+        "operationId" : "getUserCalendars",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "calendars" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/CalendarRecap"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/groups" : {
+      "post" : {
+        "tags" : [ "Group" ],
+        "summary" : "Create a new Group",
+        "operationId" : "createGroup",
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GroupCredentials"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Group created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Group created"
+                    },
+                    "group" : {
+                      "$ref" : "#/components/schemas/GroupInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid Group",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Invalid fields in Group"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/groups/{group-id}" : {
+      "get" : {
+        "tags" : [ "Group" ],
+        "summary" : "Get information about a Group",
+        "operationId" : "getGroupInfo",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "group" : {
+                      "$ref" : "#/components/schemas/GroupInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Group not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Group not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Group" ],
+        "summary" : "Edit a Group information",
+        "operationId" : "editGroupInfo",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GroupEdit"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Group successfully edited",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "group" : {
+                      "$ref" : "#/components/schemas/GroupInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Group" ],
+        "summary" : "Delete a Group",
+        "operationId" : "deleteGroup",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Group successfully deleted",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/groups/{group-id}/add-members" : {
+      "post" : {
+        "tags" : [ "Group" ],
+        "summary" : "Add new Users to a Group",
+        "description" : "Add new Users to a Group and returns the new list of members\n",
+        "operationId" : "addMembersToGroup",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "properties" : {
+                  "members" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/GroupMember"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Users added",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "members" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/GroupMember"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/groups/{group-id}/members" : {
+      "get" : {
+        "tags" : [ "Group" ],
+        "summary" : "Get all members of a Group",
+        "operationId" : "getGroupMemberInfo",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "members" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/GroupMember"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/groups/{group-id}/members/{pseudo}" : {
+      "put" : {
+        "tags" : [ "Group" ],
+        "summary" : "Edit a member's role inside a Group",
+        "operationId" : "editGroupMemberInfo",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The Member pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "role" : {
+                    "$ref" : "#/components/schemas/GroupMemberRole"
+                  }
+                }
+              }
+            }
+          },
+          "required" : true,
+          "$ref" : "#/components/requestBodies/inline_object"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Role edited",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "member" : {
+                      "$ref" : "#/components/schemas/GroupMember"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Group" ],
+        "summary" : "Remove a member from a Group",
+        "description" : "Remove a member from a group and returns the updated members list\n",
+        "operationId" : "deleteMemberFromGroup",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The member pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User successfully kicked",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "members" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/GroupMember"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/groups/{group-id}/calendar" : {
+      "get" : {
+        "tags" : [ "Group" ],
+        "summary" : "Get information about a Group Calendar",
+        "operationId" : "getGroupCalendar",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "calendar" : {
+                      "$ref" : "#/components/schemas/CalendarInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Group not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Event not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/calendars" : {
+      "post" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "Create a new Calendar",
+        "operationId" : "createCalendar",
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CalendarCredentials"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Calendar created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Calendar created"
+                    },
+                    "calendar" : {
+                      "$ref" : "#/components/schemas/CalendarInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid Calendar",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Invalid fields in Calendar"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/calendars/{calendar-id}" : {
+      "get" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "Get information about a Calendar",
+        "operationId" : "getCalendarInfo",
+        "parameters" : [ {
+          "name" : "calendar-id",
+          "in" : "path",
+          "description" : "The Calendar id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "calendar" : {
+                      "$ref" : "#/components/schemas/CalendarInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Calendar not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Event not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "Edit a Calendar information",
+        "operationId" : "editCalendarInfo",
+        "parameters" : [ {
+          "name" : "calendar-id",
+          "in" : "path",
+          "description" : "The Calendar id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CalendarEdit"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Calendar successfully edited",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "calendar" : {
+                      "$ref" : "#/components/schemas/CalendarInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "Delete a Calendar",
+        "operationId" : "deleteCalendar",
+        "parameters" : [ {
+          "name" : "calendar-id",
+          "in" : "path",
+          "description" : "The Calendar id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Calendar successfully deleted",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/calendars/{calendar-id}/events" : {
+      "get" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "Get all events of a Calendar",
+        "operationId" : "getCalendarEvents",
+        "parameters" : [ {
+          "name" : "calendar-id",
+          "in" : "path",
+          "description" : "The Calendar id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "events" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/CalendarEvent"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "Create an Event",
+        "operationId" : "createEvent",
+        "parameters" : [ {
+          "name" : "calendar-id",
+          "in" : "path",
+          "description" : "The Calendar in which the Event will be added",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "events" : {
+                      "$ref" : "#/components/schemas/CalendarEvent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/events/{event-id}" : {
+      "get" : {
+        "tags" : [ "Event" ],
+        "summary" : "Get information about an Event",
+        "operationId" : "getEventInfo",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "event" : {
+                      "$ref" : "#/components/schemas/EventInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Event not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Event not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Event" ],
+        "summary" : "Edit an Event information",
+        "operationId" : "editEventInfo",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EventEdit"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Event successfully edited",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "event" : {
+                      "$ref" : "#/components/schemas/EventInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Event" ],
+        "summary" : "Delete an Event",
+        "operationId" : "deleteEvent",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Event successfully deleted",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/events/{event-id}/attendees" : {
+      "get" : {
+        "tags" : [ "Event" ],
+        "summary" : "Get all attendees to an Event",
+        "operationId" : "getEventsAttendees",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "attendees" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/EventAttendees"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/events/{event-id}/attendees/{attendee-pseudo}" : {
+      "delete" : {
+        "tags" : [ "Event" ],
+        "summary" : "Delete an Attendee to an Event",
+        "operationId" : "deleteEventAttendee",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "attendee-pseudo",
+          "in" : "path",
+          "description" : "The Attendee Pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "attendees" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/EventAttendees"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/events/{event-id}/invite-user" : {
+      "post" : {
+        "tags" : [ "Event" ],
+        "summary" : "Invite user to Event",
+        "operationId" : "inviteUser",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InviteUser"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "attendees" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/EventAttendees"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "RegistrationCredentials" : {
+        "type" : "object",
+        "properties" : {
+          "pseudo" : {
+            "type" : "string",
+            "format" : "[a-zA-Z][a-zA-Z0-9]*",
+            "example" : "amazing_user"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "amazing.user@gmail.com"
+          },
+          "password" : {
+            "type" : "string",
+            "example" : "AmazingPassword42"
+          }
+        }
+      },
+      "LoginCredentials" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "example" : "amazing.user@gmail.com"
+          },
+          "password" : {
+            "type" : "string",
+            "example" : "AmazingPassword42"
+          }
+        }
+      },
+      "UserInfo" : {
+        "type" : "object",
+        "properties" : {
+          "pseudo" : {
+            "type" : "string",
+            "example" : "amazing_user"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "amazing.user@gmail.com"
+          }
+        }
+      },
+      "GroupRecap" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 42
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "amazing_group"
+          }
+        }
+      },
+      "GroupEdit" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "A new Group Name"
+          }
+        }
+      },
+      "GroupCredentials" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "amazing_group"
+          },
+          "members" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "some_user_pseudo"
+            }
+          }
+        }
+      },
+      "GroupInfo" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 42
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "amazing_group"
+          },
+          "nb_members" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 3
+          }
+        }
+      },
+      "GroupMemberRole" : {
+        "type" : "string",
+        "enum" : [ "Admin", "Spectator" ]
+      },
+      "GroupMember" : {
+        "type" : "object",
+        "properties" : {
+          "pseudo" : {
+            "type" : "string",
+            "example" : "amazing_user"
+          },
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
+          }
+        }
+      },
+      "CalendarRecap" : {
+        "type" : "object",
+        "properties" : {
+          "calendar" : {
+            "$ref" : "#/components/schemas/CalendarRecap_calendar"
+          }
+        }
+      },
+      "CalendarCredentials" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "amazing_calendar"
+          }
+        }
+      },
+      "CalendarInfo" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 42
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "amazing_calendar"
+          }
+        }
+      },
+      "CalendarEdit" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "qlf tu coco"
+          }
+        }
+      },
+      "CalendarEvent" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 42
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "qlf tu coco"
+          },
+          "start_time" : {
+            "type" : "string",
+            "example" : "2012-12-12T12:12:12"
+          },
+          "end_time" : {
+            "type" : "string",
+            "example" : "2012-12-12T12:12:12"
+          }
+        }
+      },
+      "EventInfo" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number",
+            "example" : 43
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "nouvel an"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "soiree"
+          },
+          "location" : {
+            "type" : "string",
+            "example" : "Le pub Universitaire, Quebec City"
+          },
+          "calendar_id" : {
+            "type" : "number",
+            "example" : 3
+          },
+          "start_time" : {
+            "type" : "string",
+            "example" : "2012-12-12T12:12:12"
+          },
+          "end_time" : {
+            "type" : "string",
+            "example" : "2012-12-12T12:12:12"
+          }
+        }
+      },
+      "EventEdit" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "nouvel an"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "soiree"
+          },
+          "start_time" : {
+            "type" : "string",
+            "example" : "2012-12-12T12:12:12"
+          },
+          "end_time" : {
+            "type" : "string",
+            "example" : "2012-12-12T12:12:12"
+          }
+        }
+      },
+      "EventAttendees" : {
+        "type" : "object",
+        "properties" : {
+          "pseudo" : {
+            "type" : "string",
+            "example" : "alif"
+          }
+        }
+      },
+      "InviteUser" : {
+        "type" : "object",
+        "properties" : {
+          "pseudo" : {
+            "type" : "string",
+            "example" : "alif"
+          }
+        }
+      },
+      "AuthenticationFailed" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "You must be authenticated to perform this action"
+          }
+        },
+        "description" : "The authentication failed"
+      },
+      "Unauthorized" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Action not allowed"
+          }
+        },
+        "description" : "The action is not allowed"
+      },
+      "NotFound" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Route or Resource not found"
+          }
+        },
+        "description" : "Route or Resource not found"
+      },
+      "InternalServerError" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Internal Server Error"
+          }
+        },
+        "description" : "Internal Server Error"
+      },
+      "inline_response_200" : {
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "Perfect Week API"
+          }
+        },
+        "example" : {
+          "name" : "Perfect Week API"
+        }
+      },
+      "inline_response_400" : {
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Invalid fields in User"
+          }
+        }
+      },
+      "inline_response_409" : {
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Pseudo or email already exists"
+          }
+        }
+      },
+      "inline_object" : {
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
+          }
+        }
+      },
+      "CalendarRecap_calendar" : {
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 42
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "amazing_calendar"
+          }
+        }
+      }
+    },
+    "requestBodies" : {
+      "inline_object" : {
+        "content" : {
+          "application/x-www-form-urlencoded" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "BearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}

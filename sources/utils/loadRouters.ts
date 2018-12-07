@@ -33,7 +33,7 @@ export function loadRouters(app: Express.Express, api_directory: string) {
 
     // Load the routes
     mapped_routes.forEach(({file, route}) => {
-        const router: Express.Router = require("../../" + file).default;
+        const router: Express.Router = require("../../../" + file).default;
         app.use(route, router);
         console.debug("Loaded: " + route);
     });

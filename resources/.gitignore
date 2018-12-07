@@ -1,1 +1,3 @@
-/openapi
+/openapi/.openapi-generator
+/openapi/.openapi-generator-ignore
+/openapi/README.md

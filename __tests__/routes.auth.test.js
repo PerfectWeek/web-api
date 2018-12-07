@@ -12,25 +12,30 @@ process.env = {
 const MINUTE = 60000;
 const TEST_API_PORT = 9090;
 
-const app = require('../build/main');
+const app_loader = require('../build/sources/main');
+let app;
 let server;
 
 
 describe('Testing auth', () => {
 
     beforeAll(async (done) => {
+        console.log("Starting test Postgres");
         exec('npm run test-postgres-run', {env: process.env}, (err, stdout, stderr) => {
             if (stdout) console.log(stdout);
             if (stderr) console.error(stderr);
             if (err)
                 done(err);
             else {
+                console.log("Starting Migrations");
                 exec('npm run migration-up', {env: process.env}, (err, stdout, stderr) => {
                     if (stdout) console.log(stdout);
                     if (stderr) console.error(stderr);
                     if (err)
                         done(err);
                     else {
+                        console.log("Starting API");
+                        app = app_loader();
                         server = app.listen(TEST_API_PORT, () => {
                             done();
                         });
