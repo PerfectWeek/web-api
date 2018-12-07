@@ -3466,14 +3466,16 @@
 							"script": {
 								"id": "59c16090-1a6e-49ee-9f78-c3946144b0b5",
 								"exec": [
-									"pm.test(\"Test body value\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"Calendar not found\");",
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
 									"});",
 									"",
-									"pm.test(\"Status code is 404\", function () {",
-									"    pm.response.to.have.status(404);",
-									"});"
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Calendar not accessible\");",
+									"});",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -3580,6 +3582,63 @@
 					"response": []
 				},
 				{
+					"name": "GET /calendars/calendar_id | Get calendar removed Calendar Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    pm.expect(jsonData.message).to.include(\"OK\");",
+									"    pm.expect(jsonData.calendar.name).to.eql(\"Refacto calendar\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}"
+							]
+						},
+						"description": "Get info, without events"
+					},
+					"response": []
+				},
+				{
 					"name": "PUT /calendars/calendar_id | Edit calendar info unknown calendar",
 					"event": [
 						{
@@ -3589,11 +3648,11 @@
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"Calendar not found\");",
+									"    pm.expect(jsonData.message).to.eql(\"Calendar not accessible\");",
 									"});",
 									"",
-									"pm.test(\"Status code is 404\", function () {",
-									"    pm.response.to.have.status(404);",
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -3767,6 +3826,62 @@
 					"response": []
 				},
 				{
+					"name": "GET /calendars/calendar_id | Get calendar removed Calendar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    pm.expect(jsonData.message).to.include(\"Calendar not accessible\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}"
+							]
+						},
+						"description": "Get info, without events"
+					},
+					"response": []
+				},
+				{
 					"name": "DELETE /calendars/calendar_id | Delete a unknown Calendar",
 					"event": [
 						{
@@ -3776,12 +3891,12 @@
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.include(\"Calendar not found\");",
+									"    pm.expect(jsonData.message).to.include(\"Calendar not accessible\");",
 									"});",
 									"",
 									"",
-									"pm.test(\"Status code is 404\", function () {",
-									"    pm.response.to.have.status(404);",
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
 									"});",
 									""
 								],
