@@ -1214,7 +1214,7 @@ paths:
                     type: string
                     example: OK
                   events:
-                      $ref: '#/components/schemas/EventInfo'
+                    $ref: '#/components/schemas/EventInfo'
         '401':
           description: Authentication failed
           content:
@@ -1653,6 +1653,9 @@ components:
         name:
           type: string
           example: amazing_group
+        nb_members:
+          type: number
+          example: 3
 
     GroupEdit:
       type: object
@@ -1660,6 +1663,9 @@ components:
         name:
           type: string
           example: A new Group Name
+        description:
+          type: string
+          example: A new Group Description
 
     GroupCredentials:
       type: object
@@ -1667,6 +1673,9 @@ components:
         name:
           type: string
           example: amazing_group
+        description:
+          type: string
+          example: A Group description
         members:
           type: array
           items:
@@ -1682,6 +1691,12 @@ components:
         name:
           type: string
           example: amazing_group
+        description:
+          type: string
+          example: A Group with nice users
+        calendar_id:
+          type: number
+          example: 42
         nb_members:
           type: integer
           example: 3

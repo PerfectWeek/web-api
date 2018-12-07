@@ -110,7 +110,9 @@ export async function editGroup(req: Request, res: Response) {
         group: {
             id: 12,
             name: "Perfect Group",
-            nb_members: 4
+            nb_members: 4,
+            calendar_id: 1,
+            description: "Wow ! Such Group !"
         }
     });
 }
