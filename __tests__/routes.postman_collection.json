@@ -1,7 +1,8 @@
 {
 	"info": {
-		"_postman_id": "a344825d-68a9-4514-93d7-b8c637b4948a",
 		"name": "PW",
+		"_postman_id": "f09366f7-c376-8d8d-f063-ab15e7b5ff8b",
+		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -2216,9 +2217,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -2404,6 +2403,576 @@
 					"response": []
 				},
 				{
+					"name": "Group PB Get by Intruder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a6ed8676-bc2d-4012-8bae-81c3d9f7b207",
+								"exec": [
+									"pm.test(\"Code status is 403\", function () {",
+									"    pm.expect(pm.response.code).to.equal(403);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"",
+									"pm.test(\"Error message is correct\", function() {",
+									"    pm.expect(body.message).to.equal(\"Group not accessible\");",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Add Intruder to Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b295d1a1-f67f-4aac-aadd-ea335d4f2b4d",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group contains 3 members\", function () {",
+									"    pm.expect(body.members.length).to.equal(3);",
+									"});",
+									"",
+									"pm.test(\"Group members contains intruder\", function () {",
+									"    ",
+									"    let found = false;",
+									"    ",
+									"    for (const member of body.members) {",
+									"        if (member.pseudo === 'intruder') found = true;",
+									"    }",
+									"    ",
+									"    pm.expect(found).to.equal(true);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"value": "{{INTRUDER_PSEUDO}}",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}/add-members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}",
+								"add-members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] Benoit Add Intruder to Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "538661ba-578e-4e89-945f-cd1016d3e364",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is Users [intruder] are already members of the group\", function () {",
+									"    pm.expect(body.message).to.equal(\"Users [intruder] are already members of the group\"); ",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"value": "{{INTRUDER_PSEUDO}}",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}/add-members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}",
+								"add-members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] Benoit Add fake user to group PB",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7b7c53ab-8c51-4deb-b589-98fb0b21ba6e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is User hehe not found\", function () {",
+									"    pm.expect(body.message).to.equal(\"User hehe not found\"); ",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "",
+									"key": "users[0]",
+									"type": "text",
+									"value": "hehe"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}/add-members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}",
+								"add-members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Intruder Get Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "39f90a3f-a695-4ebb-ab09-77f6318c6ff0",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group list contains 1 group\", function () {",
+									"    pm.expect(body.groups.length).to.equal(1);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{INTRUDER_PSEUDO}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{INTRUDER_PSEUDO}}",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group B Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "216088dc-90ec-4e5a-93e6-c58458e7203f",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Group correctly created\", function () {",
+									"    pm.expect(body.message).to.equal(\"Group created\");",
+									"});",
+									"",
+									"pm.test(\"Group name is correct\", function () {",
+									"    const groupExpectedName = pm.environment.get(\"GROUP_BENOIT_NAME\");",
+									"    pm.expect(group.name).to.equal(groupExpectedName);",
+									"});",
+									"",
+									"pm.test(\"Group description is correct\", function () {",
+									"   const expectedDescription = \"Group PB description\";",
+									"   pm.expect(group.description).to.equal(expectedDescription);",
+									"});",
+									"",
+									"pm.test(\"Group contains 1 members\", function () {",
+									"    const expectedCount = 1;",
+									"    pm.expect(group.nb_members).to.equal(expectedCount);",
+									"});",
+									"",
+									"pm.test(\"Group has calendar_id\", function () {",
+									"    pm.expect(group.description).to.not.equal(undefined);",
+									"});",
+									"",
+									"pm.globals.set(\"GROUP_B_ID\", body.group.id);",
+									"pm.globals.set(\"GROUP_B_CALENDAR_ID\", body.group.calendar_id);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "{{GROUP_BENOIT_NAME}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Group PB description",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Benoit Get Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b429e574-ca4c-4e49-a8e1-5a3e53bdb325",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group list contains 2 group\", function () {",
+									"    pm.expect(body.groups.length).to.equal(2);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/{{BENOIT_PSEUDO}}/groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"{{BENOIT_PSEUDO}}",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] Intruder add Patrick",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d87bea03-8a8c-4262-a97a-94aaca2b9bbd",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Group not accessible\", function () {",
+									"    pm.expect(body.message).to.equal(\"Group not accessible\"); ",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"value": "patou",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_B_ID}}/add-members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_B_ID}}",
+								"add-members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Group PBI Create",
 					"event": [
 						{
@@ -2515,7 +3084,8 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"id": "d20da127-694e-47fd-ab3a-b9c748333e5e",
+								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2528,12 +3098,11 @@
 									"    pm.expect(body.message).to.equal(\"OK\"); ",
 									"});",
 									"",
-									"pm.test(\"Group list contains 2 groups\", function () {",
-									"    pm.expect(body.groups.length).to.equal(2);",
+									"pm.test(\"Group list contains 3 groups\", function () {",
+									"    pm.expect(body.groups.length).to.equal(3);",
 									"});",
 									""
-								],
-								"type": "text/javascript"
+								]
 							}
 						}
 					],
@@ -2552,8 +3121,6 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
@@ -2583,7 +3150,8 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+								"id": "03f19dc6-1d2e-4852-88d7-9fe6ac9cc69b",
+								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2597,11 +3165,10 @@
 									"});",
 									"",
 									"pm.test(\"Group list contains 1 group\", function () {",
-									"    pm.expect(body.groups.length).to.equal(1);",
+									"    pm.expect(body.groups.length).to.equal(2);",
 									"});",
 									""
-								],
-								"type": "text/javascript"
+								]
 							}
 						}
 					],
@@ -2620,8 +3187,6 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
@@ -2651,7 +3216,8 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "bf73e664-1967-41e3-8505-b6fe05a4afb5",
+								"id": "5a1b77cf-dc9c-4320-aeb8-e87f7e7cf022",
+								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2670,8 +3236,8 @@
 									"    pm.expect(group.description).to.equal(groupExpectedDescription);",
 									"});",
 									"",
-									"pm.test(\"Group contains 2 members\", function () {",
-									"    const expectedCount = 2;",
+									"pm.test(\"Group contains 3 members\", function () {",
+									"    const expectedCount = 3;",
 									"    pm.expect(group.nb_members).to.equal(expectedCount);",
 									"});",
 									"",
@@ -2680,8 +3246,7 @@
 									"    pm.expect(group.calendar_id).to.equal(expectedId);",
 									"});",
 									""
-								],
-								"type": "text/javascript"
+								]
 							}
 						}
 					],
@@ -2692,61 +3257,6 @@
 								{
 									"key": "token",
 									"value": "{{BENOIT_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "{{TEST_API_PORT}}",
-							"path": [
-								"groups",
-								"{{GROUP_PB_ID}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Group PB Get by Intruder",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "a6ed8676-bc2d-4012-8bae-81c3d9f7b207",
-								"exec": [
-									"pm.test(\"Code status is 403\", function () {",
-									"    pm.expect(pm.response.code).to.equal(403);",
-									"});",
-									"",
-									"const body = pm.response.json();",
-									"",
-									"pm.test(\"Error message is correct\", function() {",
-									"    pm.expect(body.message).to.equal(\"Group not accessible\");",
-									"})",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{INTRUDER_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -3028,6 +3538,60 @@
 							"path": [
 								"groups",
 								"{{GROUP_PBI_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group B Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d272baef-fa51-4b99-82d7-22b4db8329b2",
+								"exec": [
+									"pm.test(\"Status Code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Deletion message is OK\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.equal(\"Group successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_B_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_B_ID}}"
 							]
 						}
 					},
