@@ -705,7 +705,7 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               properties:
-                members:
+                users:
                   type: array
                   items:
                     $ref: '#/components/schemas/GroupMember'
@@ -1861,3 +1861,4 @@ components:
         message:
           type: string
           example: Internal Server Error
+
