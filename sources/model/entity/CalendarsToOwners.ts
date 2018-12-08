@@ -49,6 +49,26 @@ export class CalendarsToOwners {
     }
 
     /**
+     * @brief Find if one of users in set is already present in the Calendar
+     *
+     * @param conn          The database Connection
+     * @param calendarId
+     * @param owners
+     */
+    public static async findUsersPresence(
+        conn: Connection,
+        calendarId: number,
+        owners: User[]
+    ): Promise<CalendarsToOwners[]> {
+        return conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder("cto")
+            .select()
+            .where("cto.calendar_id = :calendar_id", {calendar_id: calendarId})
+            .andWhere("cto.owner_id IN (:...owners)", {owners: owners.map((u: User) => u.id)})
+            .getMany();
+    }
+
+    /**
      * @brief Find  relation between a Group and a User
      *
      * @param conn      The database Connection

@@ -1,16 +1,16 @@
-import {Request, Response} from "express";
-import {Connection} from "typeorm";
+import { Request, Response } from "express";
+import { Connection }        from "typeorm";
 
-import {getRequestingUser} from "../middleware/loggedOnly";
-import {removeDuplicates} from "../../utils/removeDuplicates";
-import {removeIfExists} from "../../utils/removeIfExists";
-import {DbConnection} from "../../utils/DbConnection";
-import {Group} from "../../model/entity/Group";
-import {User} from "../../model/entity/User";
-import {ApiException} from "../../utils/apiException";
-import {GroupView} from "../views/GroupView";
-import {Calendar} from "../../model/entity/Calendar";
-import {CalendarsToOwners} from "../../model/entity/CalendarsToOwners";
+import { getRequestingUser } from "../middleware/loggedOnly";
+import { removeDuplicates }  from "../../utils/removeDuplicates";
+import { removeIfExists }    from "../../utils/removeIfExists";
+import { DbConnection }      from "../../utils/DbConnection";
+import { Group }             from "../../model/entity/Group";
+import { User }              from "../../model/entity/User";
+import { ApiException }      from "../../utils/apiException";
+import { GroupView }         from "../views/GroupView";
+import { Calendar }          from "../../model/entity/Calendar";
+import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 
 
 //
@@ -178,31 +178,65 @@ export async function getMembers(req: Request, res: Response) {
 // Add a User to a Group
 //
 export async function addUsersToGroup(req: Request, res: Response) {
-    // TODO
+
+    const requestingUser = getRequestingUser(req);
+
+    // Recover arguments
+    const groupId: number = req.params.group_id;
+    const newUserPseudos: string[] = req.body.users;
+
+    // Check if user lists is properly defined
+    if (!newUserPseudos || newUserPseudos.length == 0) {
+        throw new ApiException(400, "Missing users argument");
+    }
+
+    // Recover Database connection
+    const conn = await DbConnection.getConnection();
+
+    // Recover User instances for all pseudos
+    const newUsers: User[] = await Promise.all<User>(newUserPseudos.map((pseudo: string) => {
+        return User.findByPseudo(conn, pseudo);
+    }));
+
+    if (newUsers.indexOf(undefined) !== -1) {
+        throw new ApiException(404, `User ${newUserPseudos[newUsers.indexOf(undefined)]} not found`);
+    }
+
+    // Get the requested Group
+    const group: Group = await Group.findById(conn, groupId);
+    if (!group) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Check if the requesting User can access this Group
+    const calendarToOwner: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    const ctos: CalendarsToOwners[] = await CalendarsToOwners.findUsersPresence(conn, group.calendar.id, newUsers);
+    if (ctos.length != 0) {
+        throw new ApiException(409, `Users [${
+            ctos.map((cto: CalendarsToOwners) => newUsers[
+                newUsers.findIndex((val: User) => val.id === cto.owner_id)
+                ].pseudo)
+            }] are already members of the group`);
+    }
+
+    await Calendar.addUsers(conn, group.calendar.id, newUsers);
+
+    // TODO: Put this in the View once we manage roles
+    const members: any[] = (await Calendar.getCalendarOwners(conn, group.calendar.id))
+        .map((calToOwn: CalendarsToOwners) => {
+            return {
+                pseudo: calToOwn.owner.pseudo,
+                role: "Admin"
+            };
+        });
+
     return res.status(200).json({
         message: "OK",
-        members: [
-            {
-                pseudo: "Michel",
-                role: "Admin"
-            },
-            {
-                pseudo: "Corentin",
-                role: "Spectator"
-            },
-            {
-                pseudo: "Nicolas",
-                role: "Admin"
-            },
-            {
-                pseudo: "Damien",
-                role: "Spectator"
-            },
-            {
-                pseudo: "Henri",
-                role: "Spectator"
-            }
-        ]
+        members
     });
 }
 

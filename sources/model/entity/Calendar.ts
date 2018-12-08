@@ -167,4 +167,32 @@ export class Calendar {
                 .execute();
         });
     }
+
+    /**
+     * @brief Add Users to Calendar
+     *
+     * @param conn
+     * @param calendarId
+     * @param users
+     */
+    static async addUsers(
+        conn: Connection,
+        calendarId: number,
+        users: User[]
+    ): Promise<any> {
+        await conn.transaction(async entityManager => {
+            // Recover User <=> Calendar Relationship Repository
+            const calendarsToOwnersRepository = entityManager.getRepository(CalendarsToOwners);
+
+            for (const user of users) {
+
+                // Create and save new relationship
+                let newCalendarToOwner = new CalendarsToOwners(calendarId, user.id);
+                await calendarsToOwnersRepository.save(newCalendarToOwner);
+
+            }
+
+        });
+    }
+
 }
