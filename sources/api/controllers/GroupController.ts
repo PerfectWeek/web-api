@@ -189,8 +189,8 @@ export async function addUsersToGroup(req: Request, res: Response) {
     const newUserPseudos: string[] = req.body.users;
 
     // Check if user lists is properly defined
-    if (!newUserPseudos || newUserPseudos.length == 0) {
-        throw new ApiException(400, "Missing users argument");
+    if (!newUserPseudos || !Array.isArray(newUserPseudos) || newUserPseudos.length == 0) {
+        throw new ApiException(400, "Invalid users argument");
     }
 
     // Recover Database connection
