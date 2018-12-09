@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "PW",
-		"_postman_id": "c6489b3c-5dcf-d2cb-4832-b3dc30563237",
+		"_postman_id": "8010919e-55e5-234a-59b9-477a901a61b4",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "78834bcb-8d16-405e-9e42-b47f8702969e",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -28,6 +27,7 @@
 									"});",
 									""
 								],
+								"id": "78834bcb-8d16-405e-9e42-b47f8702969e",
 								"type": "text/javascript"
 							}
 						}
@@ -69,7 +69,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fd24842e-7a6f-4872-b344-985f5a275b9c",
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
@@ -81,6 +80,7 @@
 									"});",
 									""
 								],
+								"id": "fd24842e-7a6f-4872-b344-985f5a275b9c",
 								"type": "text/javascript"
 							}
 						}
@@ -118,7 +118,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
@@ -130,6 +129,7 @@
 									"});",
 									""
 								],
+								"id": "62d02529-d221-425b-847a-3e7877db17fc",
 								"type": "text/javascript"
 							}
 						}
@@ -147,18 +147,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "mortimr",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr"
 								},
 								{
 									"key": "email",
-									"value": "mortimr@invalid",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@invalid"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -182,7 +182,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e07be596-fba2-4a63-8f9a-3d711e913b9b",
 								"exec": [
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
@@ -194,6 +193,7 @@
 									"});",
 									""
 								],
+								"id": "e07be596-fba2-4a63-8f9a-3d711e913b9b",
 								"type": "text/javascript"
 							}
 						}
@@ -211,18 +211,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "mortimr",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr"
 								},
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahaha"
 								}
 							]
 						},
@@ -246,7 +246,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
@@ -258,6 +257,7 @@
 									"});",
 									""
 								],
+								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"type": "text/javascript"
 							}
 						}
@@ -275,13 +275,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahaha"
 								}
 							]
 						},
@@ -305,7 +305,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
@@ -317,6 +316,7 @@
 									"});",
 									""
 								],
+								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"type": "text/javascript"
 							}
 						}
@@ -334,13 +334,13 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "pseudo",
-									"type": "text"
+									"type": "text",
+									"value": "pseudo"
 								},
 								{
 									"key": "password",
-									"value": "ANicePassword42",
-									"type": "text"
+									"type": "text",
+									"value": "ANicePassword42"
 								}
 							]
 						},
@@ -364,7 +364,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
@@ -376,6 +375,7 @@
 									"});",
 									""
 								],
+								"id": "fd48cf57-a225-4d23-8b2e-e2f753a328be",
 								"type": "text/javascript"
 							}
 						}
@@ -393,13 +393,13 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "",
-									"type": "text"
+									"type": "text",
+									"value": ""
 								},
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								}
 							]
 						},
@@ -423,7 +423,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8dbd60c6-d553-448d-8432-2598cca18422",
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
@@ -439,6 +438,7 @@
 									"});",
 									""
 								],
+								"id": "8dbd60c6-d553-448d-8432-2598cca18422",
 								"type": "text/javascript"
 							}
 						}
@@ -456,18 +456,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "mortimr",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr"
 								},
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -491,7 +491,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -505,6 +504,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"type": "text/javascript"
 							}
 						}
@@ -531,7 +531,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -548,6 +547,7 @@
 									"pm.globals.set(\"TOKEN\", pm.response.json().access_token);",
 									""
 								],
+								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
 								"type": "text/javascript"
 							}
 						}
@@ -565,13 +565,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -596,7 +596,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "adc10d4f-eccb-42e3-8405-6e1619296173",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -609,6 +608,7 @@
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
+								"id": "adc10d4f-eccb-42e3-8405-6e1619296173",
 								"type": "text/javascript"
 							}
 						}
@@ -651,8 +651,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0ca4b68f-8cfb-4a17-a065-e922ee7d404a",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -662,7 +660,9 @@
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
 									"});"
-								]
+								],
+								"id": "0ca4b68f-8cfb-4a17-a065-e922ee7d404a",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -704,8 +704,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "347e597e-c8b0-431e-899f-0f51110dff3a",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -715,146 +713,8 @@
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
 									"});"
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "pseudo",
-									"value": "mortimr",
-									"type": "text"
-								},
-								{
-									"key": "email",
-									"value": "mortimr@invalid",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "{{TEST_API_PORT}}",
-							"path": [
-								"users",
-								"mortimr"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT /users/mortimr | Edit pseudo and email",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "9068fc95-3a5a-47ac-bdf0-e9c1ca9c1fb5",
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Test body value\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"User updated\");",
-									"    pm.expect(jsonData.user.pseudo).to.eql(\"iulian\");",
-									"    pm.expect(jsonData.user.email).to.eql(\"iulian@fake.com\");",
-									"});",
-									"",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "pseudo",
-									"value": "iulian",
-									"type": "text"
-								},
-								{
-									"key": "email",
-									"value": "iulian@fake.com",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "{{TEST_API_PORT}}",
-							"path": [
-								"users",
-								"mortimr"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT /users/idloft | Try to edit unexisting user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "5237bbd0-fc51-4c51-9842-b833be946722",
-								"exec": [
-									"pm.test(\"Test body value\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"Action not allowed\");",
-									"});",
-									"",
-									"pm.test(\"Status code is 403\", function () {",
-									"    pm.response.to.have.status(403);",
-									"});"
 								],
+								"id": "347e597e-c8b0-431e-899f-0f51110dff3a",
 								"type": "text/javascript"
 							}
 						}
@@ -882,13 +742,153 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "mortimr",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr"
 								},
 								{
 									"key": "email",
-									"value": "mortimr@invalid",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@invalid"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"mortimr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /users/mortimr | Edit pseudo and email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"User updated\");",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"iulian\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"iulian@fake.com\");",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"id": "9068fc95-3a5a-47ac-bdf0-e9c1ca9c1fb5",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"type": "text",
+									"value": "iulian"
+								},
+								{
+									"key": "email",
+									"type": "text",
+									"value": "iulian@fake.com"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"mortimr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /users/idloft | Try to edit unexisting user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Action not allowed\");",
+									"});",
+									"",
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"id": "5237bbd0-fc51-4c51-9842-b833be946722",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"type": "text",
+									"value": "mortimr"
+								},
+								{
+									"key": "email",
+									"type": "text",
+									"value": "mortimr@invalid"
 								}
 							]
 						},
@@ -913,7 +913,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a30172d9-da00-41d7-9e28-73803984edde",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -926,6 +925,7 @@
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
+								"id": "a30172d9-da00-41d7-9e28-73803984edde",
 								"type": "text/javascript"
 							}
 						}
@@ -968,7 +968,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0de0f08c-04e3-4e10-bb86-d2cd9d33a0b7",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -979,6 +978,7 @@
 									"    pm.response.to.have.status(404);",
 									"});"
 								],
+								"id": "0de0f08c-04e3-4e10-bb86-d2cd9d33a0b7",
 								"type": "text/javascript"
 							}
 						}
@@ -1021,8 +1021,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "924441f6-a30c-4f14-9d71-8ee30df91794",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1032,7 +1030,9 @@
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
 									"});"
-								]
+								],
+								"id": "924441f6-a30c-4f14-9d71-8ee30df91794",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1074,8 +1074,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "76c739ea-800c-47a7-9383-3125217c4058",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1085,7 +1083,9 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});"
-								]
+								],
+								"id": "76c739ea-800c-47a7-9383-3125217c4058",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1132,7 +1132,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "ffa5ba0f-5191-4953-80d9-61c40c1ba4a9",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1143,6 +1142,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "ffa5ba0f-5191-4953-80d9-61c40c1ba4a9",
 								"type": "text/javascript"
 							}
 						}
@@ -1160,18 +1160,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "mortimr",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr"
 								},
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -1195,10 +1195,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"exec": [
 									""
 								],
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"type": "text/javascript"
 							}
 						}
@@ -1225,7 +1225,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "69390ce1-77ec-49ff-8a53-8700cbabe11a",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1236,6 +1235,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "69390ce1-77ec-49ff-8a53-8700cbabe11a",
 								"type": "text/javascript"
 							}
 						}
@@ -1253,18 +1253,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "idloft",
-									"type": "text"
+									"type": "text",
+									"value": "idloft"
 								},
 								{
 									"key": "email",
-									"value": "idloft@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "idloft@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hohohoho",
-									"type": "text"
+									"type": "text",
+									"value": "hohohoho"
 								}
 							]
 						},
@@ -1288,7 +1288,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1302,6 +1301,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"type": "text/javascript"
 							}
 						}
@@ -1328,8 +1328,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "797bab3a-09f7-4b72-a28d-9652a9ef045a",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1341,7 +1339,9 @@
 									"    pm.response.to.have.status(403);",
 									"});",
 									""
-								]
+								],
+								"id": "797bab3a-09f7-4b72-a28d-9652a9ef045a",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1358,13 +1358,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "beubeu@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "beubeu@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -1389,8 +1389,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b7bc65ef-9795-45be-b87c-f756160edaa0",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1402,7 +1400,9 @@
 									"    pm.response.to.have.status(403);",
 									"});",
 									""
-								]
+								],
+								"id": "b7bc65ef-9795-45be-b87c-f756160edaa0",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1419,13 +1419,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hohohoho",
-									"type": "text"
+									"type": "text",
+									"value": "hohohoho"
 								}
 							]
 						},
@@ -1484,13 +1484,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -1515,8 +1515,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "eb01adcf-8b3f-4e4a-80f0-351872d88afc",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1532,7 +1530,9 @@
 									"",
 									"pm.globals.set(\"TOKEN\", pm.response.json().access_token);",
 									""
-								]
+								],
+								"id": "eb01adcf-8b3f-4e4a-80f0-351872d88afc",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1549,13 +1549,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "idloft@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "idloft@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hohohoho",
-									"type": "text"
+									"type": "text",
+									"value": "hohohoho"
 								}
 							]
 						},
@@ -1585,7 +1585,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e30d4c44-85a4-4522-91e8-e68c948b7df6",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1596,6 +1595,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "e30d4c44-85a4-4522-91e8-e68c948b7df6",
 								"type": "text/javascript"
 							}
 						}
@@ -1606,8 +1606,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -1615,18 +1615,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "{{PATRICK_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_PSEUDO}}"
 								},
 								{
 									"key": "email",
-									"value": "{{PATRICK_EMAIL}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_EMAIL}}"
 								},
 								{
 									"key": "password",
-									"value": "{{PATRICK_PASSWORD}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_PASSWORD}}"
 								}
 							]
 						},
@@ -1650,10 +1650,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"exec": [
 									""
 								],
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"type": "text/javascript"
 							}
 						}
@@ -1680,7 +1680,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "866ec95e-9b24-4843-a52c-cbceaf91e01e",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1690,6 +1689,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "866ec95e-9b24-4843-a52c-cbceaf91e01e",
 								"type": "text/javascript"
 							}
 						}
@@ -1700,8 +1700,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -1709,18 +1709,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "{{BENOIT_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{BENOIT_PSEUDO}}"
 								},
 								{
 									"key": "email",
-									"value": "{{BENOIT_EMAIL}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{BENOIT_EMAIL}}"
 								},
 								{
 									"key": "password",
-									"value": "{{BENOIT_PASSWORD}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{BENOIT_PASSWORD}}"
 								}
 							]
 						},
@@ -1744,10 +1744,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"exec": [
 									""
 								],
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"type": "text/javascript"
 							}
 						}
@@ -1774,7 +1774,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7964990e-5589-4195-ba35-9b2564f599d1",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -1785,6 +1784,7 @@
 									"    pm.response.to.have.status(201);",
 									"});"
 								],
+								"id": "7964990e-5589-4195-ba35-9b2564f599d1",
 								"type": "text/javascript"
 							}
 						}
@@ -1795,8 +1795,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -1804,18 +1804,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "{{INTRUDER_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_PSEUDO}}"
 								},
 								{
 									"key": "email",
-									"value": "{{INTRUDER_EMAIL}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_EMAIL}}"
 								},
 								{
 									"key": "password",
-									"value": "{{INTRUDER_PASSWORD}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_PASSWORD}}"
 								}
 							]
 						},
@@ -1839,10 +1839,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"exec": [
 									""
 								],
+								"id": "7c1e95d3-a2f4-40bb-9cf4-079226c91704",
 								"type": "text/javascript"
 							}
 						}
@@ -1869,7 +1869,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3302207a-3670-49d2-9ccb-926f3cf368ef",
 								"exec": [
 									"pm.test(\"Get token\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1878,6 +1877,7 @@
 									"});",
 									""
 								],
+								"id": "3302207a-3670-49d2-9ccb-926f3cf368ef",
 								"type": "text/javascript"
 							}
 						}
@@ -1888,8 +1888,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -1897,13 +1897,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "{{PATRICK_EMAIL}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_EMAIL}}"
 								},
 								{
 									"key": "password",
-									"value": "{{PATRICK_PASSWORD}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_PASSWORD}}"
 								}
 							]
 						},
@@ -1928,7 +1928,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "1d4d1aa9-9d95-499c-a14d-aba87cab5d2b",
 								"exec": [
 									"pm.test(\"Get token\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1937,6 +1936,7 @@
 									"});",
 									""
 								],
+								"id": "1d4d1aa9-9d95-499c-a14d-aba87cab5d2b",
 								"type": "text/javascript"
 							}
 						}
@@ -1947,8 +1947,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -1956,13 +1956,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "{{BENOIT_EMAIL}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{BENOIT_EMAIL}}"
 								},
 								{
 									"key": "password",
-									"value": "{{BENOIT_PASSWORD}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{BENOIT_PASSWORD}}"
 								}
 							]
 						},
@@ -1987,7 +1987,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a602c640-b986-4932-92a1-132814e281e7",
 								"exec": [
 									"pm.test(\"Get token\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -1996,6 +1995,7 @@
 									"});",
 									""
 								],
+								"id": "a602c640-b986-4932-92a1-132814e281e7",
 								"type": "text/javascript"
 							}
 						}
@@ -2006,8 +2006,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -2015,13 +2015,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "{{INTRUDER_EMAIL}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_EMAIL}}"
 								},
 								{
 									"key": "password",
-									"value": "{{INTRUDER_PASSWORD}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_PASSWORD}}"
 								}
 							]
 						},
@@ -2046,7 +2046,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a9c89997-04ef-46c2-be65-1c02d7bcbd43",
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
@@ -2058,6 +2057,7 @@
 									"});",
 									""
 								],
+								"id": "a9c89997-04ef-46c2-be65-1c02d7bcbd43",
 								"type": "text/javascript"
 							}
 						}
@@ -2068,8 +2068,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -2077,8 +2077,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "fake",
-									"type": "text"
+									"type": "text",
+									"value": "fake"
 								}
 							]
 						},
@@ -2102,7 +2102,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9f6cdba0-dfd7-4266-900a-5ec869f78cba",
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
@@ -2114,6 +2113,7 @@
 									"});",
 									""
 								],
+								"id": "9f6cdba0-dfd7-4266-900a-5ec869f78cba",
 								"type": "text/javascript"
 							}
 						}
@@ -2134,8 +2134,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -2162,7 +2162,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
@@ -2198,6 +2197,7 @@
 									"pm.globals.set(\"GROUP_PB_CALENDAR_ID\", body.group.calendar_id);",
 									""
 								],
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
 								"type": "text/javascript"
 							}
 						}
@@ -2225,18 +2225,18 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "{{GROUP_BENOIT_PATRICK_NAME}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{GROUP_BENOIT_PATRICK_NAME}}"
 								},
 								{
 									"key": "description",
-									"value": "Group PB description",
-									"type": "text"
+									"type": "text",
+									"value": "Group PB description"
 								},
 								{
 									"key": "members[0]",
-									"value": "{{PATRICK_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_PSEUDO}}"
 								}
 							]
 						},
@@ -2260,7 +2260,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2290,6 +2289,7 @@
 									"});",
 									""
 								],
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
 								"type": "text/javascript"
 							}
 						}
@@ -2340,7 +2340,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2358,6 +2357,7 @@
 									"});",
 									""
 								],
+								"id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
 								"type": "text/javascript"
 							}
 						}
@@ -2408,7 +2408,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a6ed8676-bc2d-4012-8bae-81c3d9f7b207",
 								"exec": [
 									"pm.test(\"Code status is 403\", function () {",
 									"    pm.expect(pm.response.code).to.equal(403);",
@@ -2421,6 +2420,7 @@
 									"})",
 									""
 								],
+								"id": "a6ed8676-bc2d-4012-8bae-81c3d9f7b207",
 								"type": "text/javascript"
 							}
 						}
@@ -2458,13 +2458,79 @@
 					"response": []
 				},
 				{
+					"name": "Intruder Get group members",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b5800772-cf66-4f46-82c7-746dc19d0879",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is Action not allowed\", function () {",
+									"    pm.expect(body.message).to.equal(\"Action not allowed\"); ",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{INTRUDER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"type": "text",
+									"value": "{{INTRUDER_PSEUDO}}"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}/members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Benoit Add Intruder to Group",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "b295d1a1-f67f-4aac-aadd-ea335d4f2b4d",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2492,7 +2558,9 @@
 									"    pm.expect(found).to.equal(true);",
 									"});",
 									""
-								]
+								],
+								"id": "b295d1a1-f67f-4aac-aadd-ea335d4f2b4d",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2519,8 +2587,8 @@
 							"urlencoded": [
 								{
 									"key": "users[0]",
-									"value": "{{INTRUDER_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_PSEUDO}}"
 								}
 							]
 						},
@@ -2541,13 +2609,94 @@
 					"response": []
 				},
 				{
+					"name": "Benoit Get group members",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const body = pm.response.json();",
+									"const group = body.group;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(body.message).to.equal(\"OK\"); ",
+									"});",
+									"",
+									"pm.test(\"Group contains 3 members\", function () {",
+									"    pm.expect(body.members.length).to.equal(3);",
+									"});",
+									"",
+									"pm.test(\"Group members contains intruder\", function () {",
+									"    ",
+									"    let found = false;",
+									"    ",
+									"    for (const member of body.members) {",
+									"        if (member.pseudo === 'intruder') found = true;",
+									"    }",
+									"    ",
+									"    pm.expect(found).to.equal(true);",
+									"});",
+									""
+								],
+								"id": "b295d1a1-f67f-4aac-aadd-ea335d4f2b4d",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BENOIT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"type": "text",
+									"value": "{{INTRUDER_PSEUDO}}"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/groups/{{GROUP_PB_ID}}/members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"groups",
+								"{{GROUP_PB_ID}}",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "[Fail] Benoit Add Intruder to Group",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "538661ba-578e-4e89-945f-cd1016d3e364",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 409\", function () {",
 									"    pm.response.to.have.status(409);",
@@ -2560,7 +2709,9 @@
 									"    pm.expect(body.message).to.equal(\"Users [intruder] are already members of the group\"); ",
 									"});",
 									""
-								]
+								],
+								"id": "538661ba-578e-4e89-945f-cd1016d3e364",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2587,8 +2738,8 @@
 							"urlencoded": [
 								{
 									"key": "users[0]",
-									"value": "{{INTRUDER_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_PSEUDO}}"
 								}
 							]
 						},
@@ -2614,8 +2765,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7b7c53ab-8c51-4deb-b589-98fb0b21ba6e",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
@@ -2628,7 +2777,9 @@
 									"    pm.expect(body.message).to.equal(\"User hehe not found\"); ",
 									"});",
 									""
-								]
+								],
+								"id": "7b7c53ab-8c51-4deb-b589-98fb0b21ba6e",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2682,8 +2833,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "39f90a3f-a695-4ebb-ab09-77f6318c6ff0",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2700,7 +2849,9 @@
 									"    pm.expect(body.groups.length).to.equal(1);",
 									"});",
 									""
-								]
+								],
+								"id": "39f90a3f-a695-4ebb-ab09-77f6318c6ff0",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2748,8 +2899,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "216088dc-90ec-4e5a-93e6-c58458e7203f",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
@@ -2784,7 +2933,9 @@
 									"pm.globals.set(\"GROUP_B_ID\", body.group.id);",
 									"pm.globals.set(\"GROUP_B_CALENDAR_ID\", body.group.calendar_id);",
 									""
-								]
+								],
+								"id": "216088dc-90ec-4e5a-93e6-c58458e7203f",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2811,13 +2962,13 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "{{GROUP_BENOIT_NAME}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{GROUP_BENOIT_NAME}}"
 								},
 								{
 									"key": "description",
-									"value": "Group PB description",
-									"type": "text"
+									"type": "text",
+									"value": "Group PB description"
 								}
 							]
 						},
@@ -2841,8 +2992,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b429e574-ca4c-4e49-a8e1-5a3e53bdb325",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -2858,7 +3007,9 @@
 									"pm.test(\"Group list contains 2 group\", function () {",
 									"    pm.expect(body.groups.length).to.equal(2);",
 									"});"
-								]
+								],
+								"id": "b429e574-ca4c-4e49-a8e1-5a3e53bdb325",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2906,8 +3057,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d87bea03-8a8c-4262-a97a-94aaca2b9bbd",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
@@ -2920,7 +3069,9 @@
 									"    pm.expect(body.message).to.equal(\"Group not accessible\"); ",
 									"});",
 									""
-								]
+								],
+								"id": "d87bea03-8a8c-4262-a97a-94aaca2b9bbd",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2947,8 +3098,8 @@
 							"urlencoded": [
 								{
 									"key": "users[0]",
-									"value": "patou",
-									"type": "text"
+									"type": "text",
+									"value": "patou"
 								}
 							]
 						},
@@ -3037,8 +3188,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7588842d-a873-4747-93bb-8806e788bd58",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -3055,7 +3204,9 @@
 									"   pm.expect(body.members.length).to.equal(0); ",
 									"});",
 									""
-								]
+								],
+								"id": "7588842d-a873-4747-93bb-8806e788bd58",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3104,8 +3255,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5ece197d-0ebd-4a40-bc2c-a4581d18b66b",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -3121,7 +3270,9 @@
 									"pm.test(\"Group list contains 1 group\", function () {",
 									"    pm.expect(body.groups.length).to.equal(1);",
 									"});"
-								]
+								],
+								"id": "5ece197d-0ebd-4a40-bc2c-a4581d18b66b",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3169,7 +3320,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0d794a9c-83bc-45bd-bfed-ed75bb8e4b64",
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
@@ -3201,6 +3351,7 @@
 									"pm.globals.set(\"GROUP_PBI_CALENDAR_ID\", group.calendar_id);",
 									""
 								],
+								"id": "0d794a9c-83bc-45bd-bfed-ed75bb8e4b64",
 								"type": "text/javascript"
 							}
 						}
@@ -3221,8 +3372,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -3230,28 +3381,28 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "{{GROUP_BENOIT_PATRICK_INTRUDER_NAME}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{GROUP_BENOIT_PATRICK_INTRUDER_NAME}}"
 								},
 								{
 									"key": "members[0]",
-									"value": "{{PATRICK_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{PATRICK_PSEUDO}}"
 								},
 								{
 									"key": "members[1]",
-									"value": "{{BENOIT_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{BENOIT_PSEUDO}}"
 								},
 								{
 									"key": "members[2]",
-									"value": "{{INTRUDER_PSEUDO}}",
-									"type": "text"
+									"type": "text",
+									"value": "{{INTRUDER_PSEUDO}}"
 								},
 								{
 									"key": "description",
-									"value": "Nice group PBI",
-									"type": "text"
+									"type": "text",
+									"value": "Nice group PBI"
 								}
 							]
 						},
@@ -3275,8 +3426,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f04d504d-3afc-443b-9dd8-ef4c209a2776",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -3293,7 +3442,9 @@
 									"    pm.expect(body.groups.length).to.equal(2);",
 									"});",
 									""
-								]
+								],
+								"id": "f04d504d-3afc-443b-9dd8-ef4c209a2776",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3341,8 +3492,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "03f19dc6-1d2e-4852-88d7-9fe6ac9cc69b",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -3359,7 +3508,9 @@
 									"    pm.expect(body.groups.length).to.equal(2);",
 									"});",
 									""
-								]
+								],
+								"id": "03f19dc6-1d2e-4852-88d7-9fe6ac9cc69b",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3407,8 +3558,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5a1b77cf-dc9c-4320-aeb8-e87f7e7cf022",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -3437,7 +3586,9 @@
 									"    pm.expect(group.calendar_id).to.equal(expectedId);",
 									"});",
 									""
-								]
+								],
+								"id": "5a1b77cf-dc9c-4320-aeb8-e87f7e7cf022",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3479,13 +3630,13 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4bfeed6d-6a35-47a7-9db6-68e106c4f6fb",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									""
 								],
+								"id": "4bfeed6d-6a35-47a7-9db6-68e106c4f6fb",
 								"type": "text/javascript"
 							}
 						}
@@ -3528,7 +3679,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "2bae41c8-5ce1-4382-8c59-034f5a203268",
 								"exec": [
 									"pm.test(\"Status Code is 200\", function () {",
 									"    pm.expect(pm.response.code).to.equal(200);",
@@ -3540,6 +3690,7 @@
 									"});",
 									""
 								],
+								"id": "2bae41c8-5ce1-4382-8c59-034f5a203268",
 								"type": "text/javascript"
 							}
 						}
@@ -3582,7 +3733,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "bf73e664-1967-41e3-8505-b6fe05a4afb5",
 								"exec": [
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
@@ -3595,6 +3745,7 @@
 									"});",
 									""
 								],
+								"id": "bf73e664-1967-41e3-8505-b6fe05a4afb5",
 								"type": "text/javascript"
 							}
 						}
@@ -3637,13 +3788,13 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "64798071-f5fe-4055-be83-15ea3ba20b45",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									""
 								],
+								"id": "64798071-f5fe-4055-be83-15ea3ba20b45",
 								"type": "text/javascript"
 							}
 						}
@@ -3686,7 +3837,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d272baef-fa51-4b99-82d7-22b4db8329b2",
 								"exec": [
 									"pm.test(\"Status Code is 200\", function () {",
 									"    pm.expect(pm.response.code).to.equal(200);",
@@ -3698,6 +3848,7 @@
 									"});",
 									""
 								],
+								"id": "d272baef-fa51-4b99-82d7-22b4db8329b2",
 								"type": "text/javascript"
 							}
 						}
@@ -3833,7 +3984,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d272baef-fa51-4b99-82d7-22b4db8329b2",
 								"exec": [
 									"pm.test(\"Status Code is 200\", function () {",
 									"    pm.expect(pm.response.code).to.equal(200);",
@@ -3845,6 +3995,7 @@
 									"});",
 									""
 								],
+								"id": "d272baef-fa51-4b99-82d7-22b4db8329b2",
 								"type": "text/javascript"
 							}
 						}
@@ -3887,13 +4038,13 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "121052f0-085d-40a4-a73a-4a52ce0616bb",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									""
 								],
+								"id": "121052f0-085d-40a4-a73a-4a52ce0616bb",
 								"type": "text/javascript"
 							}
 						}
@@ -3941,7 +4092,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -3958,6 +4108,7 @@
 									"pm.globals.set(\"TOKEN\", pm.response.json().access_token);",
 									""
 								],
+								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
 								"type": "text/javascript"
 							}
 						}
@@ -3975,13 +4126,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "mortimr@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -4006,7 +4157,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9c11261f-53f2-4486-a36d-0ed4e8bb4746",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4020,6 +4170,7 @@
 									"});",
 									""
 								],
+								"id": "9c11261f-53f2-4486-a36d-0ed4e8bb4746",
 								"type": "text/javascript"
 							}
 						}
@@ -4063,7 +4214,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4016d30c-0156-4301-b0a9-8a75503231f7",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4078,6 +4228,7 @@
 									"});",
 									""
 								],
+								"id": "4016d30c-0156-4301-b0a9-8a75503231f7",
 								"type": "text/javascript"
 							}
 						}
@@ -4107,8 +4258,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "holidays",
-									"type": "text"
+									"type": "text",
+									"value": "holidays"
 								}
 							]
 						},
@@ -4133,7 +4284,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3bd59d96-4c2a-45e1-a956-86eb05fe232d",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4144,6 +4294,7 @@
 									"    pm.response.to.have.status(400);",
 									"});"
 								],
+								"id": "3bd59d96-4c2a-45e1-a956-86eb05fe232d",
 								"type": "text/javascript"
 							}
 						}
@@ -4164,8 +4315,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -4173,8 +4324,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "",
-									"type": "text"
+									"type": "text",
+									"value": ""
 								}
 							]
 						},
@@ -4199,7 +4350,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9c11261f-53f2-4486-a36d-0ed4e8bb4746",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4213,6 +4363,7 @@
 									"});",
 									""
 								],
+								"id": "9c11261f-53f2-4486-a36d-0ed4e8bb4746",
 								"type": "text/javascript"
 							}
 						}
@@ -4256,7 +4407,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4269,6 +4419,7 @@
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
+								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
 								"type": "text/javascript"
 							}
 						}
@@ -4312,7 +4463,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "59c16090-1a6e-49ee-9f78-c3946144b0b5",
 								"exec": [
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
@@ -4325,6 +4475,7 @@
 									"});",
 									""
 								],
+								"id": "59c16090-1a6e-49ee-9f78-c3946144b0b5",
 								"type": "text/javascript"
 							}
 						}
@@ -4368,7 +4519,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "73e58604-0d9d-4695-a0be-206d9151034a",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4380,6 +4530,7 @@
 									"    pm.response.to.have.status(200);",
 									"});"
 								],
+								"id": "73e58604-0d9d-4695-a0be-206d9151034a",
 								"type": "text/javascript"
 							}
 						}
@@ -4400,8 +4551,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -4409,8 +4560,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Refacto calendar",
-									"type": "text"
+									"type": "text",
+									"value": "Refacto calendar"
 								}
 							]
 						},
@@ -4435,7 +4586,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -4449,6 +4599,7 @@
 									"});",
 									""
 								],
+								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
 								"type": "text/javascript"
 							}
 						}
@@ -4492,7 +4643,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "73e58604-0d9d-4695-a0be-206d9151034a",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4503,6 +4653,7 @@
 									"    pm.response.to.have.status(403);",
 									"});"
 								],
+								"id": "73e58604-0d9d-4695-a0be-206d9151034a",
 								"type": "text/javascript"
 							}
 						}
@@ -4532,8 +4683,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Refacto calendar",
-									"type": "text"
+									"type": "text",
+									"value": "Refacto calendar"
 								}
 							]
 						},
@@ -4558,7 +4709,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "73e58604-0d9d-4695-a0be-206d9151034a",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4569,6 +4719,7 @@
 									"    pm.response.to.have.status(400);",
 									"});"
 								],
+								"id": "73e58604-0d9d-4695-a0be-206d9151034a",
 								"type": "text/javascript"
 							}
 						}
@@ -4598,8 +4749,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "",
-									"type": "text"
+									"type": "text",
+									"value": ""
 								}
 							]
 						},
@@ -4624,7 +4775,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "61d965bd-e1e3-432c-a1a1-b0a24c688a22",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4637,6 +4787,7 @@
 									"});",
 									""
 								],
+								"id": "61d965bd-e1e3-432c-a1a1-b0a24c688a22",
 								"type": "text/javascript"
 							}
 						}
@@ -4679,7 +4830,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
 								"exec": [
 									"pm.test(\"Status code is 403\", function () {",
 									"    pm.response.to.have.status(403);",
@@ -4692,6 +4842,7 @@
 									"});",
 									""
 								],
+								"id": "3676737e-971a-4452-a58b-57e3ec6d8a7a",
 								"type": "text/javascript"
 							}
 						}
@@ -4735,7 +4886,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "61d965bd-e1e3-432c-a1a1-b0a24c688a22",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4748,6 +4898,7 @@
 									"});",
 									""
 								],
+								"id": "61d965bd-e1e3-432c-a1a1-b0a24c688a22",
 								"type": "text/javascript"
 							}
 						}
@@ -4795,8 +4946,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c8a37031-4ed5-4c4f-840c-1b02a5d0010e",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
@@ -4811,7 +4960,9 @@
 									"    pm.expect(jsonData.user.email).to.eql(\"jacob@fake.com\");",
 									"});",
 									""
-								]
+								],
+								"id": "c8a37031-4ed5-4c4f-840c-1b02a5d0010e",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4828,18 +4979,18 @@
 							"urlencoded": [
 								{
 									"key": "pseudo",
-									"value": "jacob",
-									"type": "text"
+									"type": "text",
+									"value": "jacob"
 								},
 								{
 									"key": "email",
-									"value": "jacob@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "jacob@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -4863,8 +5014,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f341053a-fe4d-4770-afde-42712cb30820",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4877,7 +5026,9 @@
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});"
-								]
+								],
+								"id": "f341053a-fe4d-4770-afde-42712cb30820",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4903,8 +5054,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7098b147-c380-46b5-b0b4-893a195a1fe4",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4920,7 +5069,9 @@
 									"",
 									"pm.globals.set(\"JACOB_TOKEN\", pm.response.json().access_token);",
 									""
-								]
+								],
+								"id": "7098b147-c380-46b5-b0b4-893a195a1fe4",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4937,13 +5088,13 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "jacob@fake.com",
-									"type": "text"
+									"type": "text",
+									"value": "jacob@fake.com"
 								},
 								{
 									"key": "password",
-									"value": "hahahaha",
-									"type": "text"
+									"type": "text",
+									"value": "hahahaha"
 								}
 							]
 						},
@@ -4968,7 +5119,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4016d30c-0156-4301-b0a9-8a75503231f7",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -4983,6 +5133,7 @@
 									"});",
 									""
 								],
+								"id": "4016d30c-0156-4301-b0a9-8a75503231f7",
 								"type": "text/javascript"
 							}
 						}
@@ -5010,8 +5161,8 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "holidays",
-									"type": "text"
+									"type": "text",
+									"value": "holidays"
 								}
 							]
 						},
@@ -5036,7 +5187,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5056,6 +5206,7 @@
 									"});",
 									""
 								],
+								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
 								"type": "text/javascript"
 							}
 						}
@@ -5083,28 +5234,28 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Nouvel An",
-									"type": "text"
+									"type": "text",
+									"value": "Nouvel An"
 								},
 								{
 									"key": "description",
-									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
-									"type": "text"
+									"type": "text",
+									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE"
 								},
 								{
 									"key": "location",
-									"value": "Le pub Universitaire",
-									"type": "text"
+									"type": "text",
+									"value": "Le pub Universitaire"
 								},
 								{
 									"key": "start_time",
-									"value": "2018-12-31T20:00:00",
-									"type": "text"
+									"type": "text",
+									"value": "2018-12-31T20:00:00"
 								},
 								{
 									"key": "end_time",
-									"value": "2019-01-01T06:00:00",
-									"type": "text"
+									"type": "text",
+									"value": "2019-01-01T06:00:00"
 								}
 							]
 						},
@@ -5130,8 +5281,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e6910a91-3fd2-46b7-92fc-1fc50c4f3444",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5152,94 +5301,8 @@
 									"",
 									"pm.globals.set(\"NEW_YEAR_EVENT_ID\", pm.response.json().event.id);",
 									""
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JACOB_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "Nouvel An",
-									"type": "text"
-								},
-								{
-									"key": "description",
-									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
-									"type": "text"
-								},
-								{
-									"key": "location",
-									"value": "Le pub Universitaire",
-									"type": "text"
-								},
-								{
-									"key": "start_time",
-									"value": "2018-12-31T20:00:00",
-									"type": "text"
-								},
-								{
-									"key": "end_time",
-									"value": "2019-01-01T06:00:00",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "{{TEST_API_PORT}}",
-							"path": [
-								"calendars",
-								"{{CALENDAR_ID}}",
-								"events"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "[Fail] POST /calendars/calendar_id/events | Create event missing field",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
-								"exec": [
-									"pm.test(\"Test body value\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"Bad request\");",
-									"});",
-									"",
-									"",
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									""
 								],
+								"id": "e6910a91-3fd2-46b7-92fc-1fc50c4f3444",
 								"type": "text/javascript"
 							}
 						}
@@ -5267,28 +5330,116 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "",
-									"type": "text"
+									"type": "text",
+									"value": "Nouvel An"
 								},
 								{
 									"key": "description",
-									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
-									"type": "text"
+									"type": "text",
+									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE"
 								},
 								{
 									"key": "location",
-									"value": "Le pub Universitaire",
-									"type": "text"
+									"type": "text",
+									"value": "Le pub Universitaire"
 								},
 								{
 									"key": "start_time",
-									"value": "2018-12-31T20:00:00",
-									"type": "text"
+									"type": "text",
+									"value": "2018-12-31T20:00:00"
 								},
 								{
 									"key": "end_time",
-									"value": "2019-01-01T06:00:00",
-									"type": "text"
+									"type": "text",
+									"value": "2019-01-01T06:00:00"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] POST /calendars/calendar_id/events | Create event missing field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Bad request\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JACOB_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"key": "description",
+									"type": "text",
+									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE"
+								},
+								{
+									"key": "location",
+									"type": "text",
+									"value": "Le pub Universitaire"
+								},
+								{
+									"key": "start_time",
+									"type": "text",
+									"value": "2018-12-31T20:00:00"
+								},
+								{
+									"key": "end_time",
+									"type": "text",
+									"value": "2019-01-01T06:00:00"
 								}
 							]
 						},
@@ -5314,7 +5465,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5328,6 +5478,7 @@
 									"});",
 									""
 								],
+								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
 								"type": "text/javascript"
 							}
 						}
@@ -5376,8 +5527,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7de3e743-6993-4c58-b83a-09064e2cafc8",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5391,7 +5540,9 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									""
-								]
+								],
+								"id": "7de3e743-6993-4c58-b83a-09064e2cafc8",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -5438,8 +5589,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "1f7cb09e-97ae-4135-9191-2ce6328cbca6",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5451,7 +5600,9 @@
 									"    pm.response.to.have.status(404);",
 									"});",
 									""
-								]
+								],
+								"id": "1f7cb09e-97ae-4135-9191-2ce6328cbca6",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -5498,8 +5649,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5cdf0ce5-81db-4933-b253-6a55871407e8",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5510,7 +5659,9 @@
 									"    pm.response.to.have.status(403);",
 									"});",
 									""
-								]
+								],
+								"id": "5cdf0ce5-81db-4933-b253-6a55871407e8",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -5557,8 +5708,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "af227ed7-2244-417b-a021-5272f7c3a75e",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5570,7 +5719,9 @@
 									"    pm.response.to.have.status(403);",
 									"});",
 									""
-								]
+								],
+								"id": "af227ed7-2244-417b-a021-5272f7c3a75e",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -5617,8 +5768,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a1c8b11a-d969-45b3-8c7f-1c8b889124f8",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5630,7 +5779,9 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									""
-								]
+								],
+								"id": "a1c8b11a-d969-45b3-8c7f-1c8b889124f8",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -5677,8 +5828,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "2be68496-2c5b-4d11-ae3c-a7d9a8689c3a",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5691,7 +5840,9 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									""
-								]
+								],
+								"id": "2be68496-2c5b-4d11-ae3c-a7d9a8689c3a",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -5739,8 +5890,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a4c7ccaf-a10e-4c3b-b1a0-4a463172b274",
-								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5752,7 +5901,9 @@
 									"    pm.response.to.have.status(404);",
 									"});",
 									""
-								]
+								],
+								"id": "a4c7ccaf-a10e-4c3b-b1a0-4a463172b274",
+								"type": "text/javascript"
 							}
 						}
 					],
