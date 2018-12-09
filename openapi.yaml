@@ -708,7 +708,7 @@ paths:
                 users:
                   type: array
                   items:
-                    $ref: '#/components/schemas/GroupMember'
+                    type: string
       responses:
         '200':
           description: Users added
@@ -1861,4 +1861,5 @@ components:
         message:
           type: string
           example: Internal Server Error
+
 

@@ -1019,7 +1019,7 @@
                   "users" : {
                     "type" : "array",
                     "items" : {
-                      "$ref" : "#/components/schemas/GroupMember"
+                      "type" : "string"
                     }
                   }
                 }
