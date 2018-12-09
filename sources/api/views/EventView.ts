@@ -11,6 +11,7 @@ export class EventView {
             location: event.location,
             start_time: event.startTime,
             end_time: event.endTime,
+            attendees: event.attendees
         };
     }
 
