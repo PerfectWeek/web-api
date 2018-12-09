@@ -1976,7 +1976,7 @@
             }
           },
           "404" : {
-            "description" : "Event not Found",
+            "description" : "Event not found",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -2131,6 +2131,21 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Event not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Event not found"
+                    }
+                  }
                 }
               }
             }
@@ -2626,6 +2641,13 @@
           "end_time" : {
             "type" : "string",
             "example" : "2012-12-12T12:12:12"
+          },
+          "attendees" : {
+            "type" : "array",
+            "example" : [ "george", "marc", "alif" ],
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
