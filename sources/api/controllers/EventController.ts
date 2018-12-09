@@ -1,4 +1,13 @@
-import { Request, Response } from "express"
+import { Request, Response } from "express";
+import { Connection }        from "typeorm";
+
+import { getRequestingUser } from "../middleware/loggedOnly";
+import { Event }             from "../../model/entity/Event";
+import { DbConnection }      from "../../utils/DbConnection";
+import { Calendar }          from "../../model/entity/Calendar";
+import { User }              from "../../model/entity/User";
+import { ApiException }      from "../../utils/apiException";
+import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 
 
 export async function getEventInfo(req: Request, res: Response) {
@@ -77,7 +86,30 @@ export async function editEvent(req: Request, res: Response) {
 }
 
 export async function deleteEvent(req: Request, res: Response) {
+
+    const requestingUser: User = getRequestingUser(req);
+
+    const event_id: number = req.params.event_id;
+
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Recover event and check if exists
+    const event: Event = await Event.getEventById(conn, event_id);
+    if (!event) {
+        throw new ApiException(404, "No such Event")
+    }
+
+    const calendar: Calendar = event.calendar;
+
+    // Check if requesting user is a member of the calendar
+    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+        throw new ApiException(403, "Action not allowed")
+    }
+
+    // Remove Event from calendar
+    await Event.deleteById(conn, event.id);
+
     return res.status(200).json({
-        message: "Event successfully deleted"
+        message: "OK"
     });
 }
