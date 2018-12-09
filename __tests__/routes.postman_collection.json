@@ -5371,6 +5371,187 @@
 					"response": []
 				},
 				{
+					"name": "GET /events/:event_id | Get event details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7de3e743-6993-4c58-b83a-09064e2cafc8",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"    pm.expect(jsonData.event.name).to.eql(\"Nouvel An\");",
+									"    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
+									"    pm.expect(jsonData.event.location).to.eql(\"Le pub Universitaire\");",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JACOB_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{NEW_YEAR_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{NEW_YEAR_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] GET /events/999 | Get event details for non existing event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f7cb09e-97ae-4135-9191-2ce6328cbca6",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Event not found\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JACOB_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] GET /events/:event_id | Get event details with mortimr",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5cdf0ce5-81db-4933-b253-6a55871407e8",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Action not allowed\");",
+									"});",
+									"",
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{NEW_YEAR_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{NEW_YEAR_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "[Fail] DELETE /events/:event_id | Remove event with invalid rights",
 					"event": [
 						{
@@ -5558,12 +5739,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "bb18f606-96f9-4a85-bf56-d570859a375b",
+								"id": "a4c7ccaf-a10e-4c3b-b1a0-4a463172b274",
 								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.message).to.eql(\"No such Event\");",
+									"    pm.expect(jsonData.message).to.eql(\"Event not found\");",
 									"});",
 									"",
 									"",
