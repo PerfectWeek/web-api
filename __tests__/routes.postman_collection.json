@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "PW",
-		"_postman_id": "f09366f7-c376-8d8d-f063-ab15e7b5ff8b",
+		"_postman_id": "c6489b3c-5dcf-d2cb-4832-b3dc30563237",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2520,7 +2520,6 @@
 								{
 									"key": "users[0]",
 									"value": "{{INTRUDER_PSEUDO}}",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -2589,7 +2588,6 @@
 								{
 									"key": "users[0]",
 									"value": "{{INTRUDER_PSEUDO}}",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -2656,7 +2654,6 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"description": "",
 									"key": "users[0]",
 									"type": "text",
 									"value": "hehe"
@@ -2951,7 +2948,6 @@
 								{
 									"key": "users[0]",
 									"value": "patou",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -4794,18 +4790,127 @@
 			"name": "[/events] Event features",
 			"item": [
 				{
-					"name": "POST /auth/login | Log In as mortirm",
+					"name": "POST /users | Create new user jacob",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "3db4e6a3-70b7-4956-a753-5ed15d96dfcf",
+								"id": "c8a37031-4ed5-4c4f-840c-1b02a5d0010e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"A link has been sent\");",
+									"    pm.expect(jsonData.link).to.include(\"http\");",
+									"    pm.globals.set(\"jacob_link\", jsonData.link);",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"jacob\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"jacob@fake.com\");",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "pseudo",
+									"value": "jacob",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "jacob@fake.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "hahahaha",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /auth/validate-email | Validate email for user jacob",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f341053a-fe4d-4770-afde-42712cb30820",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"User has been successfully created\");",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"jacob\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"jacob@fake.com\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{jacob_link}}",
+							"host": [
+								"{{jacob_link}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /auth/login | Log In as jacob",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7098b147-c380-46b5-b0b4-893a195a1fe4",
+								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.message).to.eql(\"Authentication successful\");",
-									"    pm.expect(jsonData.user.pseudo).to.eql(\"mortimr\");",
-									"    pm.expect(jsonData.user.email).to.eql(\"mortimr@fake.com\");",
+									"    pm.expect(jsonData.user.pseudo).to.eql(\"jacob\");",
+									"    pm.expect(jsonData.user.email).to.eql(\"jacob@fake.com\");",
 									"});",
 									"",
 									"",
@@ -4813,10 +4918,9 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.globals.set(\"TOKEN\", pm.response.json().access_token);",
+									"pm.globals.set(\"JACOB_TOKEN\", pm.response.json().access_token);",
 									""
-								],
-								"type": "text/javascript"
+								]
 							}
 						}
 					],
@@ -4833,7 +4937,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mortimr@fake.com",
+									"value": "jacob@fake.com",
 									"type": "text"
 								},
 								{
@@ -4889,7 +4993,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{JACOB_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -4898,8 +5002,6 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
@@ -4964,7 +5066,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{JACOB_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -4973,9 +5075,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -5030,7 +5130,8 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
+								"id": "e6910a91-3fd2-46b7-92fc-1fc50c4f3444",
+								"type": "text/javascript",
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
@@ -5048,9 +5149,10 @@
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
+									"",
+									"pm.globals.set(\"NEW_YEAR_EVENT_ID\", pm.response.json().event.id);",
 									""
-								],
-								"type": "text/javascript"
+								]
 							}
 						}
 					],
@@ -5060,7 +5162,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{JACOB_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -5069,9 +5171,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -5121,7 +5221,7 @@
 					"response": []
 				},
 				{
-					"name": "POST /calendars/calendar_id/events | Create event missing field",
+					"name": "[Fail] POST /calendars/calendar_id/events | Create event missing field",
 					"event": [
 						{
 							"listen": "test",
@@ -5150,7 +5250,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{JACOB_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -5159,8 +5259,6 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
@@ -5240,7 +5338,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{TOKEN}}",
+									"value": "{{JACOB_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -5249,8 +5347,6 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
@@ -5269,6 +5365,248 @@
 								"calendars",
 								"{{CALENDAR_ID}}",
 								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] DELETE /events/:event_id | Remove event with invalid rights",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "af227ed7-2244-417b-a021-5272f7c3a75e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Action not allowed\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{NEW_YEAR_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{NEW_YEAR_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /events/:event_id | Remove event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a1c8b11a-d969-45b3-8c7f-1c8b889124f8",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JACOB_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{NEW_YEAR_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{NEW_YEAR_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /calendars/calendar_id/events | Get calendar's event list copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2be68496-2c5b-4d11-ae3c-a7d9a8689c3a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"    pm.expect(jsonData.events.length).to.eql(1);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JACOB_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}/events",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Fail] DELETE /events/:event_id | Remove event again",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb18f606-96f9-4a85-bf56-d570859a375b",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Test body value\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"No such Event\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JACOB_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{NEW_YEAR_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{NEW_YEAR_EVENT_ID}}"
 							]
 						}
 					},
