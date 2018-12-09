@@ -149,27 +149,30 @@ export async function deleteGroup(req: Request, res: Response) {
 // Get members of a Group
 //
 export async function getMembers(req: Request, res: Response) {
-    // TODO
+    const requestingUser = getRequestingUser(req);
+
+    const groupId: number = req.params.group_id;
+
+    const conn = await DbConnection.getConnection();
+
+    // Check if the Group exists and if the requesting User belongs to it
+    const calendarToOwner = await CalendarsToOwners.findGroupRelation(conn, groupId, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    // TODO: Put this in the View once we manage roles
+    const members: any[] = (await Calendar.getCalendarOwners(conn, calendarToOwner.calendar_id))
+        .map((calToOwn: CalendarsToOwners) => {
+            return {
+                pseudo: calToOwn.owner.pseudo,
+                role: "Admin"
+            };
+        });
+
     return res.status(200).json({
         message: "OK",
-        members: [
-            {
-                pseudo: "Michel",
-                role: "Admin"
-            },
-            {
-                pseudo: "Nicolas",
-                role: "Admin"
-            },
-            {
-                pseudo: "Damien",
-                role: "Spectator"
-            },
-            {
-                pseudo: "Henri",
-                role: "Spectator"
-            }
-        ]
+        members
     });
 }
 
