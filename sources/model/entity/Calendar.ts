@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Connection } from "typeorm";
-import { Event } from "./Event"
-import { CalendarsToOwners } from "./CalendarsToOwners";
-import { User } from "./User";
+import { Event }                                                         from "./Event"
+import { CalendarsToOwners }                                             from "./CalendarsToOwners";
+import { User }                                                          from "./User";
+import { Group }                                                         from "./Group";
 
 
 @Entity("calendars")
@@ -187,7 +188,7 @@ export class Calendar {
             for (const user of users) {
 
                 // Create and save new relationship
-                let newCalendarToOwner = new CalendarsToOwners(calendarId, user.id);
+                const newCalendarToOwner = new CalendarsToOwners(calendarId, user.id);
                 await calendarsToOwnersRepository.save(newCalendarToOwner);
 
             }
@@ -195,4 +196,45 @@ export class Calendar {
         });
     }
 
+    /**
+     * @brief Remove User from Calendar
+     *
+     * @param conn
+     * @param calendarId
+     * @param user
+     */
+    static async removeUser(
+        conn: Connection,
+        calendarId: number,
+        user: User
+    ): Promise<any> {
+        // Recover repository
+        const calendarsToOwnerRepository = conn.getRepository(CalendarsToOwners);
+
+        // Remove relation
+        await calendarsToOwnerRepository
+            .createQueryBuilder()
+            .delete()
+            .where("calendar_id = :calendar_id", {calendar_id: calendarId})
+            .andWhere("owner_id = :owner_id", {owner_id: user.id})
+            .execute();
+
+        const calendar: Calendar = await Calendar.findCalendarById(conn, calendarId);
+        if (calendar.nbOwners == 0) {
+            // Try to fetch group linked to calendar if it exists
+            const group: Group = await Group.findByCalendarId(conn, calendarId);
+            if (group) {
+                // Delete group linked to empty calendar
+                await Group.deleteById(conn, group.id);
+            }
+
+            // Delete empty calendar
+            await conn.getRepository(Calendar)
+                .createQueryBuilder()
+                .delete()
+                .where("id = :calendar_id", {calendar_id: calendarId})
+                .execute();
+        }
+
+    }
 }

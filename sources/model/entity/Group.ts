@@ -42,6 +42,23 @@ export class Group {
     }
 
     /**
+     * @brief Get Group by Calendar ID
+     *
+     * @param conn
+     * @param calendarId
+     */
+    public static async findByCalendarId(
+        conn: Connection,
+        calendarId: number
+    ): Promise<Group> {
+        return conn.getRepository(Group)
+            .createQueryBuilder("group")
+            .innerJoinAndSelect("group.calendar", "calendar")
+            .where("calendar_id = :calendar_id", {calendar_id: calendarId})
+            .getOne();
+    }
+
+    /**
      * @brief Delete a Group
      *
      * @param conn      The database Connection

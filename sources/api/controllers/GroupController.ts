@@ -260,22 +260,50 @@ export async function editUserStatus(req: Request, res: Response) {
 // Remove a User from a Group
 //
 export async function kickUserFromGroup(req: Request, res: Response) {
-    // TODO
+    const requestingUser = getRequestingUser(req);
+
+    // Recover arguments
+    const groupId: number = req.params.group_id;
+    const userPseudo: string = req.params.user_pseudo;
+
+    // Recover Database connection
+    const conn = await DbConnection.getConnection();
+
+    // Get the requested Group
+    const group: Group = await Group.findById(conn, groupId);
+    if (!group) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Check if the requesting User can access this Group
+    const calendarToOwner: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Recover user to remove
+    const rm_user: User = await User.findByPseudo(conn, userPseudo);
+
+    // Check if user is a member of specified group
+    const rm_cto: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, rm_user.id);
+    if (!rm_cto) {
+        throw new ApiException(404, `User ${rm_user.pseudo} is not a member of the group`);
+    }
+
+    // Remove user from calendar
+    await Calendar.removeUser(conn, group.calendar.id, rm_user);
+
+    // TODO: Put this in the View once we manage roles
+    const members: any[] = (await Calendar.getCalendarOwners(conn, group.calendar.id))
+        .map((calToOwn: CalendarsToOwners) => {
+            return {
+                pseudo: calToOwn.owner.pseudo,
+                role: "Admin"
+            };
+        });
+
     return res.status(200).json({
         message: "OK",
-        members: [
-            {
-                pseudo: "Michel",
-                role: "Admin"
-            },
-            {
-                pseudo: "Damien",
-                role: "Spectator"
-            },
-            {
-                pseudo: "Henri",
-                role: "Spectator"
-            }
-        ]
+        members
     });
 }
