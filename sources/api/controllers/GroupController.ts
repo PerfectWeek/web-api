@@ -107,16 +107,44 @@ export async function groupInfo(req: Request, res: Response) {
 // Edit a Group
 //
 export async function editGroup(req: Request, res: Response) {
-    // TODO
+    const requestingUser = getRequestingUser(req);
+
+    const groupId: number = req.params.group_id;
+    // Get Group fields to edit
+    const newGroupName: string = req.body.name;
+    const newGroupDescription: string = req.body.description;
+    if (!newGroupName || !newGroupDescription) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const conn = await DbConnection.getConnection();
+
+    // Check if the Group exists
+    const group = await Group.findById(conn, groupId);
+    if (!group) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Check if the requesting User has the rights to edit this Group
+    const userInGroup = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
+    if (!userInGroup) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Apply modifications
+    group.calendar.name = newGroupName;
+    group.description = newGroupDescription;
+    if (!group.calendar.isValid()) {
+        throw new ApiException(400, "Invalid fields in group");
+    }
+
+    // Update the group
+    const updatedGroup = await conn.manager.save(group);
+    updatedGroup.calendar = await conn.manager.save(group.calendar);
+
     return res.status(200).json({
         message: "OK",
-        group: {
-            id: 12,
-            name: "Perfect Group",
-            nb_members: 4,
-            calendar_id: 1,
-            description: "Wow ! Such Group !"
-        }
+        group: GroupView.formatGroup(updatedGroup)
     });
 }
 
