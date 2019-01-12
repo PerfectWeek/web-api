@@ -9,17 +9,18 @@ import { User }              from "../../model/entity/User";
 import { ApiException }      from "../../utils/apiException";
 import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 import { EventView }         from "../views/EventView";
+import { UserView }          from "../views/UserView";
 
 
 export async function getEventInfo(req: Request, res: Response) {
     const requestingUser: User = getRequestingUser(req);
 
-    const event_id: number = req.params.event_id;
+    const eventId: number = req.params.event_id;
 
     const conn: Connection = await DbConnection.getConnection();
 
     // Recover event and check if exists
-    const event: Event = await Event.getEventById(conn, event_id);
+    const event: Event = await Event.getEventById(conn, eventId);
     if (!event) {
         throw new ApiException(404, "Event not found")
     }
@@ -38,22 +39,31 @@ export async function getEventInfo(req: Request, res: Response) {
 }
 
 export async function getEventAttendees(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    const eventId = req.params.event_id;
+
+    const conn = await DbConnection.getConnection();
+
+    // Get the Event
+    const eventWithAttendees = await Event.getEventWithAttendeesById(conn, eventId);
+    if (!eventWithAttendees) {
+        throw new ApiException(403, "Event not accessible");
+    }
+
+    // Check if the Event is accessible by the requesting User
+    const userCalendarRelation = await CalendarsToOwners.findCalendarRelation(
+        conn,
+        eventWithAttendees.calendar.id,
+        requestingUser.id
+    );
+    if (!userCalendarRelation) {
+        throw new ApiException(403, "Event not accessible");
+    }
+
     return res.status(200).json({
         message: "OK",
-        attendees: [
-            {
-                pseudo: "Michel"
-            },
-            {
-                pseudo: "Nicolas"
-            },
-            {
-                pseudo: "Damien"
-            },
-            {
-                pseudo: "Henri"
-            }
-        ]
+        attendees: eventWithAttendees.attendees.map(eta => UserView.formatPublicUser(eta.attendee))
     });
 }
 
@@ -79,7 +89,6 @@ export async function inviteUser(req: Request, res: Response) {
             }
         ]
     });
-
 }
 
 export async function editEvent(req: Request, res: Response) {

@@ -1,6 +1,7 @@
-import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Index } from "typeorm";
-import { User } from "./User";
-import { Event } from "./Event"
+import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Index, Connection } from "typeorm";
+
+import { User }                                                            from "./User";
+import { Event }                                                           from "./Event"
 
 @Entity("events_to_attendees")
 export class EventsToAttendees {
@@ -24,5 +25,25 @@ export class EventsToAttendees {
         this.attendee_id = attendee_id;
         this.event = undefined;
         this.attendee = undefined;
+    }
+
+
+    /**
+     * @brief Get all relations for a given Event
+     *
+     * @param conn
+     * @param eventId
+     */
+    public static async getRelationsForEventId(
+        conn: Connection,
+        eventId: number
+    ): Promise<EventsToAttendees[]> {
+        return conn.getRepository(EventsToAttendees)
+            .createQueryBuilder("eta")
+            .select()
+            .innerJoinAndMapOne("eta.event", Event, "event", "event.id = eta.event_id")
+            .innerJoinAndMapOne("eta.attendee", User, "user", "user.id = eta.attendee_id")
+            .where("event.id = :event_id", {event_id: eventId})
+            .getMany();
     }
 }

@@ -10,8 +10,7 @@ export class EventView {
             calendar_id: event.calendar.id,
             location: event.location,
             start_time: event.startTime,
-            end_time: event.endTime,
-            attendees: event.attendees
+            end_time: event.endTime
         };
     }
 
@@ -23,6 +22,4 @@ export class EventView {
             end_time: event.endTime,
         };
     }
-
-
 }

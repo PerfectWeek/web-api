@@ -55,7 +55,7 @@ export class Event {
     }
 
     /**
-     * @brief Get an Event Instance by its ID
+     * @brief Get an Event instance by its ID
      *
      * @param conn
      * @param event_id
@@ -69,6 +69,26 @@ export class Event {
             .innerJoinAndSelect("event.calendar", "calendar")
             .where("event.id = :event_id", {event_id})
             .getOne();
+    }
+
+    /**
+     * @brief Get an Event instance by its ID along with all User attending it
+     *
+     * @param conn
+     * @param eventId
+     */
+    public static async getEventWithAttendeesById(
+        conn: Connection,
+        eventId: number
+    ): Promise<Event> {
+        const event = await this.getEventById(conn, eventId);
+        if (!event) {
+            return null;
+        }
+
+        event.attendees = await EventsToAttendees.getRelationsForEventId(conn, eventId);
+
+        return event;
     }
 
     /**
