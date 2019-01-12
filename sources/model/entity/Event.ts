@@ -95,16 +95,24 @@ export class Event {
      * @brief Remove specified event from calendar
      *
      * @param conn
-     * @param event_id
+     * @param eventId
      */
-    public static deleteById(
+    public static async deleteById(
         conn: Connection,
-        event_id: number
-    ): Promise<DeleteResult> {
-        return conn.getRepository(Event)
-            .createQueryBuilder()
-            .delete()
-            .where("id = :event_id", {event_id})
-            .execute();
+        eventId: number
+    ): Promise<any> {
+        await conn.transaction(async entityManager => {
+            await entityManager.getRepository(EventsToAttendees)
+                .createQueryBuilder()
+                .delete()
+                .where("event_id = :event_id", {event_id: eventId})
+                .execute();
+
+            await entityManager.getRepository(Event)
+                .createQueryBuilder("event")
+                .delete()
+                .where("id = :id", {id: eventId})
+                .execute();
+        });
     }
 }

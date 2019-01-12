@@ -5200,6 +5200,61 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "DELETE /events/event_id | Delete event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bdc71321-c947-4131-ba82-9305339c6131",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Message is: event deleted\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Event successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

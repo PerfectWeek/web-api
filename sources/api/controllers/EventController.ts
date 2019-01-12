@@ -165,6 +165,6 @@ export async function deleteEvent(req: Request, res: Response) {
     await Event.deleteById(conn, event.id);
 
     return res.status(200).json({
-        message: "OK"
+        message: "Event successfully deleted"
     });
 }
