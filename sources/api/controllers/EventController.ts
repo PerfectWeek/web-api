@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Connection }        from "typeorm";
+import { EventsToAttendees } from "../../model/entity/EventsToAttendees";
 
 import { getRequestingUser } from "../middleware/loggedOnly";
 import { Event }             from "../../model/entity/Event";
@@ -67,27 +68,60 @@ export async function getEventAttendees(req: Request, res: Response) {
     });
 }
 
-// The user is automatically added to members, it will change with roles
-export async function inviteUser(req: Request, res: Response) {
+// The users are automatically added to members, it will change with roles
+export async function inviteUsersToEvent(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    const eventId = req.params.event_id;
+    const usersToInvite: string[] = req.body.users;
+    if (!usersToInvite || !usersToInvite.length) {
+        throw new ApiException(400, "Bad Request");
+    }
+
+    const conn = await DbConnection.getConnection();
+
+    // Get the Event
+    const eventWithAttendees = await Event.getEventWithAttendeesById(conn, eventId);
+    if (!eventWithAttendees) {
+        throw new ApiException(403, "Event not accessible");
+    }
+
+    // Check if the Event is accessible by the requesting User
+    const userCalendarRelation = await CalendarsToOwners.findCalendarRelation(
+        conn,
+        eventWithAttendees.calendar.id,
+        requestingUser.id
+    );
+    if (!userCalendarRelation) {
+        throw new ApiException(403, "Event not accessible");
+    }
+
+    // Get all Users
+    const usersPromises = usersToInvite.map(userPseudo => User.findByPseudo(conn, userPseudo));
+    const users = await Promise.all(usersPromises);
+    const indexNonExistingUser = users.findIndex(u => !u);
+    if (indexNonExistingUser !== -1) {
+        throw new ApiException(404, `User "${usersToInvite[indexNonExistingUser]}" does not exist`);
+    }
+
+    // Check if users to invite aren't already in the list
+    const existingUserIds = new Set(eventWithAttendees.attendees.map(eta => eta.attendee_id));
+    const indexUserAlreadyInList = users.findIndex(u => existingUserIds.has(u.id));
+    if (indexUserAlreadyInList !== -1) {
+        throw new ApiException(409, `User "${usersToInvite[indexUserAlreadyInList]}" already invited`);
+    }
+
+    // Add the users in the attendees list
+    const newEventsToAttendees = users.map(u => new EventsToAttendees(eventWithAttendees.id, u.id));
+    await conn.manager.save(newEventsToAttendees);
+
+    const attendees = [
+        ...(eventWithAttendees.attendees.map(eta => eta.attendee)),
+        ...users
+    ];
     return res.status(201).json({
-        message: "OK",
-        attendees: [
-            {
-                pseudo: "Michel"
-            },
-            {
-                pseudo: "Corentin"
-            },
-            {
-                pseudo: "Nicolas"
-            },
-            {
-                pseudo: "Damien"
-            },
-            {
-                pseudo: "Henri"
-            }
-        ]
+        message: "User(s) successfully invited",
+        attendees: attendees.map(u => UserView.formatPublicUser(u))
     });
 }
 

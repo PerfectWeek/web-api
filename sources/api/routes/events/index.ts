@@ -10,7 +10,7 @@ router.get("/:event_id", AsyncHandler(loggedOnly), AsyncHandler(EventController.
 
 router.get("/:event_id/attendees", AsyncHandler(loggedOnly), AsyncHandler(EventController.getEventAttendees));
 
-router.post("/:event_id/invite-user", AsyncHandler(loggedOnly), AsyncHandler(EventController.inviteUser));
+router.post("/:event_id/invite-users", AsyncHandler(loggedOnly), AsyncHandler(EventController.inviteUsersToEvent));
 
 router.put("/:event_id", AsyncHandler(loggedOnly), AsyncHandler(EventController.editEvent));
 
