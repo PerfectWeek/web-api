@@ -126,17 +126,44 @@ export async function inviteUsersToEvent(req: Request, res: Response) {
 }
 
 export async function editEvent(req: Request, res: Response) {
+    const requestingUser: User = getRequestingUser(req);
+
+    const eventId: number = req.params.event_id;
+
+    const name = req.body.name;
+    const description = req.body.description || "";
+    const location = req.body.location;
+    const start_time = req.body.start_time;
+    const end_time = req.body.end_time;
+    if (!name || !location || !start_time || !end_time) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Recover event and check if exists
+    const event: Event = await Event.getEventById(conn, eventId);
+    if (!event) {
+        throw new ApiException(403, "Action not allowed")
+    }
+
+    // Check if requesting user is a member of the calendar
+    const calendar: Calendar = event.calendar;
+    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+        throw new ApiException(403, "Action not allowed")
+    }
+
+    // Update Event information
+    event.name = name;
+    event.description = description;
+    event.location = location;
+    event.startTime = start_time;
+    event.endTime = end_time;
+    const savedEvent = await conn.manager.save(event);
+
     return res.status(200).json({
         message: "OK",
-        event: {
-            id: 5,
-            name: "Nouvel An",
-            description: "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
-            location: "Le pub Universitaire",
-            calendar_id: 2,
-            start_time: "2018-12-31T21:00:00",
-            end_time: "2019-01-01T07:00:00"
-        }
+        event: EventView.formatEvent(savedEvent)
     });
 }
 
