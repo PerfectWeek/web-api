@@ -1495,11 +1495,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
-  /events/{event-id}/invite-user:
+  /events/{event-id}/invite-users:
     post:
       tags:
         - Event
-      summary: Invite user to Event
+      summary: Invite users to Event
       operationId: inviteUser
       security:
         - BearerAuth: []
@@ -1787,11 +1787,10 @@ components:
           example: alif
 
     InviteUser:
-      type: object
-      properties:
-        pseudo:
-          type: string
-          example: alif
+      type: array
+      items:
+        type: string
+        example: alif
 
 
     #
