@@ -1,10 +1,12 @@
 import {Column, Connection, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
 
-import {Encrypt} from "../../utils/encrypt";
-import {UserValidator} from "../../utils/validator/UserValidator";
-import {Group} from "./Group";
-import {CalendarsToOwners} from "./CalendarsToOwners";
-import {Calendar} from "./Calendar";
+import {Encrypt}             from "../../utils/encrypt";
+import {UserValidator}       from "../../utils/validator/UserValidator";
+import { EventsToAttendees } from "./EventsToAttendees";
+import { Event }             from "./Event";
+import {Group}               from "./Group";
+import {CalendarsToOwners}   from "./CalendarsToOwners";
+import {Calendar}            from "./Calendar";
 
 
 @Entity("users")
@@ -142,8 +144,32 @@ export class User {
         conn: Connection,
         userId: number
     ): Promise<any> {
+        // Get Calendar ids that only belong to this User and that have to be removed along with him
+        const calendarIdsToDelete: number[] = (await conn.getRepository(Calendar)
+            .createQueryBuilder("calendar")
+            .select(["calendar.id"])
+            .innerJoin(CalendarsToOwners, "cto", "cto.calendar_id = calendar.id")
+            .where("cto.owner_id = :owner_id", {owner_id: userId})
+            .andWhere("calendar.nb_owners = 1")
+            .execute())
+            .map((c: any) => c.calendar_id);
+
+        const eventIdsToDelete: number[] = calendarIdsToDelete.length !== 0
+            ? (await conn.getRepository(Event)
+                .createQueryBuilder()
+                .select(["id"])
+                .where("calendar_id IN (:...calendar_ids)", {calendar_ids: calendarIdsToDelete})
+                .execute())
+                .map((e: any) => e.id)
+            : [];
+
         await conn.transaction(async entityManager => {
-            // TODO: Remove User from all its Events
+            // Remove User from its Events
+            await entityManager.getRepository(EventsToAttendees)
+                .createQueryBuilder()
+                .delete()
+                .where("attendee_id = :user_id", {user_id: userId})
+                .execute();
 
             // Remove the User from all its Calendars
             await entityManager.getRepository(CalendarsToOwners)
@@ -152,12 +178,35 @@ export class User {
                 .where("owner_id = :user_id", {user_id: userId})
                 .execute();
 
-            // Remove Calendars that don't belong to anyone
-            await entityManager.getRepository(Calendar)
-                .createQueryBuilder()
-                .delete()
-                .where("nb_owners = 0")
-                .execute();
+            // Delete Calendars with no owners
+            if (calendarIdsToDelete.length !== 0) {
+                await entityManager.getRepository(Group)
+                    .createQueryBuilder()
+                    .delete()
+                    .where("calendar_id IN (:...calendar_ids)", {calendar_ids: calendarIdsToDelete})
+                    .execute();
+
+                // Delete Events associated to these Calendars
+                if (eventIdsToDelete.length !== 0) {
+                    await entityManager.getRepository(EventsToAttendees)
+                        .createQueryBuilder()
+                        .delete()
+                        .where("event_id IN (:...event_ids)", {event_ids: eventIdsToDelete})
+                        .execute();
+
+                    await entityManager.getRepository(Event)
+                        .createQueryBuilder()
+                        .delete()
+                        .where("id IN (:...event_ids)", {event_ids: eventIdsToDelete})
+                        .execute();
+                }
+
+                await entityManager.getRepository(Calendar)
+                    .createQueryBuilder()
+                    .delete()
+                    .where("id IN (:...ids)", {ids: calendarIdsToDelete})
+                    .execute();
+            }
 
             // Remove User
             await entityManager.getRepository(User)

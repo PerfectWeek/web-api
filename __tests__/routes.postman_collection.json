@@ -5310,6 +5310,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "DELETE /users/user_id | Delete mortimr",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"mortimr"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

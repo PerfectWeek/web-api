@@ -173,16 +173,16 @@ export class Calendar {
             // Delete Events related to Calendar
             if (eventsIdsToDelete.length !== 0) {
                 await entityManager.getRepository(EventsToAttendees)
-                .createQueryBuilder()
-                .delete()
-                .where("event_id IN (:...event_ids)", {event_ids: eventsIdsToDelete})
-                .execute();
+                    .createQueryBuilder()
+                    .delete()
+                    .where("event_id IN (:...event_ids)", {event_ids: eventsIdsToDelete})
+                    .execute();
 
                 await entityManager.getRepository(Event)
-                .createQueryBuilder()
-                .delete()
-                .where("id IN (:...event_ids)", {event_ids: eventsIdsToDelete})
-                .execute();
+                    .createQueryBuilder()
+                    .delete()
+                    .where("id IN (:...event_ids)", {event_ids: eventsIdsToDelete})
+                    .execute();
             }
 
             // Remove Calendar
