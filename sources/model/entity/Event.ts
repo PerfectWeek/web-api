@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Connection, DeleteResult } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Connection } from "typeorm";
 
 import { Calendar }          from "./Calendar";
 import { EventsToAttendees } from "./EventsToAttendees";

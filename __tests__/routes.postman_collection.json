@@ -5255,6 +5255,61 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "DELETE /calendar/calendar_id | Delete Calendar Containing Events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6c41c821-ab16-4007-8879-9ae486d69bd8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Message is: calendar deleted\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Calendar successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
