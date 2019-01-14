@@ -1,6 +1,7 @@
 import { google, calendar_v3 } from "googleapis";
 import * as credentials from "../../credentials.json";
 import { GetTokenResponse, OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
+
 import { GoogleCalendarCredentials } from "../model/entity/GoogleCalendarCredentials.js";
 import { Calendar } from "../model/entity/Calendar.js";
 import { Event } from "../model/entity/Event.js";
