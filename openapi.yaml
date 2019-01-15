@@ -359,6 +359,128 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /users/{pseudo}/upload-image:
+    post:
+      tags:
+        - User
+      summary: Upload image as new Avatar for own account
+      operationId: uploadUserImage
+      parameters:
+      - in: path
+        name: pseudo
+        required: true
+        description: The User pseudo
+        schema:
+          type: string
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+            encoding:
+              image:
+                contentType: image/png, image/jpeg
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '413':
+          description: Entity Too Large
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Image should not exceed 2MB
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not Found
+        '400':
+          description: File not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: File not Found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+                
+  /users/{pseudo}/image:
+    get:
+      tags:
+        - User
+      summary: Get user profile image
+      operationId: getUserImage
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  image:
+                    type: string
+                    example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAIAAABEtEjdAAABG2l...'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  
   /users/{pseudo}/groups:
     get:
       tags:
@@ -932,7 +1054,119 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+                
+  /groups/{group-id}/upload-image:
+    post:
+      tags:
+        - Group
+      summary: Upload image as new Avatar for specific group
+      operationId: uploadUserImage
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+            encoding:
+              image:
+                contentType: image/png, image/jpeg
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '413':
+          description: Entity Too Large
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Image should not exceed 2MB
 
+  /groups/{group-id}/image:
+    get:
+      tags:
+        - Group
+      summary: Get group profile image
+      operationId: getGroupImage
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  image:
+                    type: string
+                    example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAIAAABEtEjdAAABG2l...'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 
   #
   # Calendar
@@ -1549,6 +1783,119 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /events/{event-id}/upload-image:
+    post:
+      tags:
+        - Event
+      summary: Upload image as new Avatar for specific event
+      operationId: uploadEventImage
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+            encoding:
+              image:
+                contentType: image/png, image/jpeg
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+        '413':
+          description: Entity Too Large
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Image should not exceed 2MB
+
+  /events/{event-id}/image:
+    get:
+      tags:
+        - Event
+      summary: Get event profile image
+      operationId: getEventImage
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: event-id
+          required: true
+          description: The Event id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  image:
+                    type: string
+                    example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAIAAABEtEjdAAABG2l...'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
 ####################
 # Component
@@ -1829,3 +2176,4 @@ components:
         message:
           type: string
           example: Internal Server Error
+
