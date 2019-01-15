@@ -7,9 +7,15 @@ export class googleCalendarCredentials1547478763922 implements MigrationInterfac
         await queryRunner.query(`ALTER TABLE "events" ALTER COLUMN "description" DROP NOT NULL`);
         await queryRunner.query(`ALTER TABLE "events" ALTER COLUMN "location" DROP NOT NULL`);
         await queryRunner.query(`ALTER TABLE "google_calendar_credentials" ADD CONSTRAINT "FK_2939cc6968b1d6477a6c4b4811d" FOREIGN KEY ("user_id") REFERENCES "users"("id")`);
+    
+        await queryRunner.query( `CREATE TRIGGER google_calendar_credentials_update
+            BEFORE UPDATE ON google_calendar_credentials
+                FOR EACH ROW EXECUTE PROCEDURE trigger_set_updated_time();`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
+        await queryRunner.query("DROP TRIGGER IF EXISTS google_calendar_credentials_update ON google_calendar_credentials");
+
         await queryRunner.query(`ALTER TABLE "google_calendar_credentials" DROP CONSTRAINT "FK_2939cc6968b1d6477a6c4b4811d"`);
         await queryRunner.query(`ALTER TABLE "events" ALTER COLUMN "location" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "events" ALTER COLUMN "description" SET NOT NULL`);
