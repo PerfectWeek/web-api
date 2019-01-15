@@ -1,6 +1,6 @@
-import {Column, Connection, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Connection, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import {Calendar} from "./Calendar";
+import { Calendar } from "./Calendar";
 
 
 @Entity("groups")
@@ -13,12 +13,16 @@ export class Group {
     @JoinColumn({name: "calendar_id"})
     calendar: Calendar;
 
+    @Column("bytea", {nullable: true})
+    image?: Buffer;
+
     @Column()
     description: string;
 
-    public constructor(description: string, calendar: Calendar) {
+    public constructor(description: string, calendar: Calendar, image?: Buffer) {
         this.description = description;
         this.calendar = calendar;
+        this.image = image;
     }
 
     /**
@@ -74,4 +78,5 @@ export class Group {
             .where({id: groupId})
             .execute();
     }
+
 }

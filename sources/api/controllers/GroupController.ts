@@ -1,17 +1,21 @@
 import { Request, Response } from "express";
 import { Connection }        from "typeorm";
+import * as B64              from "base64-img";
+import * as Fs               from "fs";
 
-import { getRequestingUser } from "../middleware/loggedOnly";
-import { removeDuplicates }  from "../../utils/removeDuplicates";
-import { removeIfExists }    from "../../utils/removeIfExists";
-import { DbConnection }      from "../../utils/DbConnection";
-import { Group }             from "../../model/entity/Group";
-import { User }              from "../../model/entity/User";
-import { ApiException }      from "../../utils/apiException";
-import { GroupView }         from "../views/GroupView";
-import { Calendar }          from "../../model/entity/Calendar";
-import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { getRequestingUser }      from "../middleware/loggedOnly";
+import { removeDuplicates }       from "../../utils/removeDuplicates";
+import { removeIfExists }         from "../../utils/removeIfExists";
+import { DbConnection }           from "../../utils/DbConnection";
+import { Group }                  from "../../model/entity/Group";
+import { User }                   from "../../model/entity/User";
+import { ApiException }           from "../../utils/apiException";
+import { GroupView }              from "../views/GroupView";
+import { Calendar }               from "../../model/entity/Calendar";
+import { CalendarsToOwners }      from "../../model/entity/CalendarsToOwners";
+import { image as DEFAULT_IMAGE } from "../../../resources/images/group_default.json";
 
+const MAX_FILE_SIZE: number = 2000000;
 
 //
 // Create a new Group and its associated Calendar
@@ -286,6 +290,92 @@ export async function editUserStatus(req: Request, res: Response) {
     });
 }
 
+//
+// Recover group image
+//
+export async function getGroupImage(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    // Recover arguments
+    const groupId: number = req.params.group_id;
+
+    // Recover Database connection
+    const conn = await DbConnection.getConnection();
+
+    // Get the requested Group
+    const group: Group = await Group.findById(conn, groupId);
+    if (!group) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Check if the requesting User can access this Group
+    const calendarToOwner: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    return res.status(200).json({
+        message: "OK",
+        image: group.image ? group.image.toString() : DEFAULT_IMAGE
+    });
+}
+
+//
+// Upload a form-data image and sets it as group image
+//
+export async function uploadGroupImage(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    // Recover arguments
+    const groupId: number = req.params.group_id;
+    const file: any = req.file;
+
+    if (!file) {
+        throw new ApiException(400, "File not found");
+    }
+
+    // Recover Database connection
+    const conn = await DbConnection.getConnection();
+
+    // Get the requested Group
+    const group: Group = await Group.findById(conn, groupId);
+    if (!group) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Check if the requesting User can access this Group
+    const calendarToOwner: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(conn, group.calendar.id, requestingUser.id);
+    if (!calendarToOwner) {
+        throw new ApiException(403, "Group not accessible");
+    }
+
+    // Check if max file size isn't exceeded
+    if (file.size > MAX_FILE_SIZE) {
+        throw new ApiException(413, "Image should not exceed 2MB");
+    }
+
+    // Convert to base64
+    let b64: string;
+
+    try {
+        b64 = B64.base64Sync(file.path);
+    } catch (e) {
+        throw new ApiException(500, "Invalid image format");
+    }
+
+    // Delete file from filesystem
+    Fs.unlinkSync(file.path);
+
+    // Save new image as group image
+    group.image = new Buffer(b64);
+    const groupRepo = conn.getRepository(Group);
+
+    await groupRepo.save(group);
+
+    return res.status(200).json({
+        message: "OK"
+    });
+}
 
 //
 // Remove a User from a Group
