@@ -15,6 +15,9 @@
   "servers" : [ {
     "url" : "https://api.kalastud.io",
     "description" : "Production Server"
+  }, {
+    "url" : "https://perfect-week-test.herokuapp.com",
+    "description" : "Test Server"
   } ],
   "tags" : [ {
     "name" : "API",

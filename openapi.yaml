@@ -3,6 +3,8 @@ openapi: 3.0.0
 servers:
   - url: https://api.kalastud.io
     description: Production Server
+  - url: https://perfect-week-test.herokuapp.com
+    description: Test Server
 
 info:
   title: PerfectWeek API
