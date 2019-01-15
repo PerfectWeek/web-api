@@ -1,17 +1,21 @@
 import { Request, Response } from "express";
 import { Connection }        from "typeorm";
-import { EventsToAttendees } from "../../model/entity/EventsToAttendees";
+import * as B64              from "base64-img";
+import * as Fs               from "fs";
 
-import { getRequestingUser } from "../middleware/loggedOnly";
-import { Event }             from "../../model/entity/Event";
-import { DbConnection }      from "../../utils/DbConnection";
-import { Calendar }          from "../../model/entity/Calendar";
-import { User }              from "../../model/entity/User";
-import { ApiException }      from "../../utils/apiException";
-import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
-import { EventView }         from "../views/EventView";
-import { UserView }          from "../views/UserView";
+import { EventsToAttendees }      from "../../model/entity/EventsToAttendees";
+import { getRequestingUser }      from "../middleware/loggedOnly";
+import { Event }                  from "../../model/entity/Event";
+import { DbConnection }           from "../../utils/DbConnection";
+import { Calendar }               from "../../model/entity/Calendar";
+import { User }                   from "../../model/entity/User";
+import { ApiException }           from "../../utils/apiException";
+import { CalendarsToOwners }      from "../../model/entity/CalendarsToOwners";
+import { EventView }              from "../views/EventView";
+import { UserView }               from "../views/UserView";
+import { image as DEFAULT_IMAGE } from "../../../resources/images/event_default.json";
 
+const MAX_FILE_SIZE: number = 2000000;
 
 export async function getEventInfo(req: Request, res: Response) {
     const requestingUser: User = getRequestingUser(req);
@@ -23,14 +27,14 @@ export async function getEventInfo(req: Request, res: Response) {
     // Recover event and check if exists
     const event: Event = await Event.getEventById(conn, eventId);
     if (!event) {
-        throw new ApiException(404, "Event not found")
+        throw new ApiException(404, "Event not found");
     }
 
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
     if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
-        throw new ApiException(403, "Action not allowed")
+        throw new ApiException(403, "Action not allowed");
     }
 
     return res.status(200).json({
@@ -144,13 +148,13 @@ export async function editEvent(req: Request, res: Response) {
     // Recover event and check if exists
     const event: Event = await Event.getEventById(conn, eventId);
     if (!event) {
-        throw new ApiException(403, "Action not allowed")
+        throw new ApiException(403, "Action not allowed");
     }
 
     // Check if requesting user is a member of the calendar
     const calendar: Calendar = event.calendar;
     if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
-        throw new ApiException(403, "Action not allowed")
+        throw new ApiException(403, "Action not allowed");
     }
 
     // Update Event information
@@ -167,6 +171,87 @@ export async function editEvent(req: Request, res: Response) {
     });
 }
 
+export async function uploadEventImage(req: Request, res: Response) {
+
+    const requestingUser: User = getRequestingUser(req);
+
+    const event_id: number = req.params.event_id;
+    const file: any = req.file;
+
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Recover event and check if exists
+    const event: Event = await Event.getEventById(conn, event_id);
+    if (!event) {
+        throw new ApiException(404, "Event not found");
+    }
+
+    const calendar: Calendar = event.calendar;
+
+    // Check if requesting user is a member of the calendar
+    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    if (!file) {
+        throw new ApiException(400, "File not found");
+    }
+
+    // Check if max file size isn't exceeded
+    if (file.size > MAX_FILE_SIZE) {
+        throw new ApiException(413, "Image should not exceed 2MB");
+    }
+
+    // Convert to base64
+    let b64: string;
+
+    try {
+        b64 = B64.base64Sync(file.path);
+    } catch (e) {
+        throw new ApiException(500, "Invalid image format");
+    }
+
+    // Delete file from filesystem
+    Fs.unlinkSync(file.path);
+
+    // Save new image as event image
+    event.image = new Buffer(b64);
+    const eventRepo = conn.getRepository(Event);
+
+    await eventRepo.save(event);
+
+    return res.status(200).json({
+        message: "OK"
+    });
+}
+
+export async function getEventImage(req: Request, res: Response) {
+    const requestingUser: User = getRequestingUser(req);
+
+    const event_id: number = req.params.event_id;
+
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Recover event and check if exists
+    const event: Event = await Event.getEventById(conn, event_id);
+    if (!event) {
+        throw new ApiException(404, "Event not found");
+    }
+
+    const calendar: Calendar = event.calendar;
+
+    // Check if requesting user is a member of the calendar
+    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    return res.status(200).json({
+        message: "OK",
+        image: event.image ? event.image.toString() : DEFAULT_IMAGE
+    });
+
+}
+
 export async function deleteEvent(req: Request, res: Response) {
 
     const requestingUser: User = getRequestingUser(req);
@@ -178,14 +263,14 @@ export async function deleteEvent(req: Request, res: Response) {
     // Recover event and check if exists
     const event: Event = await Event.getEventById(conn, event_id);
     if (!event) {
-        throw new ApiException(404, "Event not found")
+        throw new ApiException(404, "Event not found");
     }
 
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
     if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
-        throw new ApiException(403, "Action not allowed")
+        throw new ApiException(403, "Action not allowed");
     }
 
     // Remove Event from calendar

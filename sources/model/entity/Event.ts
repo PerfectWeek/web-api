@@ -36,9 +36,12 @@ export class Event {
 
     attendees: EventsToAttendees[];
 
+    @Column("bytea", {nullable: true})
+    image?: Buffer;
+
 
     public constructor(name: string, description: string, location: string,
-                       calendar: Calendar, startTime: Date, endTime: Date) {
+                       calendar: Calendar, startTime: Date, endTime: Date, image?: Buffer) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -46,12 +49,7 @@ export class Event {
         this.startTime = startTime;
         this.endTime = endTime;
         this.attendees = [];
-    }
-
-    public isValid() {
-        return this.name.length > 0
-            && this.calendar
-            && this.startTime <= this.endTime;
+        this.image = image;
     }
 
     /**
@@ -114,5 +112,11 @@ export class Event {
                 .where("id = :id", {id: eventId})
                 .execute();
         });
+    }
+
+    public isValid() {
+        return this.name.length > 0
+            && this.calendar
+            && this.startTime <= this.endTime;
     }
 }
