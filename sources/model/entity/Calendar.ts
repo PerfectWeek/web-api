@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Connection } from "typeorm";
 import { Event }                                                         from "./Event"
 import { CalendarsToOwners }                                             from "./CalendarsToOwners";
+import { EventsToAttendees }                                             from "./EventsToAttendees";
 import { User }                                                          from "./User";
 import { Group }                                                         from "./Group";
 
@@ -154,7 +155,37 @@ export class Calendar {
         conn: Connection,
         calendarId: number
     ): Promise<any> {
+        const eventsIdsToDelete: number[] = (await conn.createQueryBuilder(Event, "event")
+            .select(["event.id"])
+            .innerJoin("event.calendar", "calendar")
+            .where("calendar.id = :calendar_id", {calendar_id: calendarId})
+            .execute())
+            .map((e: any) => e.event_id);
+
         await conn.transaction(async entityManager => {
+            // Delete Group related to Calendar
+            await entityManager.getRepository(Group)
+                .createQueryBuilder()
+                .delete()
+                .where("calendar_id = :calendar_id", {calendar_id: calendarId})
+                .execute();
+
+            // Delete Events related to Calendar
+            if (eventsIdsToDelete.length !== 0) {
+                await entityManager.getRepository(EventsToAttendees)
+                    .createQueryBuilder()
+                    .delete()
+                    .where("event_id IN (:...event_ids)", {event_ids: eventsIdsToDelete})
+                    .execute();
+
+                await entityManager.getRepository(Event)
+                    .createQueryBuilder()
+                    .delete()
+                    .where("id IN (:...event_ids)", {event_ids: eventsIdsToDelete})
+                    .execute();
+            }
+
+            // Remove Calendar
             await entityManager.getRepository(CalendarsToOwners)
                 .createQueryBuilder()
                 .delete()

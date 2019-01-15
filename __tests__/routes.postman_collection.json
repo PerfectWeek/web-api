@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a344825d-68a9-4514-93d7-b8c637b4948a",
+		"_postman_id": "efa12675-6082-4771-8fb0-656cd985870b",
 		"name": "PW",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4505,22 +4505,30 @@
 							"script": {
 								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
 								"exec": [
-									"pm.test(\"Test body value\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    var calendar_id = pm.globals.get(\"CALENDAR_ID\"); ",
-									"    pm.expect(jsonData.message).to.eql(\"Event created\");",
-									"    pm.expect(jsonData.event.name).to.eql(\"Nouvel An\");",
-									"    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
-									"    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
-									"    pm.expect(jsonData.event.location).to.eql(\"Le pub Universitaire\");",
-									"    pm.expect(jsonData.event.start_time).to.eql(\"2018-12-31T20:00:00\");",
-									"    pm.expect(jsonData.event.end_time).to.eql(\"2019-01-01T06:00:00\");",
-									"});",
-									"",
-									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"var calendar_id = pm.globals.get(\"CALENDAR_ID\"); ",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Event created\");",
+									"});",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    var expected_start_time = new Date(\"2018-12-24T20:00:00\");",
+									"    var expected_end_time = new Date(\"2018-12-25T02:00:00\");",
+									"",
+									"    pm.expect(jsonData.event.name).to.eql(\"Christmas party\");",
+									"    pm.expect(jsonData.event.description).to.eql(\"Merry Christmas\");",
+									"    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
+									"    pm.expect(jsonData.event.location).to.eql(\"At Home\");",
+									"    pm.expect(new Date(jsonData.event.start_time)).to.eql(expected_start_time);",
+									"    pm.expect(new Date(jsonData.event.end_time)).to.eql(expected_end_time);",
+									"});",
+									"",
+									"",
 									""
 								],
 								"type": "text/javascript"
@@ -4552,27 +4560,27 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Nouvel An",
+									"value": "Christmas party",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
+									"value": "Merry Christmas",
 									"type": "text"
 								},
 								{
 									"key": "location",
-									"value": "Le pub Universitaire",
+									"value": "At Home",
 									"type": "text"
 								},
 								{
 									"key": "start_time",
-									"value": "2018-12-31T20:00:00",
+									"value": "2018-12-24T20:00:00",
 									"type": "text"
 								},
 								{
 									"key": "end_time",
-									"value": "2019-01-01T06:00:00",
+									"value": "2018-12-25T02:00:00",
 									"type": "text"
 								}
 							]
@@ -4603,14 +4611,18 @@
 								"exec": [
 									"pm.test(\"Test body value\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    var calendar_id = pm.globals.get(\"CALENDAR_ID\"); ",
+									"    var calendar_id = pm.globals.get(\"CALENDAR_ID\");",
+									"",
 									"    pm.expect(jsonData.message).to.eql(\"Event created\");",
+									"",
 									"    pm.expect(jsonData.event.name).to.eql(\"Nouvel An\");",
 									"    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
 									"    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
 									"    pm.expect(jsonData.event.location).to.eql(\"Le pub Universitaire\");",
 									"    pm.expect(jsonData.event.start_time).to.eql(\"2018-12-31T20:00:00\");",
 									"    pm.expect(jsonData.event.end_time).to.eql(\"2019-01-01T06:00:00\");",
+									"",
+									"    pm.globals.set(\"MORTIMER_EVENT_ID\", jsonData.event.id);",
 									"});",
 									"",
 									"",
@@ -4838,6 +4850,602 @@
 								"calendars",
 								"{{CALENDAR_ID}}",
 								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /events/event_id | Get event info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3b4c2a4a-3b13-4ea2-8b03-7d9acb1432c9",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var calendar_id = pm.globals.get(\"CALENDAR_ID\");",
+									"",
+									"var jsonData = pm.response.json();",
+									"var event = jsonData.event;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Test Event body values\", function () {",
+									"    var expected_id = pm.globals.get(\"MORTIMER_EVENT_ID\");",
+									"    var expected_start_time = new Date(\"2018-12-31T20:00:00\");",
+									"    var expected_end_time = new Date(\"2019-01-01T06:00:00\");",
+									"",
+									"    pm.expect(event.id).to.eql(expected_id);",
+									"    pm.expect(event.name).to.eql(\"Nouvel An\");",
+									"    pm.expect(event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
+									"    pm.expect(event.calendar_id).to.eql(calendar_id);",
+									"    pm.expect(event.location).to.eql(\"Le pub Universitaire\");",
+									"    pm.expect(new Date(event.start_time)).to.eql(expected_start_time);",
+									"    pm.expect(new Date(event.end_time)).to.eql(expected_end_time);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /events/event_id/attendees | Get event attendees",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7284be01-39e4-42f5-9341-4c64b75174db",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"var attendees = jsonData.attendees;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"});",
+									"",
+									"pm.test(\"Attendees list contains mortimr\", function () {",
+									"   pm.expect(attendees.length).to.eql(1);",
+									"   pm.expect(attendees[0].pseudo).to.eql(\"mortimr\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}/attendees",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}",
+								"attendees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /events/event_id/invite-users | Invite idloft to event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "166bb177-757e-4489-8bb8-5e59b78c2653",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"var attendees = jsonData.attendees;",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"User(s) successfully invited\");",
+									"});",
+									"",
+									"pm.test(\"Attendees list contains 2 users\", function () {",
+									"   pm.expect(attendees.length).to.eql(2);",
+									"   pm.expect(attendees.findIndex(u => u.pseudo === \"mortimr\")).to.not.eql(-1);",
+									"   pm.expect(attendees.findIndex(u => u.pseudo === \"idloft\")).to.not.eql(-1);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"value": "idloft",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}/invite-users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}",
+								"invite-users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /events/event_id/invite-users | Invite idloft again",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "333ec53b-46bd-4bb7-b660-5433efcf1528",
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Message is: already invited\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"User \\\"idloft\\\" already invited\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"value": "idloft",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}/invite-users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}",
+								"invite-users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /events/event_id/invite-users | Invite non existing User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "333ec53b-46bd-4bb7-b660-5433efcf1528",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Message is: user does not exist\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"User \\\"non-existing-user\\\" does not exist\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "users[0]",
+									"value": "non-existing-user",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}/invite-users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}",
+								"invite-users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /events/event_id | Edit Event information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fe8eb7f-dec4-4307-bcc1-181e6f422e50",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"var calendar_id = pm.globals.get(\"CALENDAR_ID\"); ",
+									"",
+									"pm.test(\"Message is OK\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"OK\");",
+									"});",
+									"",
+									"pm.test(\"Test body value\", function () {",
+									"    var expected_start_time = new Date(\"2018-12-31T20:00:00\");",
+									"    var expected_end_time = new Date(\"2019-01-01T06:00:00\");",
+									"",
+									"    pm.expect(jsonData.event.name).to.eql(\"Nouvel An chez Trump\");",
+									"    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
+									"    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
+									"    pm.expect(jsonData.event.location).to.eql(\"Trump Tower\");",
+									"    pm.expect(new Date(jsonData.event.start_time)).to.eql(expected_start_time);",
+									"    pm.expect(new Date(jsonData.event.end_time)).to.eql(expected_end_time);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Nouvel An chez Trump",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Trump Tower",
+									"type": "text"
+								},
+								{
+									"key": "start_time",
+									"value": "2018-12-31T20:00:00",
+									"type": "text"
+								},
+								{
+									"key": "end_time",
+									"value": "2019-01-01T06:00:00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /events/event_id | Delete event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bdc71321-c947-4131-ba82-9305339c6131",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Message is: event deleted\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Event successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"events",
+								"{{MORTIMER_EVENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /calendar/calendar_id | Delete Calendar Containing Events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6c41c821-ab16-4007-8879-9ae486d69bd8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Message is: calendar deleted\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Calendar successfully deleted\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/calendars/{{CALENDAR_ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"calendars",
+								"{{CALENDAR_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /users/user_id | Delete mortimr",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{TEST_API_PORT}}",
+							"path": [
+								"users",
+								"mortimr"
 							]
 						}
 					},

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { EventsToAttendees } from "../../model/entity/EventsToAttendees";
 
 import { ApiException } from "../../utils/apiException";
 import { getRequestingUser } from "../middleware/loggedOnly";
@@ -128,27 +129,33 @@ export async function createEvent(req: Request, res: Response) {
     const location = req.body.location || "";
     const start_time = req.body.start_time;
     const end_time = req.body.end_time;
-    if (!name || !location || !start_time || !end_time) {
+    if (!name || !start_time || !end_time) {
         throw new ApiException(400, "Bad request");
     }
 
     const conn = await DbConnection.getConnection();
 
+    // Make sure the requesting User can create an Event in this Calendar
     const calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
     if (!calendar
         || !calendar.isCalendarOwner(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
-    let event = new Event(name, description, location, calendar, start_time, end_time);
+    // Create the Event
+    const event = new Event(name, description, location, calendar, start_time, end_time);
     if (!event.isValid()) {
         throw new ApiException(400, "Invalid fields in Event");
     }
-    await conn.manager.save(event);
+    const savedEvent = await conn.manager.save(event);
+
+    // Add the requesting User in the attendees list
+    const eventToAttendee = new EventsToAttendees(savedEvent.id, requestingUser.id);
+    await conn.manager.save(eventToAttendee);
 
     return res.status(201).json({
         message: "Event created",
-        event: EventView.formatEvent(event),
+        event: EventView.formatEvent(savedEvent),
     });
 }
 

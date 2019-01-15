@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Connection, DeleteResult } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Connection } from "typeorm";
 
 import { Calendar }          from "./Calendar";
 import { EventsToAttendees } from "./EventsToAttendees";
@@ -55,7 +55,7 @@ export class Event {
     }
 
     /**
-     * @brief Get an Event Instance by its ID
+     * @brief Get an Event instance by its ID
      *
      * @param conn
      * @param event_id
@@ -72,19 +72,47 @@ export class Event {
     }
 
     /**
+     * @brief Get an Event instance by its ID along with all User attending it
+     *
+     * @param conn
+     * @param eventId
+     */
+    public static async getEventWithAttendeesById(
+        conn: Connection,
+        eventId: number
+    ): Promise<Event> {
+        const event = await this.getEventById(conn, eventId);
+        if (!event) {
+            return null;
+        }
+
+        event.attendees = await EventsToAttendees.getRelationsForEventId(conn, eventId);
+
+        return event;
+    }
+
+    /**
      * @brief Remove specified event from calendar
      *
      * @param conn
-     * @param event_id
+     * @param eventId
      */
-    public static deleteById(
+    public static async deleteById(
         conn: Connection,
-        event_id: number
-    ): Promise<DeleteResult> {
-        return conn.getRepository(Event)
-            .createQueryBuilder()
-            .delete()
-            .where("id = :event_id", { event_id })
-            .execute();
+        eventId: number
+    ): Promise<any> {
+        await conn.transaction(async entityManager => {
+            await entityManager.getRepository(EventsToAttendees)
+                .createQueryBuilder()
+                .delete()
+                .where("event_id = :event_id", {event_id: eventId})
+                .execute();
+
+            await entityManager.getRepository(Event)
+                .createQueryBuilder("event")
+                .delete()
+                .where("id = :id", {id: eventId})
+                .execute();
+        });
     }
 }
