@@ -591,6 +591,185 @@
                     "response": []
                 },
                 {
+                    "name": "POST User upload image",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const body = pm.response.json();",
+                                    "",
+                                    "pm.test(\"Upload succesful\", function () {",
+                                    "    pm.expect(body.message).to.equal(\"OK\");",
+                                    "});"
+                                ],
+                                "id": "cea109ae-ab3b-4670-b157-9cd241355d77",
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{TOKEN}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": "__tests__/images/group.jpg"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr/upload-image",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "{{TEST_API_PORT}}",
+                            "path": [
+                                "users",
+                                "mortimr",
+                                "upload-image"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST User upload image too large",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 413\", function () {",
+                                    "    pm.response.to.have.status(413);",
+                                    "});",
+                                    "",
+                                    "const body = pm.response.json();",
+                                    "",
+                                    "pm.test(\"Image upload correctly rejected\", function () {",
+                                    "    pm.expect(body.message).to.equal(\"Image should not exceed 2MB\");",
+                                    "});"
+                                ],
+                                "id": "97ba9cbe-baf4-422c-bb50-e5593e10debf",
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{TOKEN}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": "__tests__/images/large.jpg"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr/upload-image",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "{{TEST_API_PORT}}",
+                            "path": [
+                                "users",
+                                "mortimr",
+                                "upload-image"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User image",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "ad911b89-9c23-449b-ae3c-3e9feef33d5e",
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "const body = pm.response.json();",
+                                    "",
+                                    "pm.test(\"Image is retrieved\", function () {",
+                                    "    pm.expect(body.message).to.equal(\"OK\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{TOKEN}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "body": {},
+                        "url": {
+                            "raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr/image",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "{{TEST_API_PORT}}",
+                            "path": [
+                                "users",
+                                "mortimr",
+                                "image"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
                     "name": "GET /users/mortimr | Get infos of existing user",
                     "event": [
                         {

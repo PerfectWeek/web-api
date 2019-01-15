@@ -6,7 +6,10 @@ import { Router } from "express";
 import * as AsyncHandler from 'express-async-handler';
 
 import * as UserController from '../../controllers/UserController';
-import  { loggedOnly } from "../../middleware/loggedOnly";
+import  { loggedOnly }     from "../../middleware/loggedOnly";
+import * as multer         from "multer";
+
+const image_upload: multer.Instance = multer({dest: "/tmp/user"});
 
 const router = Router();
 
@@ -19,6 +22,13 @@ router.get('/:pseudo/calendars', AsyncHandler(loggedOnly), AsyncHandler(UserCont
 router.get('/:pseudo/groups', AsyncHandler(loggedOnly), AsyncHandler(UserController.getUserGroups));
 
 router.put('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.editUser));
+
+router.post('/:pseudo/upload-image',
+    AsyncHandler(loggedOnly),
+    AsyncHandler(image_upload.single("image")),
+    AsyncHandler(UserController.uploadUserImage));
+
+router.get('/:pseudo/image', AsyncHandler(loggedOnly), AsyncHandler(UserController.getUserImage));
 
 router.delete('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.deleteUser));
 

@@ -1,19 +1,23 @@
-import {Request, Response} from 'express';
-import * as Jwt from 'jsonwebtoken'
+import { Request, Response } from "express";
+import * as Jwt              from "jsonwebtoken";
+import * as B64              from "base64-img";
+import * as Fs               from "fs";
 
-import {User} from "../../model/entity/User";
-import {ApiException} from "../../utils/apiException";
-import {UserView} from "../views/UserView";
-import {getRequestingUser} from '../middleware/loggedOnly';
-import {EmailSender} from '../../utils/emailSender';
-import {AccountVerification} from '../../utils/accountVerification'
-import {DbConnection} from "../../utils/DbConnection";
-import {PendingUser} from '../../model/entity/PendingUser';
-import { getReqUrl } from '../../utils/getReqUrl';
-import { CalendarsToOwnersView } from '../views/CalendarsToOwnersView';
-import { Calendar } from '../../model/entity/Calendar';
-import { CalendarsToOwners } from '../../model/entity/CalendarsToOwners';
+import { User }                   from "../../model/entity/User";
+import { ApiException }           from "../../utils/apiException";
+import { UserView }               from "../views/UserView";
+import { getRequestingUser }      from "../middleware/loggedOnly";
+import { EmailSender }            from "../../utils/emailSender";
+import { AccountVerification }    from "../../utils/accountVerification";
+import { DbConnection }           from "../../utils/DbConnection";
+import { PendingUser }            from "../../model/entity/PendingUser";
+import { getReqUrl }              from "../../utils/getReqUrl";
+import { CalendarsToOwnersView }  from "../views/CalendarsToOwnersView";
+import { Calendar }               from "../../model/entity/Calendar";
+import { CalendarsToOwners }      from "../../model/entity/CalendarsToOwners";
+import { image as DEFAULT_IMAGE } from "../../../resources/images/user_default.json";
 
+const MAX_FILE_SIZE: number = 2000000;
 
 //
 // Create a new User and save it in the DataBase
@@ -50,20 +54,20 @@ export async function createUser(req: Request, res: Response) {
 
     // Generate link for account verification
     let reqUrl = process.env.API_HOST || getReqUrl(req);
-    if (!reqUrl.endsWith('/')) {
-        reqUrl += '/';
+    if (!reqUrl.endsWith("/")) {
+        reqUrl += "/";
     }
-    const link = reqUrl + 'auth/validate-email/' + validation_link;
+    const link = reqUrl + "auth/validate-email/" + validation_link;
 
     // Send a verification email
-    EmailSender.sendEmail(createdPendingUser.email, 'Account Verification', link);
+    EmailSender.sendEmail(createdPendingUser.email, "Account Verification", link);
 
     let response: any = {
-        message: 'A link has been sent to your email address, please click on it in order to confirm your email',
+        message: "A link has been sent to your email address, please click on it in order to confirm your email",
         user: UserView.formatPendingUser(createdPendingUser)
     };
     if (!process.env.EMAIL_ENABLED) {
-        response['link'] = link;
+        response["link"] = link;
     }
 
     return res.status(201).json(response);
@@ -128,7 +132,7 @@ export async function login(req: Request, res: Response) {
     const token = Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
 
     res.status(200).json({
-        message: 'Authentication successful',
+        message: "Authentication successful",
         access_token: token,
         user: UserView.formatUser(user)
     });
@@ -154,6 +158,66 @@ export async function getUser(req: Request, res: Response) {
     });
 }
 
+export async function uploadUserImage(req: Request, res: Response) {
+    const pseudo: string = req.params.pseudo;
+
+    if (pseudo !== (<any> req).user.pseudo) {
+        throw new ApiException(403, "Forbidden");
+    }
+
+    const file: any = req.file;
+
+    const conn = await DbConnection.getConnection();
+
+    const user = await User.findByPseudo(conn, pseudo);
+
+    if (!file) {
+        throw new ApiException(400, "File not found");
+    }
+
+    // Check if max file size isn't exceeded
+    if (file.size > MAX_FILE_SIZE) {
+        throw new ApiException(413, "Image should not exceed 2MB");
+    }
+
+    // Convert to base64
+    let b64: string;
+
+    try {
+        b64 = B64.base64Sync(file.path);
+    } catch (e) {
+        throw new ApiException(500, "Invalid image format");
+    }
+
+    // Delete file from filesystem
+    Fs.unlinkSync(file.path);
+
+    // Save new image as user image
+    user.image = new Buffer(b64);
+    const userRepo = conn.getRepository(User);
+
+    await userRepo.save(user);
+
+    return res.status(200).json({
+        message: "OK"
+    });
+}
+
+export async function getUserImage(req: Request, res: Response) {
+    const pseudo: string = req.params.pseudo;
+
+    const conn = await DbConnection.getConnection();
+
+    const user = await User.findByPseudo(conn, pseudo);
+    if (!user) {
+        throw new ApiException(404, "User not found");
+    }
+
+    return res.status(200).json({
+        message: "OK",
+        image: user.image ? user.image.toString() : DEFAULT_IMAGE
+    });
+}
 
 //
 // Edit a User's information

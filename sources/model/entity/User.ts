@@ -32,13 +32,17 @@ export class User {
     @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
     updatedAt: Date;
 
+    @Column("bytea", {nullable: true})
+    image?: Buffer;
+
     groups: Group[];
 
 
-    public constructor(pseudo: string, email: string, ciphered_password: string) {
+    public constructor(pseudo: string, email: string, ciphered_password: string, image?: Buffer) {
         this.pseudo = pseudo;
         this.email = email;
         this.cipheredPassword = ciphered_password;
+        this.image = image;
     }
 
     /**
