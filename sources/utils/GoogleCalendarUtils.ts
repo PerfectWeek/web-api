@@ -1,19 +1,22 @@
 import { google, calendar_v3 } from "googleapis";
-import * as credentials from "../../credentials.json";
 import { GetTokenResponse, OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
 
 import { GoogleCalendarCredentials } from "../model/entity/GoogleCalendarCredentials.js";
 import { Calendar } from "../model/entity/Calendar.js";
 import { Event } from "../model/entity/Event.js";
+import { ApiException } from "./apiException.js";
 
 const oauth2Client = new google.auth.OAuth2(
-    credentials.installed.client_id,
-    credentials.installed.client_secret,
-    process.env.API_HOST + "/calendars/import-google-calendar/",
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.API_HOST + "/externals/google-calendar/get-code",
 );
 
 export class GoogleCalendarUtils {
     public static getConsentPageUrl(): string {
+        if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
+            throw new ApiException(400, "You must set CLIENT_ID and CLIENT_SECRET environment variable in order to use Google APIs.");
+        }
         return oauth2Client.generateAuthUrl({
             access_type: "offline",
             scope: "https://www.googleapis.com/auth/calendar"
@@ -34,10 +37,10 @@ export class GoogleCalendarUtils {
         });
 
         //TODO use nextPage to get all calendars in case of a big collection
-        const gcal = await calendar.calendarList.list({
-            auth: oauth2Client,
-        });
-        const calendars_promise = await gcal.data.items.map(async (cal) => await this.importCalendar(cal, oauth2Client, calendar));
+        const gcal = await calendar.calendarList.list({ auth: oauth2Client });
+        const calendars_promise = await gcal.data.items.map(
+            async (cal) => await this.importCalendar(cal, oauth2Client, calendar)
+        );
         return Promise.all(calendars_promise).then((completed) => { return completed; });
     }
 

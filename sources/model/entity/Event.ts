@@ -38,7 +38,7 @@ export class Event {
 
 
     public constructor(name: string, description: string, location: string,
-        calendar: Calendar, startTime: Date, endTime: Date) {
+                       calendar: Calendar, startTime: Date, endTime: Date) {
         this.name = name;
         this.description = description;
         this.location = location;

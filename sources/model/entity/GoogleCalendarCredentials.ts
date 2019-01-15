@@ -50,8 +50,8 @@ export class GoogleCalendarCredentials {
      * @return null on failure
      */
     public static async findById(
-        conn: Connection,
-        tokenId: number,
+            conn: Connection,
+            tokenId: number,
     ): Promise<GoogleCalendarCredentials> {
         return conn.getRepository(GoogleCalendarCredentials)
             .findOne({ where: { id: tokenId } });
@@ -64,8 +64,8 @@ export class GoogleCalendarCredentials {
      * @param tokenId 
      */
     public static async deleteById(
-        conn: Connection,
-        tokenId: number,
+            conn: Connection,
+            tokenId: number,
     ): Promise<any> {
         await conn.transaction(async entityManager => {
             await entityManager.getRepository(GoogleCalendarCredentials)

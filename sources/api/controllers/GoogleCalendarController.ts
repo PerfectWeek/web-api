@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
+import { Connection } from "typeorm";
+import { Credentials } from "google-auth-library";
 
 import { GoogleCalendarUtils } from "../../utils/GoogleCalendarUtils";
 import { getRequestingUser } from "../middleware/loggedOnly";
 import { DbConnection } from "../../utils/DbConnection";
-import { Connection } from "typeorm";
 import { GoogleCalendarCredentials } from "../../model/entity/GoogleCalendarCredentials";
-import { Credentials } from "google-auth-library";
 import { Calendar } from "../../model/entity/Calendar";
+
 
 export async function authorizeGoogleCalendar(req: Request, res: Response) {
     const url: string = GoogleCalendarUtils.getConsentPageUrl();
-    console.log(url)
     res.redirect(url);    
 }
 
