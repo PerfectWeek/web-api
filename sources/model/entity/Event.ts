@@ -9,29 +9,29 @@ export class Event {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({length: 256})
+    @Column({ length: 256 })
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 
-    @Column()
+    @Column({ nullable: true })
     location: string;
 
     @ManyToOne(type => Calendar, calendar => calendar.events)
-    @JoinColumn({name: "calendar_id"})
+    @JoinColumn({ name: "calendar_id" })
     calendar: Calendar;
 
-    @Column({name: "start_time", type: "timestamp with time zone"})
+    @Column({ name: "start_time", type: "timestamp with time zone" })
     startTime: Date;
 
-    @Column({name: "end_time", type: "timestamp with time zone"})
+    @Column({ name: "end_time", type: "timestamp with time zone" })
     endTime: Date;
 
-    @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
+    @Column({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
-    @Column({name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
+    @Column({ name: "updated_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
     updatedAt: Date;
 
     attendees: EventsToAttendees[];
@@ -67,7 +67,7 @@ export class Event {
         return conn.getRepository(Event)
             .createQueryBuilder("event")
             .innerJoinAndSelect("event.calendar", "calendar")
-            .where("event.id = :event_id", {event_id})
+            .where("event.id = :event_id", { event_id })
             .getOne();
     }
 

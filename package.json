@@ -38,6 +38,7 @@
         "cors": "^2.8.4",
         "express": "^4.16.3",
         "express-async-handler": "^1.1.4",
+        "googleapis": "^36.0.0",
         "jsonwebtoken": "^8.2.2",
         "mailgun-js": "^0.21.0",
         "morgan": "^1.9.0",
@@ -59,7 +60,7 @@
         "newman": "^4.2.2",
         "reflect-metadata": "^0.1.12",
         "rimraf": "^2.6.2",
-        "typeorm": "^0.2.7",
+        "typeorm": "^0.2.11",
         "typescript": "^3.2.1"
     }
 }

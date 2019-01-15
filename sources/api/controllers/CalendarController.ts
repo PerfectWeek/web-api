@@ -126,10 +126,10 @@ export async function createEvent(req: Request, res: Response) {
     const calendar_id = req.params.calendar_id;
     const name = req.body.name;
     const description = req.body.description || "";
-    const location = req.body.location;
+    const location = req.body.location || "";
     const start_time = req.body.start_time;
     const end_time = req.body.end_time;
-    if (!name || !location || !start_time || !end_time) {
+    if (!name || !start_time || !end_time) {
         throw new ApiException(400, "Bad request");
     }
 
