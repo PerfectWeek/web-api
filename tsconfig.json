@@ -26,6 +26,8 @@
 
         "sources/api/middleware/*.ts",
 
-        "sources/utils/**/*.ts"
+        "sources/utils/**/*.ts",
+
+        "sources/typings.d.ts"
     ]
 }
