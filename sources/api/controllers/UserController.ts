@@ -53,7 +53,7 @@ export async function createUser(req: Request, res: Response) {
     const createdPendingUser = await conn.manager.save(pendingUser);
 
     // Generate link for account verification
-    let reqUrl = process.env.API_HOST || getReqUrl(req);
+    let reqUrl = process.env.FRONTEND_HOST || getReqUrl(req);
     if (!reqUrl.endsWith("/")) {
         reqUrl += "/";
     }
