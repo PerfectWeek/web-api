@@ -15,7 +15,7 @@ export class EventsToAttendees {
     @JoinColumn({name: "attendee_id"})
     @Index()
     attendee_id: number;
- 
+
     event: Event;
 
     attendee: User;

@@ -11,7 +11,7 @@ import { Calendar } from "../../model/entity/Calendar";
 
 export async function authorizeGoogleCalendar(req: Request, res: Response) {
     const url: string = GoogleCalendarUtils.getConsentPageUrl();
-    res.redirect(url);    
+    res.redirect(url);
 }
 
 export async function getCode(req: Request, res: Response) {
@@ -30,9 +30,9 @@ export async function importGoogleCalendar(req: Request, res: Response) {
     const credentials : Credentials = token.res.data;
 
     const conn: Connection = await DbConnection.getConnection();
-   
+
     const googleCalendarCredentials = new GoogleCalendarCredentials(
-        credentials.access_token, credentials.refresh_token, 
+        credentials.access_token, credentials.refresh_token,
         "", credentials.token_type, new Date(credentials.expiry_date),
         user
     );

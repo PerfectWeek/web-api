@@ -432,7 +432,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-                
+
   /users/{pseudo}/image:
     get:
       tags:
@@ -482,7 +482,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  
+
   /users/{pseudo}/groups:
     get:
       tags:
@@ -1056,7 +1056,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-                
+
   /groups/{group-id}/upload-image:
     post:
       tags:
