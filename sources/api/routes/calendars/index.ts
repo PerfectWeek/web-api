@@ -18,4 +18,6 @@ router.post("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(Calen
 
 router.get("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.getCalendarEvents));
 
+router.get("/:calendar_id/assistant/find-best-slots", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.findBestSlots));
+
 export default router;
