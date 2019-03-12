@@ -1585,7 +1585,7 @@
       "post" : {
         "tags" : [ "Group" ],
         "summary" : "Upload image as new Avatar for specific group",
-        "operationId" : "uploadUserImage",
+        "operationId" : "uploadGroupImage",
         "parameters" : [ {
           "name" : "group-id",
           "in" : "path",
@@ -2176,6 +2176,122 @@
                     },
                     "events" : {
                       "$ref" : "#/components/schemas/EventInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/calendars/{calendar-id}/assistant/find-best-slots" : {
+      "get" : {
+        "tags" : [ "Calendar" ],
+        "summary" : "find best time slots for given Event",
+        "operationId" : "findBestSlots",
+        "parameters" : [ {
+          "name" : "calendar-id",
+          "in" : "path",
+          "description" : "The Calendar id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "duration",
+          "in" : "query",
+          "description" : "The event duration, in minutes",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number"
+          }
+        }, {
+          "name" : "location",
+          "in" : "query",
+          "description" : "The event location",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "min_time",
+          "in" : "query",
+          "description" : "The event minimum start time (yyyy-mm-ddThh:mm:ss)",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "max_time",
+          "in" : "query",
+          "description" : "The event maximum end time (yyyy-mm-ddThh:mm:ss)",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "slots" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/SlotInfo"
+                      }
                     }
                   }
                 }
@@ -3087,6 +3203,23 @@
           }
         }
       },
+      "SlotInfo" : {
+        "type" : "object",
+        "properties" : {
+          "start_time" : {
+            "type" : "string",
+            "example" : "2019-03-08T12:12:12"
+          },
+          "end_time" : {
+            "type" : "string",
+            "example" : "2019-03-08T15:12:12"
+          },
+          "score" : {
+            "type" : "number",
+            "example" : 0.9
+          }
+        }
+      },
       "EventInfo" : {
         "type" : "object",
         "properties" : {
@@ -3292,7 +3425,8 @@
               "$ref" : "#/components/schemas/inline_object_1"
             }
           }
-        }
+        },
+        "required" : true
       },
       "inline_object" : {
         "content" : {
@@ -3301,7 +3435,8 @@
               "$ref" : "#/components/schemas/inline_object"
             }
           }
-        }
+        },
+        "required" : true
       },
       "inline_object_3" : {
         "content" : {
@@ -3310,7 +3445,8 @@
               "$ref" : "#/components/schemas/inline_object_3"
             }
           }
-        }
+        },
+        "required" : true
       },
       "inline_object_2" : {
         "content" : {
@@ -3319,7 +3455,8 @@
               "$ref" : "#/components/schemas/inline_object_2"
             }
           }
-        }
+        },
+        "required" : true
       }
     },
     "securitySchemes" : {

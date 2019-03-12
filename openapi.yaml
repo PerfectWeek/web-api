@@ -1062,7 +1062,7 @@ paths:
       tags:
         - Group
       summary: Upload image as new Avatar for specific group
-      operationId: uploadUserImage
+      operationId: uploadGroupImage
       security:
         - BearerAuth: []
       parameters:
@@ -1487,7 +1487,7 @@ paths:
         - in: query
           name: duration
           required: true
-          description: The event duration
+          description: The event duration, in minutes
           schema:
             type: number
         - in: query
