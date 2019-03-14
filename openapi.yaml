@@ -1492,7 +1492,7 @@ paths:
             type: number
         - in: query
           name: location
-          required: true
+          required: false
           description: The event location
           schema:
             type: string
@@ -1510,6 +1510,12 @@ paths:
           schema:
             type: string
             format: date-time
+        - in: query
+          name: category
+          required: false
+          description: The type of event to be created, like party or work
+          schema:
+            type: string
 
       responses:
         '200':
