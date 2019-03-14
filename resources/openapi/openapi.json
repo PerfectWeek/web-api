@@ -2247,7 +2247,7 @@
           "name" : "location",
           "in" : "query",
           "description" : "The event location",
-          "required" : true,
+          "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
@@ -2274,6 +2274,16 @@
           "schema" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "description" : "The type of event to be created, like party or work",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
