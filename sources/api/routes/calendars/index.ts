@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as AsyncHandler from "express-async-handler";
 
 import * as CalendarController from "../../controllers/CalendarController"
+import * as AssistantController from "../../controllers/AssistantController"
 import { loggedOnly } from "../../middleware/loggedOnly";
 
 const router = Router();
@@ -18,6 +19,6 @@ router.post("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(Calen
 
 router.get("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.getCalendarEvents));
 
-router.get("/:calendar_id/assistant/find-best-slots", AsyncHandler(loggedOnly), AsyncHandler(CalendarController.findBestSlots));
+router.get("/:calendar_id/assistant/find-best-slots", AsyncHandler(loggedOnly), AsyncHandler(AssistantController.findBestSlots));
 
 export default router;

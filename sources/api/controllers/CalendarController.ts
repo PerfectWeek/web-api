@@ -181,34 +181,3 @@ export async function getCalendarEvents(req: Request, res: Response) {
         events: CalendarView.formatEventList(calendar.events),
     });
 }
-
-//
-//  Find best slots for an Event
-//
-export async function findBestSlots(req: Request, res: Response) {
-    return res.status(200).json({
-        message: "OK",
-        slots: [
-            {
-                "start_time": "2019-03-08T12:12:12",
-                "end_time": "2019-03-08T15:12:12",
-                "score": 0.9
-            },
-            {
-                "start_time": "2019-03-08T14:12:12",
-                "end_time": "2019-03-08T17:12:12",
-                "score": 0.8
-            },
-            {
-                "start_time": "2019-03-08T20:12:12",
-                "end_time": "2019-03-08T23:12:12",
-                "score": 0.5
-            },
-            {
-                "start_time": "2019-03-09T12:12:12",
-                "end_time": "2019-03-09T15:12:12",
-                "score": 0.2
-            },
-        ]
-    });
-}
