@@ -5,6 +5,8 @@ import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { ApiException } from "../../utils/apiException";
 import { User } from "../../model/entity/User";
+import { TimeSlotListView } from "../views/assistant/TimeSlotListView";
+
 import * as Assistant from "../../core/assistant/Assistant";
 
 //
@@ -15,11 +17,12 @@ export async function findBestSlots(req: Request, res: Response) {
 
     const calendar_id: number = req.params.calendar_id;
     const duration: number = req.query.duration;
-    const location: string = req.query.location;
+    const location: string = req.query.location || '';
     const min_time: Date = new Date(req.query.min_time);
     const max_time: Date = new Date(req.query.max_time);
+    const category: string = req.query.category;
 
-    if (!duration || !location || !min_time || !max_time) {
+    if (!duration || !min_time || !max_time) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -39,31 +42,11 @@ export async function findBestSlots(req: Request, res: Response) {
             calendars.push(cal.calendar);
         }
     }
-    Assistant.findBestSlots(calendars, duration, location, min_time, max_time);
+
+    const slots = Assistant.findBestSlots(calendars, duration, location, min_time, max_time, category);
 
     return res.status(200).json({
         message: "OK",
-        slots: [
-            {
-                "start_time": "2019-03-08T12:12:12",
-                "end_time": "2019-03-08T15:12:12",
-                "score": 0.9
-            },
-            {
-                "start_time": "2019-03-08T14:12:12",
-                "end_time": "2019-03-08T17:12:12",
-                "score": 0.8
-            },
-            {
-                "start_time": "2019-03-08T20:12:12",
-                "end_time": "2019-03-08T23:12:12",
-                "score": 0.5
-            },
-            {
-                "start_time": "2019-03-09T12:12:12",
-                "end_time": "2019-03-09T15:12:12",
-                "score": 0.2
-            },
-        ]
+        slots: TimeSlotListView.formatTimeSlotList(slots),
     });
 }
