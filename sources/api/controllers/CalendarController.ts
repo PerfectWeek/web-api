@@ -190,23 +190,38 @@ export async function findBestSlots(req: Request, res: Response) {
         message: "OK",
         slots: [
             {
-                "start_time": "2019-03-08T12:12:12",
-                "end_time": "2019-03-08T15:12:12",
+                "start_time": "2019-04-04T12:12:12",
+                "end_time": "2019-04-04T15:12:12",
                 "score": 0.9
             },
             {
-                "start_time": "2019-03-08T14:12:12",
-                "end_time": "2019-03-08T17:12:12",
+                "start_time": "2019-04-06T14:12:12",
+                "end_time": "2019-04-06T17:12:12",
                 "score": 0.8
             },
             {
-                "start_time": "2019-03-08T20:12:12",
-                "end_time": "2019-03-08T23:12:12",
+                "start_time": "2019-04-18T12:12:12",
+                "end_time": "2019-04-18T15:12:12",
+                "score": 0.6
+            },
+            {
+                "start_time": "2019-04-11T12:12:12",
+                "end_time": "2019-04-11T15:12:12",
+                "score": 0.55
+            },
+            {
+                "start_time": "2019-04-08T20:12:12",
+                "end_time": "2019-04-08T23:12:12",
                 "score": 0.5
             },
             {
-                "start_time": "2019-03-09T12:12:12",
-                "end_time": "2019-03-09T15:12:12",
+                "start_time": "2019-04-10T12:12:12",
+                "end_time": "2019-04-10T15:12:12",
+                "score": 0.2
+            },
+            {
+                "start_time": "2019-04-15T12:12:12",
+                "end_time": "2019-04-15T15:12:12",
                 "score": 0.2
             },
         ]
