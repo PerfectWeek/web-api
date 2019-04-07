@@ -18,6 +18,9 @@ export class Event {
     @Column({ nullable: true })
     location: string;
 
+    @Column({ nullable: false })
+    type: string;
+
     @ManyToOne(type => Calendar, calendar => calendar.events)
     @JoinColumn({ name: "calendar_id" })
     calendar: Calendar;
@@ -40,11 +43,12 @@ export class Event {
     image?: Buffer;
 
 
-    public constructor(name: string, description: string, location: string, calendar: Calendar,
-                        startTime: Date, endTime: Date, image?: Buffer) {
+    public constructor(name: string, description: string, location: string, type: string,
+                        calendar: Calendar, startTime: Date, endTime: Date, image?: Buffer) {
         this.name = name;
         this.description = description;
         this.location = location;
+        this.type = type;
         this.calendar = calendar;
         this.startTime = startTime;
         this.endTime = endTime;
