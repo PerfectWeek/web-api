@@ -127,9 +127,10 @@ export async function createEvent(req: Request, res: Response) {
     const name = req.body.name;
     const description = req.body.description || "";
     const location = req.body.location || "";
+    const type = req.body.type;
     const start_time = req.body.start_time;
     const end_time = req.body.end_time;
-    if (!name || !start_time || !end_time) {
+    if (!name || !type || !start_time || !end_time) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -143,7 +144,7 @@ export async function createEvent(req: Request, res: Response) {
     }
 
     // Create the Event
-    const event = new Event(name, description, location, calendar, start_time, end_time);
+    const event = new Event(name, description, location, type, calendar, start_time, end_time);
     if (!event.isValid()) {
         throw new ApiException(400, "Invalid fields in Event");
     }

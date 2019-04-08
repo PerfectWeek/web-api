@@ -7,6 +7,7 @@ export class EventView {
             id: event.id,
             name: event.name,
             description: event.description,
+            type: event.type,
             calendar_id: event.calendar.id,
             location: event.location,
             start_time: event.startTime,
