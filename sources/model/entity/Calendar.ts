@@ -5,6 +5,8 @@ import { EventsToAttendees }                                             from ".
 import { User }                                                          from "./User";
 import { Group }                                                         from "./Group";
 
+import { baseTimeslotPreferences, TimeslotPreferences }                  from "../../utils/baseTimeslotPreferences";
+import { ApiException }                                                  from "../../utils/apiException";
 
 @Entity("calendars")
 export class Calendar {
@@ -18,8 +20,11 @@ export class Calendar {
     @OneToMany(type => Event, event => event.calendar)
     events: Event[];
 
-    @Column({name: "nb_owners", default: 0})
+    @Column({ name: "nb_owners", default: 0 })
     nbOwners: number;
+
+    @Column("simple-json")
+    timeslotPreferences: TimeslotPreferences;
 
     @Column({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
@@ -33,6 +38,7 @@ export class Calendar {
     public constructor(name: string) {
         this.name = name;
         this.nbOwners = 0;
+        this.timeslotPreferences = baseTimeslotPreferences;
     }
 
     /**
@@ -45,6 +51,25 @@ export class Calendar {
         return this.name.length > 0;
     }
 
+    /**
+     * @brief Add event Timeslot in timeSlotPrefenreces
+     * @param event The event to add the timeslot from
+     */
+    public addTimeslotPreference(event: Event): any {
+        if (this.timeslotPreferences[event.type] === undefined) {
+            throw new ApiException(400, "Event type invalid");
+        }
+
+        const startTime = new Date(event.startTime);
+        const endTime = new Date(event.endTime);
+
+        const iter = startTime;
+        while (iter.getTime() <= endTime.getTime()) {
+            this.timeslotPreferences[event.type][iter.getDay()][iter.getHours()] += 1;
+            iter.setTime(iter.getTime() + 3600*1000);
+        }
+
+    }
     /**
      * @brief Check if User owns the Calendar
      *
