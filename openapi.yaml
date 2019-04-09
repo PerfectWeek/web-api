@@ -2189,6 +2189,9 @@ components:
         location:
           type: string
           example: Le pub Universitaire, Quebec City
+        type:
+          type: string
+          example: party
         calendar_id:
           type: number
           example : 3
@@ -2213,6 +2216,9 @@ components:
         description:
           type: string
           example: soiree
+        type:
+          type: string
+          example: party
         start_time:
           type: string
           example: "2012-12-12T12:12:12"

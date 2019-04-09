@@ -1,8 +1,7 @@
 {
     "info": {
+        "_postman_id": "3789b84b-0594-4aa2-8a93-e79ad42e7ffc",
         "name": "PW",
-        "_postman_id": "6d7f8c88-c733-5dd5-1dee-f27a3d2c0d37",
-        "description": "",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -4868,7 +4867,6 @@
                             "listen": "test",
                             "script": {
                                 "id": "7b2ba56e-b7d0-4c23-82f8-0108caf530d1",
-                                "type": "text/javascript",
                                 "exec": [
                                     "pm.test(\"Status code is 201\", function () {",
                                     "    pm.response.to.have.status(201);",
@@ -4889,13 +4887,15 @@
                                     "    pm.expect(jsonData.event.description).to.eql(\"Merry Christmas\");",
                                     "    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
                                     "    pm.expect(jsonData.event.location).to.eql(\"At Home\");",
+                                    "    pm.expect(jsonData.event.type).to.eql(\"party\");",
                                     "    pm.expect(new Date(jsonData.event.start_time)).to.eql(expected_start_time);",
                                     "    pm.expect(new Date(jsonData.event.end_time)).to.eql(expected_end_time);",
                                     "});",
                                     "",
                                     "",
                                     ""
-                                ]
+                                ],
+                                "type": "text/javascript"
                             }
                         }
                     ],
@@ -4936,6 +4936,11 @@
                                     "type": "text"
                                 },
                                 {
+                                    "key": "type",
+                                    "value": "party",
+                                    "type": "text"
+                                },
+                                {
                                     "key": "start_time",
                                     "value": "2018-12-24T20:00:00-05:00",
                                     "type": "text"
@@ -4970,7 +4975,6 @@
                             "listen": "test",
                             "script": {
                                 "id": "f98f921a-b5bb-4405-9439-e5bd65950cf0",
-                                "type": "text/javascript",
                                 "exec": [
                                     "pm.test(\"Test body value\", function () {",
                                     "    var jsonData = pm.response.json();",
@@ -4982,6 +4986,7 @@
                                     "    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
                                     "    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
                                     "    pm.expect(jsonData.event.location).to.eql(\"Le pub Universitaire\");",
+                                    "    pm.expect(jsonData.event.type).to.eql(\"party\");",
                                     "    pm.expect(jsonData.event.start_time).to.eql(\"2018-12-31T20:00:00-05:00\");",
                                     "    pm.expect(jsonData.event.end_time).to.eql(\"2019-01-01T06:00:00-05:00\");",
                                     "",
@@ -4993,7 +4998,8 @@
                                     "    pm.response.to.have.status(201);",
                                     "});",
                                     ""
-                                ]
+                                ],
+                                "type": "text/javascript"
                             }
                         }
                     ],
@@ -5031,6 +5037,11 @@
                                 {
                                     "key": "location",
                                     "value": "Le pub Universitaire",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "party",
                                     "type": "text"
                                 },
                                 {
@@ -5220,7 +5231,6 @@
                             "listen": "test",
                             "script": {
                                 "id": "5180a220-c46f-42f5-b1ee-0ab3559da40c",
-                                "type": "text/javascript",
                                 "exec": [
                                     "pm.test(\"Status code is 200\", function () {",
                                     "    pm.response.to.have.status(200);",
@@ -5246,11 +5256,13 @@
                                     "    pm.expect(event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
                                     "    pm.expect(event.calendar_id).to.eql(calendar_id);",
                                     "    pm.expect(event.location).to.eql(\"Le pub Universitaire\");",
+                                    "    pm.expect(jsonData.event.type).to.eql(\"party\");",
                                     "    pm.expect(new Date(event.start_time)).to.eql(expected_start_time);",
                                     "    pm.expect(new Date(event.end_time)).to.eql(expected_end_time);",
                                     "});",
                                     ""
-                                ]
+                                ],
+                                "type": "text/javascript"
                             }
                         }
                     ],
@@ -5512,7 +5524,10 @@
                                 "value": "application/x-www-form-urlencoded"
                             }
                         ],
-                        "body": {},
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
                         "url": {
                             "raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}/image",
                             "protocol": "http",
@@ -5770,6 +5785,7 @@
                                     "    pm.expect(jsonData.event.description).to.eql(\"10, 9, 8, 7, 6, 5, 4, 3, 2, 1, BONNE ANNEEEE\");",
                                     "    pm.expect(jsonData.event.calendar_id).to.eql(calendar_id);",
                                     "    pm.expect(jsonData.event.location).to.eql(\"Trump Tower\");",
+                                    "    pm.expect(jsonData.event.type).to.eql(\"party\");",
                                     "    pm.expect(new Date(jsonData.event.start_time)).to.eql(expected_start_time);",
                                     "    pm.expect(new Date(jsonData.event.end_time)).to.eql(expected_end_time);",
                                     "});",
@@ -5817,6 +5833,11 @@
                                 {
                                     "key": "location",
                                     "value": "Trump Tower",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "party",
                                     "type": "text"
                                 },
                                 {

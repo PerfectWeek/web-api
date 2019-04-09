@@ -47,7 +47,7 @@ export class GoogleCalendarUtils {
     public static isValid(googleEvent: calendar_v3.Schema$Event) : boolean {
         return googleEvent !== undefined
             && googleEvent.start !== undefined
-            && googleEvent.start.dateTime !== undefined 
+            && googleEvent.start.dateTime !== undefined
             && googleEvent.summary !== undefined
             && googleEvent.summary !== "Week Numbers";
     }
@@ -72,6 +72,7 @@ export class GoogleCalendarUtils {
             googleEvent.summary,
             googleEvent.description,
             googleEvent.location,
+            'googleEvent', // TODO: guess type from available information
             imported_calendar,
             new Date(googleEvent.start.dateTime),
             googleEvent.endTimeUnspecified ? new Date(googleEvent.start.dateTime) : new Date(googleEvent.end.dateTime),

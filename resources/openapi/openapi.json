@@ -3249,6 +3249,10 @@
             "type" : "string",
             "example" : "Le pub Universitaire, Quebec City"
           },
+          "type" : {
+            "type" : "string",
+            "example" : "party"
+          },
           "calendar_id" : {
             "type" : "number",
             "example" : 3
@@ -3280,6 +3284,10 @@
           "description" : {
             "type" : "string",
             "example" : "soiree"
+          },
+          "type" : {
+            "type" : "string",
+            "example" : "party"
           },
           "start_time" : {
             "type" : "string",
