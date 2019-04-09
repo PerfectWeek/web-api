@@ -148,6 +148,11 @@ export async function createEvent(req: Request, res: Response) {
     if (!event.isValid()) {
         throw new ApiException(400, "Invalid fields in Event");
     }
+
+    // Add event in calendar's timeSlotPreferences
+    calendar.addTimeslotPreference(event);
+    conn.manager.save(calendar);
+
     const savedEvent = await conn.manager.save(event);
 
     // Add the requesting User in the attendees list
