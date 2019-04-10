@@ -1,74 +1,91 @@
 import { Calendar } from "../../model/entity/Calendar";
 import { TimeSlot } from "../../utils/TimeSlot";
+import { softmax, minMaxNormalisation } from "../../utils/math";
+import { TimeslotPreferences } from "../../utils/baseTimeslotPreferences";
 
+const MINUTES = 60 * 1000;
 
-/**
- * This variable describes how each category of Event is linked to a timeSlot,
- * with an array of values each representing an hours of the day (from 12AM to 11PM).
- * The values sums at 1, which means a value of 1 is forced to be set on that time slot.
- * For example, if a category has prefs [0, 0, ,...,0.3, 0.4, 0.2, 0.1, 0],
- * it means it is mandatory to set this event on the evening.
- * This prefs will be learnt during training.
- */
-interface ICategories {
-    party:      string;
-    secondKey:     string;
-    thirdKey:      string;
-    [key: string]: string;
+function slotAvailable(calendar: Calendar, start_time: Date, end_time: Date, travel_time: number): boolean {
+    for (const event of calendar.events) {
+        if (start_time.getTime() - travel_time * MINUTES < event.endTime.getTime()
+            && event.startTime.getTime() < end_time.getTime() + travel_time * MINUTES)
+            return false;
+    }
+    return true;
 }
 
-const categories_prefs: any = {
-    "party": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.3, 0.4, 0.2, 0],
-    "work": [0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0, 0, 0, 0, 0, 0],
-    "workout": [0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0, 0, 0.1, 0.1, 0, 0, 0, 0, 0.1, 0.3, 0.1, 0, 0, 0, 0],
-    "dinner": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.3, 0.2, 0, 0],
-    "lunch": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0.5, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-}
-
-function slotAvailable(calendar: Calendar, min_time: Date, end_time: Date, travel_time: number): boolean {
-    for (let event of calendar.events) {
-        if ((event.startTime.getTime() >= min_time.getTime()
-            && event.startTime.getTime() <= end_time.getTime())
-            || (event.endTime.getTime() >= min_time.getTime()
-                && event.endTime.getTime() <= end_time.getTime())) {
+function slotAvailableAll(calendars: Calendar[], start_time: Date, end_time: Date, travel_time: number): boolean {
+    for (const calendar of calendars) {
+        if (!slotAvailable(calendar, start_time, end_time, travel_time)) {
             return false;
         }
     }
     return true;
 }
 
-function slotAvailableAll(calendars: Calendar[], min_time: Date, end_time: Date, travel_time: number): boolean {
-    for (let calendar of calendars) {
-        if (!slotAvailable(calendar, min_time, end_time, travel_time)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function getSlotScore(start_time: Date, end_time: Date, category: string, stride: number): number {
+function getSlotScore(start_time: Date, end_time: Date, type: string, stride: number, preferences: TimeslotPreferences): number {
     let score = 0
+
     while (start_time < end_time) {
-        score += categories_prefs[category][start_time.getUTCHours()];
-        start_time = new Date(start_time.getTime() + stride * 60000);
+        score += preferences[type][start_time.getUTCDay()][start_time.getUTCHours()];
+        start_time = new Date(start_time.getTime() + stride * MINUTES);
     }
     return score;
 }
 
-export function findBestSlots(calendars: Calendar[], duration: number, location: string, min_time: Date, max_time: Date, category: string): Array<TimeSlot> {
+function buildTypePreferences(prefs: number[][]): number[][] {
+    const data = softmax([].concat.apply([], prefs));
+    const ret: number[][] = [data.splice(0, 24)];
+
+    while (data.length) {
+        ret.push(data.splice(0, 24));
+    }
+    return ret;
+}
+
+function getPreferencesMatrix(calendar: Calendar): any {
+    return {
+        "party": buildTypePreferences(calendar.timeslotPreferences["party"]),
+        "work": buildTypePreferences(calendar.timeslotPreferences["work"]),
+        "hobby": buildTypePreferences(calendar.timeslotPreferences["hobby"]),
+        "workout": buildTypePreferences(calendar.timeslotPreferences["workout"]),
+    };
+}
+
+function normaliseSlots(slots: TimeSlot[], min_score: number, max_score: number): TimeSlot[] {
+    return slots.map(slot => {
+        slot.score = minMaxNormalisation(slot.score, min_score, max_score);
+        return slot;
+    });
+}
+
+export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], duration: number, min_time: Date, max_time: Date, type: string): Array<TimeSlot> {
     const slots = []
-    const stride = 60;
-    while (min_time < max_time) {
-        const end_time = new Date(min_time.getTime() + duration * 60000);
+    const stride = 60; // in minutes
+    let min_score = 0;
+    let max_score = 0;
+
+    const preferences = getPreferencesMatrix(groupCalendar);
+
+    while (min_time.getTime() + duration * MINUTES <= max_time.getTime()) {
+        const end_time = new Date(min_time.getTime() + duration * MINUTES);
         if (slotAvailableAll(calendars, min_time, end_time, 30)) {
+
+            const score = getSlotScore(min_time, end_time, type, stride, preferences);
+            if (score > max_score) {
+                max_score = score;
+            }
+            if (score < min_score) {
+                min_score = score;
+            }
+
             slots.push(new TimeSlot(
                 min_time,
                 end_time,
-                getSlotScore(min_time, end_time, category, stride),
+                score,
             ));
         }
-        min_time = new Date(min_time.getTime() + stride * 60000);
+        min_time = new Date(min_time.getTime() + stride * MINUTES);
     }
-
-    return slots.sort((a: TimeSlot, b: TimeSlot) => b.score - a.score);
+    return normaliseSlots(slots, min_score, max_score).sort((a: TimeSlot, b: TimeSlot) => b.score - a.score);
 }

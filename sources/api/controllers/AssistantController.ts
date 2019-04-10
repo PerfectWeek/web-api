@@ -20,9 +20,9 @@ export async function findBestSlots(req: Request, res: Response) {
     const location: string = req.query.location || '';
     const min_time: Date = new Date(req.query.min_time);
     const max_time: Date = new Date(req.query.max_time);
-    const category: string = req.query.category;
+    const type: string = req.query.type;
 
-    if (!duration || !min_time || !max_time) {
+    if (!duration || !min_time || !max_time || !type) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -35,15 +35,14 @@ export async function findBestSlots(req: Request, res: Response) {
     }
 
     const calendars = []
-    for (let owner of calendar.owners) {
+    for (const owner of calendar.owners) {
         const cals = await User.getAllCalendars(conn, owner.owner_id);
-        for (let cal of cals) {
+        for (const cal of cals) {
             cal.calendar = await Calendar.getCalendarWithOwners(conn, cal.calendar_id)
             calendars.push(cal.calendar);
         }
     }
-
-    const slots = Assistant.findBestSlots(calendars, duration, location, min_time, max_time, category);
+    const slots = Assistant.findBestSlots(calendar, calendars, duration, min_time, max_time, type);
 
     return res.status(200).json({
         message: "OK",
