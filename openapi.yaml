@@ -1511,9 +1511,9 @@ paths:
             type: string
             format: date-time
         - in: query
-          name: category
-          required: false
-          description: The type of event to be created, like party or work
+          name: type
+          required: true
+          description: The type of event to be created (party, work, hobby, workout)
           schema:
             type: string
 
