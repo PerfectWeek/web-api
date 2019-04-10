@@ -65,7 +65,7 @@ export class Calendar {
 
         const iter = startTime;
         while (iter.getTime() <= endTime.getTime()) {
-            this.timeslotPreferences[event.type][iter.getDay()][iter.getHours()] += 1;
+            this.timeslotPreferences[event.type][iter.getUTCDay()][iter.getUTCHours()] += 1;
             iter.setTime(iter.getTime() + 3600*1000);
         }
 
