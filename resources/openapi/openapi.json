@@ -2276,10 +2276,10 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "category",
+          "name" : "type",
           "in" : "query",
-          "description" : "The type of event to be created, like party or work",
-          "required" : false,
+          "description" : "The type of event to be created (party, work, hobby, workout)",
+          "required" : true,
           "style" : "form",
           "explode" : true,
           "schema" : {
