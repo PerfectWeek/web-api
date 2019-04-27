@@ -1516,6 +1516,12 @@ paths:
           description: The type of event to be created (party, work, hobby, workout)
           schema:
             type: string
+        - in: query
+          name: limit
+          required: false
+          description: The max number of timeslots to be returned
+          schema:
+            type: number
 
       responses:
         '200':

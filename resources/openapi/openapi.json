@@ -2285,6 +2285,16 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "The max number of timeslots to be returned",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number"
+          }
         } ],
         "responses" : {
           "200" : {
