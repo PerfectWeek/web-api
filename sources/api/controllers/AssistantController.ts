@@ -20,9 +20,10 @@ export async function findBestSlots(req: Request, res: Response) {
     const location: string = req.query.location || '';
     const min_time: Date = new Date(req.query.min_time);
     const max_time: Date = new Date(req.query.max_time);
+    const limit: number = req.query.limit || 10;
     const type: string = req.query.type;
 
-    if (!duration || !min_time || !max_time || !type) {
+    if (!duration || !min_time || !max_time || !type || limit <= 0) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -46,6 +47,6 @@ export async function findBestSlots(req: Request, res: Response) {
 
     return res.status(200).json({
         message: "OK",
-        slots: TimeSlotListView.formatTimeSlotList(slots),
+        slots: TimeSlotListView.formatTimeSlotList(slots.slice(0, limit)),
     });
 }
