@@ -23,7 +23,7 @@ export class Calendar {
     @Column({ name: "nb_owners", default: 0 })
     nbOwners: number;
 
-    @Column("simple-json")
+    @Column({ type: "simple-json", default: baseTimeslotPreferences })
     timeslotPreferences: TimeslotPreferences;
 
     @Column({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
