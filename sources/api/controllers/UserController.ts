@@ -274,6 +274,29 @@ export async function deleteUser(req: Request, res: Response) {
     });
 }
 
+//
+// Set User's timezone
+//
+export async function setTimezone(req: Request, res: Response) {
+    let user = getRequestingUser(req);
+    if (user.pseudo !== req.params.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    const timezone: number = req.body.timezone;
+    if (!timezone) {
+        throw new ApiException(400, 'Bad request');
+    }
+
+    user.timezone = timezone;
+
+    const conn = await DbConnection.getConnection();
+    await conn.manager.save(user);
+
+    return res.status(200).json({
+        message: 'Timezone successfully updated',
+    })
+}
 
 //
 // Get all groups a User belongs to
