@@ -23,7 +23,7 @@ export async function findBestSlots(req: Request, res: Response) {
     const limit: number = req.query.limit || 10;
     const type: string = req.query.type;
 
-    if (!duration || !min_time || !max_time || !type || limit <= 0) {
+    if (!duration || !min_time || !max_time || min_time.getTime() >= max_time.getTime() || !type || limit <= 0) {
         throw new ApiException(400, "Bad request");
     }
 
