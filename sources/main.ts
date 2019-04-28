@@ -13,8 +13,9 @@ import { Connection } from 'typeorm';
 import { loadRouters } from "./utils/loadRouters";
 import { checkEnvVariable } from "./utils/checkEnvVariable";
 import { ApiException } from "./utils/apiException";
-import * as AuthStrategyGoogle from "./api/middleware/authStrategies/AuthStrategyGoogle";
 import { DbConnection } from "./utils/DbConnection";
+import * as AuthStrategyGoogle from "./api/middleware/authStrategies/AuthStrategyGoogle";
+import * as AuthStrategyFacebook from "./api/middleware/authStrategies/AuthStrategyFacebook";
 
 
 const run = (done: (app: Express) => any): any => {
@@ -56,6 +57,17 @@ const run = (done: (app: Express) => any): any => {
             express: {
                 app: app,
                 path: "/auth/providers/google"
+            }
+        });
+        AuthStrategyFacebook.init({
+            conn: conn,
+            credentials: {
+                clientId: process.env.FACEBOOK_CLIENT_ID,
+                clientSecret: process.env.FACEBOOK_CLIENT_SECRET
+            },
+            express: {
+                app: app,
+                path: "/auth/providers/facebook"
             }
         });
 

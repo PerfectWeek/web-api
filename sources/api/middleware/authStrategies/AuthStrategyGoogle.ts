@@ -54,31 +54,25 @@ export const init = (params: Params): void => {
                     User.findByEmail(params.conn, profile.email).then((user: User) => {
                         if (!user) {
                             user = new User(profile.email, profile.email, null);
-                            user.googleProviderPayload = {
-                                accessToken: token.tokens.access_token,
-                                refreshToken: token.tokens.refresh_token,
-                                scope: scope,
-                                tokenType: token.tokens.token_type,
-                                expiresIn: null
-                            };
-
-                            params.conn.getRepository(User).save(user).then(() => {
-                                const jwt = generateJwt(user);
-
-                                res.status(200).json({
-                                    message: "Registered",
-                                    token: jwt
-                                });
-                            })
                         }
-                        else {
-                            const jwt = generateJwt(user);
+
+                        user.googleProviderPayload = {
+                            accessToken: token.tokens.access_token,
+                            refreshToken: token.tokens.refresh_token,
+                            scope: scope,
+                            tokenType: token.tokens.token_type,
+                            expiresIn: null
+                        };
+
+                        params.conn.getRepository(User).save(user).then(() => {
+                            const token_payload = { id: user.id };
+                            const jwt = Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
 
                             res.status(200).json({
                                 message: "Connected",
                                 token: jwt
                             });
-                        }
+                        });
                     })
                 })
             })
@@ -88,10 +82,4 @@ export const init = (params: Params): void => {
                 });
             });
     });
-};
-
-
-const generateJwt = (user: User) => {
-    const token_payload = { id: user.id };
-    return Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
 };
