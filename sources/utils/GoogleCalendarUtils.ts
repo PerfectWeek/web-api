@@ -1,5 +1,5 @@
 import { google, calendar_v3 } from "googleapis";
-import { GetTokenResponse, OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
+// import { GetTokenResponse, OAuth2Client } from "google-auth-library/build/src/auth/oauth2client";
 
 import { GoogleCalendarCredentials } from "../model/entity/GoogleCalendarCredentials.js";
 import { Calendar } from "../model/entity/Calendar.js";
@@ -23,7 +23,7 @@ export class GoogleCalendarUtils {
         });
     }
 
-    public static getTokenFromCode(code: string): Promise<GetTokenResponse> {
+    public static getTokenFromCode(code: string): Promise<any> {
         return oauth2Client.getToken(code);
     }
 
@@ -54,7 +54,7 @@ export class GoogleCalendarUtils {
 
     public static async importCalendar(
             googleCalendar: calendar_v3.Schema$CalendarListEntry,
-            oauth2Client: OAuth2Client,
+            oauth2Client: any,
             calendar: calendar_v3.Calendar): Promise<Calendar> {
         const imported_calendar: Calendar = new Calendar(googleCalendar.summary);
         const events = await calendar.events.list({

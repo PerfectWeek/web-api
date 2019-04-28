@@ -24,7 +24,7 @@ export class User {
     @Index({unique: true})
     email: string;
 
-    @Column({name: "ciphered_password"})
+    @Column({name: "ciphered_password", nullable: true})
     cipheredPassword: string;
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})

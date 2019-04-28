@@ -35,9 +35,10 @@ describe('Testing auth', () => {
                         done(err);
                     else {
                         console.log("Starting API");
-                        app = app_loader();
-                        server = app.listen(TEST_API_PORT, () => {
-                            done();
+                        app_loader(app => {
+                            server = app.listen(TEST_API_PORT, () => {
+                                done();
+                            });
                         });
                     }
                 });
