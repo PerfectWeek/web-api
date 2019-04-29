@@ -498,6 +498,70 @@
         } ]
       }
     },
+    "/users/{pseudo}/timezone" : {
+      "put" : {
+        "tags" : [ "User" ],
+        "summary" : "Edit User timezone",
+        "operationId" : "editUserTimezone",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "timezone" : {
+                    "type" : "number"
+                  }
+                }
+              }
+            }
+          },
+          "required" : true,
+          "$ref" : "#/components/requestBodies/inline_object"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Timezone updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/users/{pseudo}/upload-image" : {
       "post" : {
         "tags" : [ "User" ],
@@ -535,7 +599,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object"
+          "$ref" : "#/components/requestBodies/inline_object_1"
         },
         "responses" : {
           "200" : {
@@ -1411,7 +1475,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_1"
+          "$ref" : "#/components/requestBodies/inline_object_2"
         },
         "responses" : {
           "200" : {
@@ -1618,7 +1682,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_2"
+          "$ref" : "#/components/requestBodies/inline_object_3"
         },
         "responses" : {
           "200" : {
@@ -2879,7 +2943,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_3"
+          "$ref" : "#/components/requestBodies/inline_object_4"
         },
         "responses" : {
           "200" : {
@@ -3399,13 +3463,21 @@
       "inline_object" : {
         "type" : "object",
         "properties" : {
+          "timezone" : {
+            "type" : "number"
+          }
+        }
+      },
+      "inline_object_1" : {
+        "type" : "object",
+        "properties" : {
           "image" : {
             "type" : "string",
             "format" : "binary"
           }
         }
       },
-      "inline_object_1" : {
+      "inline_object_2" : {
         "type" : "object",
         "properties" : {
           "role" : {
@@ -3413,7 +3485,7 @@
           }
         }
       },
-      "inline_object_2" : {
+      "inline_object_3" : {
         "type" : "object",
         "properties" : {
           "image" : {
@@ -3422,7 +3494,7 @@
           }
         }
       },
-      "inline_object_3" : {
+      "inline_object_4" : {
         "type" : "object",
         "properties" : {
           "image" : {
@@ -3448,7 +3520,7 @@
     "requestBodies" : {
       "inline_object_1" : {
         "content" : {
-          "application/x-www-form-urlencoded" : {
+          "multipart/form-data" : {
             "schema" : {
               "$ref" : "#/components/schemas/inline_object_1"
             }
@@ -3458,9 +3530,19 @@
       },
       "inline_object" : {
         "content" : {
-          "multipart/form-data" : {
+          "application/x-www-form-urlencoded" : {
             "schema" : {
               "$ref" : "#/components/schemas/inline_object"
+            }
+          }
+        },
+        "required" : true
+      },
+      "inline_object_4" : {
+        "content" : {
+          "multipart/form-data" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_4"
             }
           }
         },
@@ -3478,7 +3560,7 @@
       },
       "inline_object_2" : {
         "content" : {
-          "multipart/form-data" : {
+          "application/x-www-form-urlencoded" : {
             "schema" : {
               "$ref" : "#/components/schemas/inline_object_2"
             }

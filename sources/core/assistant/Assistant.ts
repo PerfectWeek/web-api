@@ -36,14 +36,10 @@ function getSlotScore(start_time: Date, end_time: Date, type: string, stride: nu
 function applyTimezone(prefs: number[][], timezone: number): number[][] {
     const timezone_offset = Math.round(timezone / 60);
     if (timezone_offset !== 0) {
-        const local_prefs: number[][] = [];
 
-        for (let i = 0; i < 7; i++) {
-            local_prefs.push([]);
-            for (let j = 0; j < 24; j++) {
-                local_prefs[i].push(0);
-            }
-        }
+        const local_prefs = new Array(7).fill([])
+            .map(() => new Array(24).fill(0));
+
         prefs.forEach((prefs_day: number[], day_idx: number) => {
             prefs_day.forEach((prefs_hour: number, hour_idx: number) => {
                 let local_hour_idx = hour_idx - timezone_offset; // Back to UTC
