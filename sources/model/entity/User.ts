@@ -7,6 +7,7 @@ import { Event }             from "./Event";
 import {Group}               from "./Group";
 import {CalendarsToOwners}   from "./CalendarsToOwners";
 import {Calendar}            from "./Calendar";
+import {ProviderPayload}     from "../../utils/types/ProviderPayload";
 
 
 @Entity("users")
@@ -26,7 +27,7 @@ export class User {
     @Column({default: 0})
     timezone: number;
 
-    @Column({name: "ciphered_password"})
+    @Column({name: "ciphered_password", nullable: true})
     cipheredPassword: string;
 
     @Column({name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP"})
@@ -37,6 +38,12 @@ export class User {
 
     @Column("bytea", {nullable: true})
     image?: Buffer;
+
+    @Column({name: "google_provider_payload", type: "json", nullable: true})
+    googleProviderPayload: ProviderPayload;
+
+    @Column({ name: "facebook_provider_payload", type: "json", nullable: true })
+    facebookProviderPayload: ProviderPayload;
 
     groups: Group[];
 
