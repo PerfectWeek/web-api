@@ -150,7 +150,7 @@ export async function createEvent(req: Request, res: Response) {
     }
 
     // Add event in calendar's timeSlotPreferences
-    calendar.addTimeslotPreference(event);
+    calendar.addTimeslotPreference(event, requestingUser.timezone);
     conn.manager.save(calendar);
 
     const savedEvent = await conn.manager.save(event);
