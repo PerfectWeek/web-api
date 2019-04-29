@@ -54,14 +54,18 @@ export class Calendar {
     /**
      * @brief Add event Timeslot in timeSlotPrefenreces
      * @param event The event to add the timeslot from
+     * @param timezone The User's timezone offset
      */
-    public addTimeslotPreference(event: Event): any {
+    public addTimeslotPreference(event: Event, timezone: number): any {
         if (this.timeslotPreferences[event.type] === undefined) {
             throw new ApiException(400, "Event type invalid");
         }
 
         const startTime = new Date(event.startTime);
         const endTime = new Date(event.endTime);
+
+        startTime.setTime(startTime.getTime() + timezone * 60 * 1000)
+        endTime.setTime(endTime.getTime() + timezone * 60 * 1000)
 
         const iter = startTime;
         while (iter.getTime() <= endTime.getTime()) {

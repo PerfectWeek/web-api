@@ -33,7 +33,43 @@ function getSlotScore(start_time: Date, end_time: Date, type: string, stride: nu
     return score;
 }
 
-function buildTypePreferences(prefs: number[][]): number[][] {
+function applyTimezone(prefs: number[][], timezone: number): number[][] {
+    const timezone_offset = Math.round(timezone / 60);
+    if (timezone_offset !== 0) {
+
+        const local_prefs = new Array(7).fill([])
+            .map(() => new Array(24).fill(0));
+
+        prefs.forEach((prefs_day: number[], day_idx: number) => {
+            prefs_day.forEach((prefs_hour: number, hour_idx: number) => {
+                let local_hour_idx = hour_idx - timezone_offset; // Back to UTC
+                let local_day_idx = day_idx;
+
+                if (local_hour_idx > 23) {
+                    local_hour_idx %= 24;
+                    local_day_idx += 1;
+                }
+                else if (local_hour_idx < 0) {
+                    local_hour_idx += 24;
+                    local_day_idx -= 1;
+                }
+                if (local_day_idx < 0) {
+                    local_day_idx += 7;
+                }
+                else if (local_day_idx > 6) {
+                    local_day_idx -= 7;
+                }
+                local_prefs[local_day_idx][local_hour_idx] = prefs_hour;
+            })
+        });
+        return local_prefs;
+    }
+    return prefs;
+}
+
+function buildTypePreferences(prefs: number[][], timezone: number): number[][] {
+    prefs = applyTimezone(prefs, timezone)
+
     const data = softmax([].concat.apply([], prefs));
     const ret: number[][] = [data.splice(0, 24)];
 
@@ -43,12 +79,12 @@ function buildTypePreferences(prefs: number[][]): number[][] {
     return ret;
 }
 
-function getPreferencesMatrix(calendar: Calendar): any {
+function getPreferencesMatrix(calendar: Calendar, timezone: number): any {
     return {
-        "party": buildTypePreferences(calendar.timeslotPreferences["party"]),
-        "work": buildTypePreferences(calendar.timeslotPreferences["work"]),
-        "hobby": buildTypePreferences(calendar.timeslotPreferences["hobby"]),
-        "workout": buildTypePreferences(calendar.timeslotPreferences["workout"]),
+        "party": buildTypePreferences(calendar.timeslotPreferences["party"], timezone),
+        "work": buildTypePreferences(calendar.timeslotPreferences["work"], timezone),
+        "hobby": buildTypePreferences(calendar.timeslotPreferences["hobby"], timezone),
+        "workout": buildTypePreferences(calendar.timeslotPreferences["workout"], timezone),
     };
 }
 
@@ -59,13 +95,14 @@ function normaliseSlots(slots: TimeSlot[], min_score: number, max_score: number)
     });
 }
 
-export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], duration: number, min_time: Date, max_time: Date, type: string): Array<TimeSlot> {
+export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], duration: number,
+        min_time: Date, max_time: Date, type: string, timezone: number): Array<TimeSlot> {
     const slots = []
     const stride = 60; // in minutes
     let min_score = 0;
     let max_score = 0;
 
-    const preferences = getPreferencesMatrix(groupCalendar);
+    const preferences = getPreferencesMatrix(groupCalendar, timezone);
 
     while (min_time.getTime() + duration * MINUTES <= max_time.getTime()) {
         const end_time = new Date(min_time.getTime() + duration * MINUTES);

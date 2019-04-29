@@ -23,6 +23,8 @@ router.get('/:pseudo/groups', AsyncHandler(loggedOnly), AsyncHandler(UserControl
 
 router.put('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.editUser));
 
+router.put('/:pseudo/timezone', AsyncHandler(loggedOnly), AsyncHandler(UserController.setTimezone));
+
 router.post('/:pseudo/upload-image',
     AsyncHandler(loggedOnly),
     AsyncHandler(image_upload.single("image")),

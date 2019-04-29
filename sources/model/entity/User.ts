@@ -24,6 +24,9 @@ export class User {
     @Index({unique: true})
     email: string;
 
+    @Column({default: 0})
+    timezone: number;
+
     @Column({name: "ciphered_password", nullable: true})
     cipheredPassword: string;
 
@@ -50,6 +53,7 @@ export class User {
         this.email = email;
         this.cipheredPassword = ciphered_password;
         this.image = image;
+        this.timezone = 0;
     }
 
     /**
