@@ -32,6 +32,9 @@ const run = (done: (app: Express) => any): any => {
         checkEnvVariable("GOOGLE_CLIENT_ID");
         checkEnvVariable("GOOGLE_CLIENT_SECRET");
 
+        checkEnvVariable("FACEBOOK_CLIENT_ID");
+        checkEnvVariable("FACEBOOK_CLIENT_SECRET");
+
         // Express
         const app = ExpressApp();
 
