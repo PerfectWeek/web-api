@@ -10,7 +10,11 @@ export class UserView {
     public static formatUser(user: User): any {
         return {
             pseudo: user.pseudo,
-            email: user.email
+            email: user.email,
+            providers: {
+                facebook: user.facebookProviderPayload !== null,
+                google: user.googleProviderPayload !== null
+            }
         };
     }
 
