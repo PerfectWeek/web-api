@@ -5,6 +5,7 @@ import { OAuth2 } from "oauth";
 import * as RequestPromise from "request-promise";
 
 import { User } from "../../../model/entity/User";
+import { UserView } from "../../views/UserView";
 
 
 type Params = {
@@ -91,7 +92,8 @@ export const init = (params: Params): void => {
 
                                     res.status(200).json({
                                         message: "Connected",
-                                        token: jwt
+                                        token: jwt,
+                                        user: UserView.formatUser(user)
                                     });
                                 });
                             });

@@ -4,6 +4,7 @@ import { google } from "googleapis";
 import * as Jwt from "jsonwebtoken";
 
 import { User } from "../../../model/entity/User";
+import { UserView } from "../../views/UserView";
 
 
 type Params = {
@@ -70,7 +71,8 @@ export const init = (params: Params): void => {
 
                             res.status(200).json({
                                 message: "Connected",
-                                token: jwt
+                                token: jwt,
+                                user: UserView.formatUser(user)
                             });
                         });
                     })
