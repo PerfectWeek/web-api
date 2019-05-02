@@ -2,6 +2,9 @@ export interface TimeslotPreferences {
     [key: string]: number[][],
 };
 
+/**
+ * Weekly TimeslotPreferences (weeks start at sunday)
+ */
 export const baseTimeslotPreferences: TimeslotPreferences = {
     "party":
         [
