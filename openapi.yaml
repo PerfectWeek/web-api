@@ -144,6 +144,124 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /auth/providers/facebook:
+    get:
+      tags:
+        - Auth
+      summary: Get Facebook OAuth authentication url
+      description: Retrieve the url to use for Facebook OAuth
+      operationId: getFacebookOauthUri
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  oauth_uri:
+                    type: string
+                    example: "https://www.facebook.com/dialog/oauth"
+
+  /auth/providers/facebook/callback:
+    get:
+      tags:
+        - Auth
+      summary: Facebook OAuth callback
+      description: This route should only be used by Facebook when validating OAuth
+      operationId: facebookCallBack
+      parameters:
+        - in: path
+          name: code
+          required: true
+          description: Facebook authorization code
+          schema:
+            type: string
+            example: xXx-Facebook-token-xXx
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Authentication successful
+                  token:
+                    type: string
+                    example: xXx-perfectweek-jwt-xXx
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad Request
+
+  /auth/providers/google:
+    get:
+      tags:
+        - Auth
+      summary: Get Google OAuth authentication url
+      description: Retrieve the url to use for Google OAuth
+      operationId: getGoogleOauthUri
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  oauth_uri:
+                    type: string
+                    example: "https://accounts.google.com/o/oauth2/v2/auth"
+
+  /auth/providers/google/callback:
+    get:
+      tags:
+        - Auth
+      summary: Google OAuth callback
+      description: This route should only be used by Google when validating OAuth
+      operationId: googleCallBack
+      parameters:
+        - in: path
+          name: code
+          required: true
+          description: Google authorization code
+          schema:
+            type: string
+            example: xXx-Google-token-xXx
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Authentication successful
+                  token:
+                    type: string
+                    example: xXx-perfectweek-jwt-xXx
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad Request
+
   #
   # User
   #
@@ -2082,6 +2200,15 @@ components:
         email:
           type: string
           example: amazing.user@gmail.com
+        providers:
+          type: object
+          properties:
+            facebook:
+              type: boolean
+              example: true
+            google:
+              type: boolean
+              example: false
 
     GroupRecap:
       type: object
@@ -2326,4 +2453,3 @@ components:
         message:
           type: string
           example: Internal Server Error
-
