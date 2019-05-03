@@ -184,6 +184,164 @@
         }
       }
     },
+    "/auth/providers/facebook" : {
+      "get" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Get Facebook OAuth authentication url",
+        "description" : "Retrieve the url to use for Facebook OAuth",
+        "operationId" : "getFacebookOauthUri",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "oauth_uri" : {
+                      "type" : "string",
+                      "example" : "https://www.facebook.com/dialog/oauth"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/providers/facebook/callback" : {
+      "get" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Facebook OAuth callback",
+        "description" : "This route should only be used by Facebook when validating OAuth",
+        "operationId" : "facebookCallBack",
+        "parameters" : [ {
+          "name" : "code",
+          "in" : "path",
+          "description" : "Facebook authorization code",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xXx-Facebook-token-xXx"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Authentication successful",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Authentication successful"
+                    },
+                    "token" : {
+                      "type" : "string",
+                      "example" : "xXx-perfectweek-jwt-xXx"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/providers/google" : {
+      "get" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Get Google OAuth authentication url",
+        "description" : "Retrieve the url to use for Google OAuth",
+        "operationId" : "getGoogleOauthUri",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "oauth_uri" : {
+                      "type" : "string",
+                      "example" : "https://accounts.google.com/o/oauth2/v2/auth"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/providers/google/callback" : {
+      "get" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Google OAuth callback",
+        "description" : "This route should only be used by Google when validating OAuth",
+        "operationId" : "googleCallBack",
+        "parameters" : [ {
+          "name" : "code",
+          "in" : "path",
+          "description" : "Google authorization code",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xXx-Google-token-xXx"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Authentication successful",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Authentication successful"
+                    },
+                    "token" : {
+                      "type" : "string",
+                      "example" : "xXx-perfectweek-jwt-xXx"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users" : {
       "post" : {
         "tags" : [ "User" ],
@@ -224,7 +382,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_response_400_1"
                 }
               }
             }
@@ -376,7 +534,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_400"
+                  "$ref" : "#/components/schemas/inline_response_400_1"
                 }
               }
             }
@@ -3128,6 +3286,9 @@
           "email" : {
             "type" : "string",
             "example" : "amazing.user@gmail.com"
+          },
+          "providers" : {
+            "$ref" : "#/components/schemas/UserInfo_providers"
           }
         }
       },
@@ -3448,6 +3609,14 @@
         "properties" : {
           "message" : {
             "type" : "string",
+            "example" : "Bad Request"
+          }
+        }
+      },
+      "inline_response_400_1" : {
+        "properties" : {
+          "message" : {
+            "type" : "string",
             "example" : "Invalid fields in User"
           }
         }
@@ -3500,6 +3669,16 @@
           "image" : {
             "type" : "string",
             "format" : "binary"
+          }
+        }
+      },
+      "UserInfo_providers" : {
+        "properties" : {
+          "facebook" : {
+            "type" : "boolean"
+          },
+          "google" : {
+            "type" : "boolean"
           }
         }
       },
