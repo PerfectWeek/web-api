@@ -3,19 +3,20 @@ import * as Jwt              from "jsonwebtoken";
 import * as B64              from "base64-img";
 import * as Fs               from "fs";
 
-import { User }                   from "../../model/entity/User";
-import { ApiException }           from "../../utils/apiException";
-import { UserView }               from "../views/UserView";
-import { getRequestingUser }      from "../middleware/loggedOnly";
-import { EmailSender }            from "../../utils/emailSender";
-import { AccountVerification }    from "../../utils/accountVerification";
-import { DbConnection }           from "../../utils/DbConnection";
-import { PendingUser }            from "../../model/entity/PendingUser";
-import { getReqUrl }              from "../../utils/getReqUrl";
-import { CalendarsToOwnersView }  from "../views/CalendarsToOwnersView";
-import { Calendar }               from "../../model/entity/Calendar";
-import { CalendarsToOwners }      from "../../model/entity/CalendarsToOwners";
-import { image as DEFAULT_IMAGE } from "../../../resources/images/user_default.json";
+import { User }                                         from "../../model/entity/User";
+import { ApiException }                                 from "../../utils/apiException";
+import { UserView }                                     from "../views/UserView";
+import { getRequestingUser }                            from "../middleware/loggedOnly";
+import { EmailSender }                                  from "../../utils/emailSender";
+import { AccountVerification }                          from "../../utils/accountVerification";
+import { DbConnection }                                 from "../../utils/DbConnection";
+import { PendingUser }                                  from "../../model/entity/PendingUser";
+import { getReqUrl }                                    from "../../utils/getReqUrl";
+import { CalendarsToOwnersView }                        from "../views/CalendarsToOwnersView";
+import { Calendar }                                     from "../../model/entity/Calendar";
+import { CalendarsToOwners }                            from "../../model/entity/CalendarsToOwners";
+import { importFacebookEvents, importGoogleCalendars }  from "../services/ProvidersService";
+import { image as DEFAULT_IMAGE }                       from "../../../resources/images/user_default.json";
 
 const MAX_FILE_SIZE: number = 2000000;
 
@@ -330,6 +331,16 @@ export async function getUserCalendars(req: Request, res: Response) {
     }
 
     const conn = await DbConnection.getConnection();
+
+    const google_calendars = await importGoogleCalendars(conn, requestingUser);
+    for (const cal of google_calendars) {
+        if (cal !== null) {
+            await Calendar.createCalendar(conn, cal, [requestingUser]);
+            const eventsInsertions = cal.events.map((e: Event) => {return conn.manager.save(e)});
+            await Promise.all(eventsInsertions);
+        }
+    }
+    await importFacebookEvents(requestingUser);
 
     const calendars = await User.getAllCalendars(conn, requestingUser.id);
 
