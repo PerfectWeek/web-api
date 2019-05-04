@@ -62,7 +62,9 @@ export const init = (params: Params): void => {
                             refreshToken: token.tokens.refresh_token,
                             scope: scope,
                             tokenType: token.tokens.token_type,
-                            expiresIn: null
+                            expiresIn: null,
+                            googleCalendarListSyncToken: undefined,
+                            syncedGoogleCalendars: {}
                         };
 
                         params.conn.getRepository(User).save(user).then(() => {
