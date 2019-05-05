@@ -203,36 +203,42 @@ paths:
                     type: string
                     example: Bad Request
 
-  /auth/providers/google:
-    get:
-      tags:
-        - Auth
-      summary: Get Google OAuth authentication url
-      description: Retrieve the url to use for Google OAuth
-      operationId: getGoogleOauthUri
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                properties:
-                  oauth_uri:
-                    type: string
-                    example: "https://accounts.google.com/o/oauth2/v2/auth"
-
   /auth/providers/google/callback:
     get:
       tags:
         - Auth
       summary: Google OAuth callback
-      description: This route should only be used by Google when validating OAuth
+      description: >
+        Provide Google access and refresh token and connect the
+        corresponding User
+
+        #### Note:
+
+        Access and refresh token should be **offline** and with the following scope:
+
+        ```js
+          {
+            access_type: "offline",
+            scope: [
+              "https://www.googleapis.com/auth/calendar",
+              "https://www.googleapis.com/auth/userinfo.email",
+              "https://www.googleapis.com/auth/userinfo.profile"
+            ]
+          }
+        ```
       operationId: googleCallBack
       parameters:
         - in: path
-          name: code
+          name: access_token
           required: true
-          description: Google authorization code
+          description: Google access token
+          schema:
+            type: string
+            example: xXx-Google-token-xXx
+        - in: path
+          name: refresh_token
+          required: false
+          description: Google refresh token
           schema:
             type: string
             example: xXx-Google-token-xXx
