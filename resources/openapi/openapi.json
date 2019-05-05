@@ -184,42 +184,28 @@
         }
       }
     },
-    "/auth/providers/facebook" : {
-      "get" : {
-        "tags" : [ "Auth" ],
-        "summary" : "Get Facebook OAuth authentication url",
-        "description" : "Retrieve the url to use for Facebook OAuth",
-        "operationId" : "getFacebookOauthUri",
-        "responses" : {
-          "200" : {
-            "description" : "Success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "properties" : {
-                    "oauth_uri" : {
-                      "type" : "string",
-                      "example" : "https://www.facebook.com/dialog/oauth"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/auth/providers/facebook/callback" : {
       "get" : {
         "tags" : [ "Auth" ],
         "summary" : "Facebook OAuth callback",
-        "description" : "This route should only be used by Facebook when validating OAuth",
+        "description" : "Provide Facebook access and refresh token and connect the corresponding User\n#### Note:\nAccess and refresh token should have the following scope:\n```js\n  {\n    scope: [\n      \"user_events\",\n      \"email\"\n    ]\n  }\n```\n",
         "operationId" : "facebookCallBack",
         "parameters" : [ {
-          "name" : "code",
+          "name" : "access_token",
           "in" : "path",
-          "description" : "Facebook authorization code",
+          "description" : "Facebook access token",
           "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xXx-Facebook-token-xXx"
+          }
+        }, {
+          "name" : "refresh_token",
+          "in" : "path",
+          "description" : "Facebook refresh token",
+          "required" : false,
           "style" : "simple",
           "explode" : false,
           "schema" : {
@@ -263,42 +249,28 @@
         }
       }
     },
-    "/auth/providers/google" : {
-      "get" : {
-        "tags" : [ "Auth" ],
-        "summary" : "Get Google OAuth authentication url",
-        "description" : "Retrieve the url to use for Google OAuth",
-        "operationId" : "getGoogleOauthUri",
-        "responses" : {
-          "200" : {
-            "description" : "Success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "properties" : {
-                    "oauth_uri" : {
-                      "type" : "string",
-                      "example" : "https://accounts.google.com/o/oauth2/v2/auth"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/auth/providers/google/callback" : {
       "get" : {
         "tags" : [ "Auth" ],
         "summary" : "Google OAuth callback",
-        "description" : "This route should only be used by Google when validating OAuth",
+        "description" : "Provide Google access and refresh token and connect the corresponding User\n#### Note:\nAccess and refresh token should be **offline** and with the following scope:\n```js\n  {\n    access_type: \"offline\",\n    scope: [\n      \"https://www.googleapis.com/auth/calendar\",\n      \"https://www.googleapis.com/auth/userinfo.email\",\n      \"https://www.googleapis.com/auth/userinfo.profile\"\n    ]\n  }\n```\n",
         "operationId" : "googleCallBack",
         "parameters" : [ {
-          "name" : "code",
+          "name" : "access_token",
           "in" : "path",
-          "description" : "Google authorization code",
+          "description" : "Google access token",
           "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xXx-Google-token-xXx"
+          }
+        }, {
+          "name" : "refresh_token",
+          "in" : "path",
+          "description" : "Google refresh token",
+          "required" : false,
           "style" : "simple",
           "explode" : false,
           "schema" : {
