@@ -5,6 +5,8 @@ import { Calendar } from "../../model/entity/Calendar";
 import { Event } from "../../model/entity/Event";
 import { Connection } from "typeorm";
 
+import axios from "axios";
+
 const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET
@@ -12,7 +14,7 @@ const oauth2Client = new google.auth.OAuth2(
 
 export async function importGoogleCalendars(conn: Connection, user: User) {
     if (user.googleProviderPayload === null) {
-        return;
+        return [];
     }
     const calendar = google.calendar("v3");
 
@@ -90,7 +92,7 @@ async function importCalendar(
 
         events_promise.push(events.data.items
             .filter((e: any) => isValid(e))
-            .map((e: any) => loadEvent(e, imported_calendar)))
+            .map((e: any) => loadGoogleEvent(e, imported_calendar)))
 
         nextPageToken = events.data.nextPageToken;
         if (nextPageToken === undefined) {
@@ -100,15 +102,12 @@ async function importCalendar(
     }
     const events_to_add: Event[] = await Promise.all(events_promise).then((completed) => { return completed; });
     imported_calendar.events.push(...events_to_add);
-    if (pw_id !== undefined) {
-        return null;
-    }
     user.googleProviderPayload.syncedGoogleCalendars[googleCalendar.id] = pw_id;
     return imported_calendar;
 }
 
-function loadEvent(googleEvent: calendar_v3.Schema$Event, imported_calendar: Calendar): Event {
-    const imported_event: Event = new Event(
+function loadGoogleEvent(googleEvent: calendar_v3.Schema$Event, imported_calendar: Calendar): Event {
+    return new Event(
         googleEvent.summary,
         googleEvent.description,
         googleEvent.location,
@@ -117,9 +116,69 @@ function loadEvent(googleEvent: calendar_v3.Schema$Event, imported_calendar: Cal
         new Date(googleEvent.start.dateTime),
         googleEvent.endTimeUnspecified ? new Date(googleEvent.start.dateTime) : new Date(googleEvent.end.dateTime),
     );
-    return imported_event;
 }
 
-export async function importFacebookEvents(user: User) {
-    console.log(user.facebookProviderPayload);
+export async function importFacebookEvents(conn: Connection, user: User) {
+    if (user.facebookProviderPayload === null) {
+        return;
+    }
+
+    const fields = 'id, name, description, start_time, end_time, place';
+
+    const response = await axios.get('https://graph.facebook.com/v3.2/me/events', {
+        params: {
+            access_token: user.facebookProviderPayload.accessToken,
+            fields: fields
+        },
+    });
+
+    const cal_id: number = user.facebookProviderPayload.facebookCalendarId;
+    const calendar = (cal_id)
+        ? await Calendar.findCalendarById(conn, cal_id)
+        : await Calendar.createCalendar(conn, new Calendar('Facebook'), [user]);
+
+    const events_promise = [];
+
+    if (cal_id === undefined) {
+        user.facebookProviderPayload.facebookCalendarId = calendar.id;
+        await conn.manager.save(user);
+    }
+    if (response.status === 200) {
+        events_promise.push(
+            ...response.data.data.map(
+                async (e: any) => await loadFacebookEvent(conn, e, calendar, user)
+            )
+        );
+    }
+    calendar.events = await Promise.all(events_promise).then((completed) => { return completed; });
+}
+
+async function loadFacebookEvent(conn: Connection,
+        facebookEvent: any,
+        calendar: Calendar,
+        user: User) {
+
+    const event_id = user.facebookProviderPayload.syncedEvents[facebookEvent.id];
+    if (event_id === undefined) {
+        const event = new Event(
+            facebookEvent.name,
+            facebookEvent.description,
+            facebookEvent.place.name,
+            "other",
+            calendar,
+            new Date(facebookEvent.start_time),
+            new Date(facebookEvent.end_time)
+        );
+        const imported_event = await conn.manager.save(event);
+        user.facebookProviderPayload.syncedEvents[facebookEvent.id] = imported_event.id;
+    }
+    else {
+        const imported_event = await Event.getEventById(conn, event_id);
+        imported_event.name = facebookEvent.name;
+        imported_event.description = facebookEvent.description;
+        imported_event.location = facebookEvent.place.name;
+        imported_event.startTime = new Date(facebookEvent.start_time);
+        imported_event.endTime = new Date(facebookEvent.end_time);
+        await conn.manager.save(imported_event);
+    }
 }
