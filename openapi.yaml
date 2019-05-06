@@ -144,36 +144,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
-  /auth/providers/facebook:
-    get:
-      tags:
-        - Auth
-      summary: Get Facebook OAuth authentication url
-      description: Retrieve the url to use for Facebook OAuth
-      operationId: getFacebookOauthUri
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                properties:
-                  oauth_uri:
-                    type: string
-                    example: "https://www.facebook.com/dialog/oauth"
-
   /auth/providers/facebook/callback:
     get:
       tags:
         - Auth
       summary: Facebook OAuth callback
-      description: This route should only be used by Facebook when validating OAuth
+      description: >
+        Provide Facebook access and refresh token and connect the
+        corresponding User
+
+        #### Note:
+
+        Access and refresh token should have the following scope:
+
+        ```js
+          {
+            scope: [
+              "user_events",
+              "email"
+            ]
+          }
+        ```
       operationId: facebookCallBack
       parameters:
         - in: path
-          name: code
+          name: access_token
           required: true
-          description: Facebook authorization code
+          description: Facebook access token
+          schema:
+            type: string
+            example: xXx-Facebook-token-xXx
+        - in: path
+          name: refresh_token
+          required: false
+          description: Facebook refresh token
           schema:
             type: string
             example: xXx-Facebook-token-xXx
@@ -203,36 +207,42 @@ paths:
                     type: string
                     example: Bad Request
 
-  /auth/providers/google:
-    get:
-      tags:
-        - Auth
-      summary: Get Google OAuth authentication url
-      description: Retrieve the url to use for Google OAuth
-      operationId: getGoogleOauthUri
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                properties:
-                  oauth_uri:
-                    type: string
-                    example: "https://accounts.google.com/o/oauth2/v2/auth"
-
   /auth/providers/google/callback:
     get:
       tags:
         - Auth
       summary: Google OAuth callback
-      description: This route should only be used by Google when validating OAuth
+      description: >
+        Provide Google access and refresh token and connect the
+        corresponding User
+
+        #### Note:
+
+        Access and refresh token should be **offline** and with the following scope:
+
+        ```js
+          {
+            access_type: "offline",
+            scope: [
+              "https://www.googleapis.com/auth/calendar",
+              "https://www.googleapis.com/auth/userinfo.email",
+              "https://www.googleapis.com/auth/userinfo.profile"
+            ]
+          }
+        ```
       operationId: googleCallBack
       parameters:
         - in: path
-          name: code
+          name: access_token
           required: true
-          description: Google authorization code
+          description: Google access token
+          schema:
+            type: string
+            example: xXx-Google-token-xXx
+        - in: path
+          name: refresh_token
+          required: false
+          description: Google refresh token
           schema:
             type: string
             example: xXx-Google-token-xXx
