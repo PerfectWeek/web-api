@@ -15,7 +15,8 @@ import { getReqUrl }                                    from "../../utils/getReq
 import { CalendarsToOwnersView }                        from "../views/CalendarsToOwnersView";
 import { Calendar }                                     from "../../model/entity/Calendar";
 import { CalendarsToOwners }                            from "../../model/entity/CalendarsToOwners";
-import { importFacebookEvents, importGoogleCalendars }  from "../services/ProvidersService";
+import { importGoogleCalendars }                        from "../services/GoogleProviderService";
+import { importFacebookEvents }                         from "../services/FacebookProviderService";
 import { image as DEFAULT_IMAGE }                       from "../../../resources/images/user_default.json";
 
 const MAX_FILE_SIZE: number = 2000000;
