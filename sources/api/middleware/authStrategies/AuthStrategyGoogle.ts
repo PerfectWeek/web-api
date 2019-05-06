@@ -5,7 +5,7 @@ import * as Jwt from "jsonwebtoken";
 
 import { User } from "../../../model/entity/User";
 import { UserView } from "../../views/UserView";
-import { ProviderPayload } from "../../../utils/types/ProviderPayload";
+import { GoogleProviderPayload } from "../../../utils/types/ProviderPayload";
 
 
 type Params = {
@@ -88,12 +88,14 @@ export const init = (params: Params): void => {
 };
 
 
-const emptyPayloadToken = (scope: string): ProviderPayload => {
+const emptyPayloadToken = (scope: string): GoogleProviderPayload => {
     return {
         accessToken: null,
         refreshToken: null,
         scope: scope,
         expiresIn: null,
-        tokenType: null
+        tokenType: null,
+        googleCalendarListSyncToken: undefined,
+        syncedGoogleCalendars: {}
     };
 };

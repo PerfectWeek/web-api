@@ -26,6 +26,9 @@ export class Calendar {
     @Column({ type: "simple-json", default: baseTimeslotPreferences })
     timeslotPreferences: TimeslotPreferences;
 
+    @Column({ name: "google_calendar_sync_token", nullable: true})
+    googleCalendarSyncToken: string;
+
     @Column({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 

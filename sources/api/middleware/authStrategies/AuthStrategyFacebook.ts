@@ -5,7 +5,7 @@ import * as RequestPromise from "request-promise";
 
 import { User } from "../../../model/entity/User";
 import { UserView } from "../../views/UserView";
-import { ProviderPayload } from "../../../utils/types/ProviderPayload";
+import { FacebookProviderPayload } from "../../../utils/types/ProviderPayload";
 
 
 type Params = {
@@ -79,12 +79,14 @@ export const init = (params: Params): void => {
     });
 };
 
-const emptyPayloadToken = (scope: string): ProviderPayload => {
+const emptyPayloadToken = (scope: string): FacebookProviderPayload => {
     return {
         accessToken: null,
         refreshToken: null,
         scope: scope,
         expiresIn: null,
-        tokenType: null
+        tokenType: null,
+        facebookCalendarId: undefined,
+        syncedEvents: {}
     };
 };

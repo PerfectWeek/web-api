@@ -7,7 +7,7 @@ import { Event }             from "./Event";
 import {Group}               from "./Group";
 import {CalendarsToOwners}   from "./CalendarsToOwners";
 import {Calendar}            from "./Calendar";
-import {ProviderPayload}     from "../../utils/types/ProviderPayload";
+import {GoogleProviderPayload, FacebookProviderPayload}     from "../../utils/types/ProviderPayload";
 
 
 @Entity("users")
@@ -40,10 +40,10 @@ export class User {
     image?: Buffer;
 
     @Column({name: "google_provider_payload", type: "json", nullable: true})
-    googleProviderPayload: ProviderPayload;
+    googleProviderPayload: GoogleProviderPayload;
 
     @Column({ name: "facebook_provider_payload", type: "json", nullable: true })
-    facebookProviderPayload: ProviderPayload;
+    facebookProviderPayload: FacebookProviderPayload;
 
     groups: Group[];
 
