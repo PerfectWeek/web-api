@@ -5,7 +5,7 @@ export type GoogleProviderPayload = {
     scope: string,
     expiresIn: string,
     googleCalendarListSyncToken: string,
-    syncedGoogleCalendars: any;
+    syncedGoogleCalendars: {[key: string]: number};
 };
 
 export type FacebookProviderPayload = {
@@ -14,4 +14,6 @@ export type FacebookProviderPayload = {
     tokenType: string,
     scope: string,
     expiresIn: string,
+    facebookCalendarId: number,
+    syncedEvents: {[key: string]: number}
 }

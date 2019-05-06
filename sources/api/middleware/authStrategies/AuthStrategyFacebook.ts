@@ -83,7 +83,9 @@ export const init = (params: Params): void => {
                                     refreshToken: null,
                                     scope: scope,
                                     tokenType: results.token_type,
-                                    expiresIn: results.expires_in
+                                    expiresIn: results.expires_in,
+                                    facebookCalendarId: undefined,
+                                    syncedEvents: {}
                                 };
 
                                 params.conn.getRepository(User).save(user).then(() => {
