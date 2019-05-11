@@ -3,6 +3,8 @@ import { google, calendar_v3 } from "googleapis";
 import { User } from "../../model/entity/User";
 import { Calendar } from "../../model/entity/Calendar";
 import { Event } from "../../model/entity/Event";
+import { EventVisibility } from "../../utils/types/EventVisibility";
+
 import { Connection } from "typeorm";
 
 const oauth2Client = new google.auth.OAuth2(
@@ -111,6 +113,7 @@ function loadGoogleEvent(googleEvent: calendar_v3.Schema$Event, imported_calenda
         googleEvent.description,
         googleEvent.location,
         "other",
+        googleEvent.visibility === "public" ? EventVisibility.PUBLIC : EventVisibility.PRIVATE,
         imported_calendar,
         new Date(googleEvent.start.dateTime),
         googleEvent.endTimeUnspecified ? new Date(googleEvent.start.dateTime) : new Date(googleEvent.end.dateTime),

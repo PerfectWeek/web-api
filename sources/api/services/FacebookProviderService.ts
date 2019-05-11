@@ -2,6 +2,7 @@ import { Connection } from "typeorm";
 import { User } from "../../model/entity/User";
 import { Event } from "../../model/entity/Event"
 import { Calendar } from "../../model/entity/Calendar";
+import { EventVisibility } from "../../utils/types/EventVisibility";
 
 import axios from "axios";
 
@@ -10,7 +11,7 @@ export async function importFacebookEvents(conn: Connection, user: User) {
         return;
     }
 
-    const fields = 'id, name, description, start_time, end_time, place';
+    const fields = 'id, name, description, start_time, end_time, place, type';
 
     const response = await axios.get('https://graph.facebook.com/v3.2/me/events', {
         params: {
@@ -52,9 +53,10 @@ async function loadFacebookEvent(conn: Connection,
             facebookEvent.description,
             facebookEvent.place.name,
             "other",
+            facebookEvent.type === "public" ? EventVisibility.PUBLIC : EventVisibility.PRIVATE,
             calendar,
             new Date(facebookEvent.start_time),
-            new Date(facebookEvent.end_time)
+            facebookEvent.end_time ? new Date(facebookEvent.end_time) : new Date(facebookEvent.end_time),
         );
         const imported_event = await conn.manager.save(event);
         user.facebookProviderPayload.syncedEvents[facebookEvent.id] = imported_event.id;
