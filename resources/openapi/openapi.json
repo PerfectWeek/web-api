@@ -3460,6 +3460,10 @@
             "type" : "string",
             "example" : "party"
           },
+          "visibility" : {
+            "type" : "string",
+            "example" : "public"
+          },
           "calendar_id" : {
             "type" : "number",
             "example" : 3
@@ -3495,6 +3499,10 @@
           "type" : {
             "type" : "string",
             "example" : "party"
+          },
+          "visibility" : {
+            "type" : "string",
+            "example" : "public"
           },
           "start_time" : {
             "type" : "string",

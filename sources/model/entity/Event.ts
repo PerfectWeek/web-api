@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Connecti
 
 import { Calendar }          from "./Calendar";
 import { EventsToAttendees } from "./EventsToAttendees";
+import { EventVisibility } from "../../utils/types/EventVisibility";
 
 @Entity("events")
 export class Event {
@@ -20,6 +21,9 @@ export class Event {
 
     @Column({ nullable: false })
     type: string;
+
+    @Column({ nullable: false, default: EventVisibility.PRIVATE })
+    visibility: EventVisibility;
 
     @ManyToOne(type => Calendar, calendar => calendar.events)
     @JoinColumn({ name: "calendar_id" })
@@ -43,12 +47,13 @@ export class Event {
     image?: Buffer;
 
 
-    public constructor(name: string, description: string, location: string, type: string,
+    public constructor(name: string, description: string, location: string, type: string, visibility: EventVisibility,
                         calendar: Calendar, startTime: Date, endTime: Date, image?: Buffer) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.type = type;
+        this.visibility = visibility;
         this.calendar = calendar;
         this.startTime = startTime;
         this.endTime = endTime;

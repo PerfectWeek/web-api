@@ -8,6 +8,7 @@ export class EventView {
             name: event.name,
             description: event.description,
             type: event.type,
+            visibility: event.visibility,
             calendar_id: event.calendar.id,
             location: event.location,
             start_time: event.startTime,

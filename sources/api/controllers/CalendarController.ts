@@ -9,6 +9,7 @@ import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 import { CalendarView } from "../views/CalendarView";
 import { Event } from "../../model/entity/Event";
 import { EventView } from "../views/EventView";
+import { isEventVisibilityValid } from "../../utils/types/EventVisibility";
 
 
 //
@@ -128,9 +129,10 @@ export async function createEvent(req: Request, res: Response) {
     const description = req.body.description || "";
     const location = req.body.location || "";
     const type = req.body.type;
+    const visibility = req.body.visibility;
     const start_time = req.body.start_time;
     const end_time = req.body.end_time;
-    if (!name || !type || !start_time || !end_time) {
+    if (!name || !type || !visibility || !isEventVisibilityValid(visibility) || !start_time || !end_time) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -144,7 +146,7 @@ export async function createEvent(req: Request, res: Response) {
     }
 
     // Create the Event
-    const event = new Event(name, description, location, type, calendar, start_time, end_time);
+    const event = new Event(name, description, location, type, visibility, calendar, start_time, end_time);
     if (!event.isValid()) {
         throw new ApiException(400, "Invalid fields in Event");
     }
