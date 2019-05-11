@@ -50,3 +50,76 @@ export async function findBestSlots(req: Request, res: Response) {
         slots: TimeSlotListView.formatTimeSlotList(slots.slice(0, limit)),
     });
 }
+
+export async function getEventSuggestions(req: Request, res: Response) {
+    return res.status(200).json({
+        message: "OK",
+        suggestions: [
+            {
+                event: {
+                    id: 454,
+                    name: "Damso a Montreal",
+                    description: "lourd bail",
+                    type: "hobby",
+                    visibility: "public",
+                    location: "Montreal",
+                    start_time: "2012-12-12T12:12:12",
+                    end_time: "2012-12-12T12:12:12",
+                },
+                score: 0.99,
+            },
+            {
+                event: {
+                    id: 92,
+                    name: "Booba // U Arena",
+                    description: "lourd bail",
+                    type: "hobby",
+                    visibility: "public",
+                    location: "Montreal",
+                    start_time: "2012-12-12T12:12:12",
+                    end_time: "2012-12-12T12:12:12"
+                },
+                score: 1.00,
+            },
+            {
+                event: {
+                    id: 91,
+                    name: "PNL -- Bercy",
+                    description: "lourd bail",
+                    type: "hobby",
+                    visibility: "public",
+                    location: "Montreal",
+                    start_time: "2012-12-12T12:12:12",
+                    end_time: "2012-12-12T12:12:12"
+                },
+                score: 1.00,
+            },
+            {
+                event: {
+                    id: 101,
+                    name: "Road trip au sud du Canada",
+                    description: "lourd bail",
+                    type: "hobby",
+                    visibility: "public",
+                    location: "Montreal",
+                    start_time: "2012-12-12T12:12:12",
+                    end_time: "2012-12-12T12:12:12"
+                },
+                score: 0.5,
+            },
+            {
+                event: {
+                    id: 1,
+                    name: "Evenement nul",
+                    description: "moins lourd bail",
+                    type: "hobby",
+                    visibility: "public",
+                    location: "Montreal",
+                    start_time: "2012-12-12T12:12:12",
+                    end_time: "2012-12-12T12:12:12"
+                },
+                score: 0.01,
+            }
+        ]
+    })
+}
