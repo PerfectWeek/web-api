@@ -6,6 +6,7 @@ import * as RequestPromise from "request-promise";
 import { User } from "../../../model/entity/User";
 import { UserView } from "../../views/UserView";
 import { FacebookProviderPayload } from "../../../utils/types/ProviderPayload";
+import { Calendar } from "../../../model/entity/Calendar";
 
 
 type Params = {
@@ -47,8 +48,11 @@ export const init = (params: Params): void => {
 
             User.findByEmail(params.conn, profile.email)
                 .then(user => {
+                    let needFirstCalendar = false;
+
                     if (!user) {
                         user = new User(profile.email, profile.email, null);
+                        needFirstCalendar = true;
                     }
 
                     if (!user.facebookProviderPayload) {
@@ -60,14 +64,19 @@ export const init = (params: Params): void => {
                         user.facebookProviderPayload.refreshToken = refreshToken;
                     }
 
-                    params.conn.getRepository(User).save(user).then(() => {
+                    params.conn.getRepository(User).save(user).then(savedUser => {
                         const token_payload = { id: user.id };
                         const jwt = Jwt.sign(token_payload, process.env.JWT_ENCODE_KEY);
+
+                        if (needFirstCalendar) {
+                            const firstCalendar = new Calendar("Main calendar");
+                            Calendar.createCalendar(params.conn, firstCalendar, [savedUser]);
+                        }
 
                         res.status(200).json({
                             message: "Connected",
                             token: jwt,
-                            user: UserView.formatUser(user)
+                            user: UserView.formatUser(savedUser)
                         });
                     });
                 });
