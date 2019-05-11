@@ -2376,6 +2376,9 @@ components:
         type:
           type: string
           example: party
+        visibility:
+          type: string
+          example: public
         calendar_id:
           type: number
           example : 3
@@ -2403,6 +2406,9 @@ components:
         type:
           type: string
           example: party
+        visibility:
+          type: string
+          example: public
         start_time:
           type: string
           example: "2012-12-12T12:12:12"
