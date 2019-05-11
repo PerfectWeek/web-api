@@ -9,7 +9,7 @@ import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
 import { CalendarView } from "../views/CalendarView";
 import { Event } from "../../model/entity/Event";
 import { EventView } from "../views/EventView";
-import { EventVisibility } from "../../utils/types/EventVisibility";
+import { isEventVisibilityValid } from "../../utils/types/EventVisibility";
 
 
 //
@@ -132,7 +132,7 @@ export async function createEvent(req: Request, res: Response) {
     const visibility = req.body.visibility;
     const start_time = req.body.start_time;
     const end_time = req.body.end_time;
-    if (!name || !type || !visibility || Object.values(EventVisibility).indexOf(visibility) === -1 || !start_time || !end_time) {
+    if (!name || !type || !visibility || !isEventVisibilityValid(visibility) || !start_time || !end_time) {
         throw new ApiException(400, "Bad request");
     }
 

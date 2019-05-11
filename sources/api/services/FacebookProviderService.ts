@@ -56,7 +56,7 @@ async function loadFacebookEvent(conn: Connection,
             facebookEvent.type === "public" ? EventVisibility.PUBLIC : EventVisibility.PRIVATE,
             calendar,
             new Date(facebookEvent.start_time),
-            facebookEvent.end_time ? new Date(facebookEvent.end_time) : new Date(facebookEvent.end_time),
+            facebookEvent.end_time ? new Date(facebookEvent.end_time) : new Date(facebookEvent.start_time),
         );
         const imported_event = await conn.manager.save(event);
         user.facebookProviderPayload.syncedEvents[facebookEvent.id] = imported_event.id;
