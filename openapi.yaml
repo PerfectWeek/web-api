@@ -1725,6 +1725,76 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /calendars/{calendar-id}/assistant/get-event-suggestions:
+    get:
+      tags:
+        - Calendar
+      summary: Request event suggestions
+      operationId: getEventSuggestions
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: calendar-id
+          required: true
+          description: The Calendar id
+          schema:
+            type: number
+        - in: query
+          name: min_time
+          required: true
+          description: The event minimum start time (yyyy-mm-ddThh:mm:ss)
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: max_time
+          required: true
+          description: The event maximum end time (yyyy-mm-ddThh:mm:ss)
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: limit
+          required: false
+          description: The max number of events to be returned
+          schema:
+            type: number
+
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  slots:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventSuggestion'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
   #
   # Event
   #
@@ -2354,6 +2424,15 @@ components:
         end_time:
           type: string
           example: "2019-03-08T15:12:12"
+        score:
+          type: number
+          example: 0.9
+
+    EventSuggestion:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/EventInfo'
         score:
           type: number
           example: 0.9

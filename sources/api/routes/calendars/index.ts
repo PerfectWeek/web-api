@@ -21,4 +21,6 @@ router.get("/:calendar_id/events", AsyncHandler(loggedOnly), AsyncHandler(Calend
 
 router.get("/:calendar_id/assistant/find-best-slots", AsyncHandler(loggedOnly), AsyncHandler(AssistantController.findBestSlots));
 
+router.get("/:calendar_id/assistant/get-event-suggestions", AsyncHandler(loggedOnly), AsyncHandler(AssistantController.getEventSuggestions));
+
 export default router;
