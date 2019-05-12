@@ -7,7 +7,7 @@ import { ApiException } from "../../utils/apiException";
 import { User } from "../../model/entity/User";
 import { TimeSlotListView } from "../views/assistant/TimeSlotListView";
 
-import * as Assistant from "../../core/assistant/Assistant";
+import * as Assistant from "../services/assistant/Assistant";
 
 //
 //  Find best slots for an Event

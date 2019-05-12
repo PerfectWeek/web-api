@@ -1,7 +1,7 @@
-import { Calendar } from "../../model/entity/Calendar";
-import { TimeSlot } from "../../utils/TimeSlot";
-import { softmax, minMaxNormalisation } from "../../utils/math";
-import { TimeslotPreferences } from "../../utils/baseTimeslotPreferences";
+import { Calendar } from "../../../model/entity/Calendar";
+import { TimeSlot } from "../../../utils/TimeSlot";
+import { softmax, minMaxNormalisation } from "../../../utils/math";
+import { TimeslotPreferences } from "../../../utils/baseTimeslotPreferences";
 
 const MINUTES = 60 * 1000;
 
