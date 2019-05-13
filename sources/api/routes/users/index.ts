@@ -25,6 +25,10 @@ router.put('/:pseudo', AsyncHandler(loggedOnly), AsyncHandler(UserController.edi
 
 router.put('/:pseudo/timezone', AsyncHandler(loggedOnly), AsyncHandler(UserController.setTimezone));
 
+router.put('/:pseudo/providers/google', AsyncHandler(loggedOnly), AsyncHandler(UserController.importGoogleCredentials));
+
+router.put('/:pseudo/providers/facebook', AsyncHandler(loggedOnly), AsyncHandler(UserController.importFacebookCredentials));
+
 router.post('/:pseudo/upload-image',
     AsyncHandler(loggedOnly),
     AsyncHandler(image_upload.single("image")),

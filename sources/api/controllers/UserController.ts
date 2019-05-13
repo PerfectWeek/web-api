@@ -3,21 +3,22 @@ import * as Jwt              from "jsonwebtoken";
 import * as B64              from "base64-img";
 import * as Fs               from "fs";
 
-import { User }                                         from "../../model/entity/User";
-import { ApiException }                                 from "../../utils/apiException";
-import { UserView }                                     from "../views/UserView";
-import { getRequestingUser }                            from "../middleware/loggedOnly";
-import { EmailSender }                                  from "../../utils/emailSender";
-import { AccountVerification }                          from "../../utils/accountVerification";
-import { DbConnection }                                 from "../../utils/DbConnection";
-import { PendingUser }                                  from "../../model/entity/PendingUser";
-import { getReqUrl }                                    from "../../utils/getReqUrl";
-import { CalendarsToOwnersView }                        from "../views/CalendarsToOwnersView";
-import { Calendar }                                     from "../../model/entity/Calendar";
-import { CalendarsToOwners }                            from "../../model/entity/CalendarsToOwners";
-import { importGoogleCalendars }                        from "../services/GoogleProviderService";
-import { importFacebookEvents }                         from "../services/FacebookProviderService";
-import { image as DEFAULT_IMAGE }                       from "../../../resources/images/user_default.json";
+import { User } from "../../model/entity/User";
+import { ApiException } from "../../utils/apiException";
+import { UserView } from "../views/UserView";
+import { getRequestingUser } from "../middleware/loggedOnly";
+import { EmailSender } from "../../utils/emailSender";
+import { AccountVerification } from "../../utils/accountVerification";
+import { DbConnection } from "../../utils/DbConnection";
+import { PendingUser } from "../../model/entity/PendingUser";
+import { getReqUrl } from "../../utils/getReqUrl";
+import { CalendarsToOwnersView } from "../views/CalendarsToOwnersView";
+import { Calendar } from "../../model/entity/Calendar";
+import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { importGoogleCalendars } from "../services/GoogleProviderService";
+import { importFacebookEvents } from "../services/FacebookProviderService";
+import { emptyGooglePayloadToken, emptyFacebookPayloadToken } from "../../utils/emptyProviderPayload";
+import { image as DEFAULT_IMAGE } from "../../../resources/images/user_default.json";
 
 const MAX_FILE_SIZE: number = 2000000;
 
@@ -287,7 +288,7 @@ export async function setTimezone(req: Request, res: Response) {
 
     const timezone: number = req.body.timezone;
     if (!timezone) {
-        throw new ApiException(400, 'Bad request');
+        throw new ApiException(400, "Bad request");
     }
 
     user.timezone = timezone;
@@ -296,8 +297,74 @@ export async function setTimezone(req: Request, res: Response) {
     await conn.manager.save(user);
 
     return res.status(200).json({
-        message: 'Timezone successfully updated',
+        message: "Timezone successfully updated",
     })
+}
+
+//
+// Import google credentials onto existing user
+//
+export async function importGoogleCredentials(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+    if (requestingUser.pseudo !== req.params.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    const accessToken = req.body.access_token;
+    const refreshToken = req.body.refresh_token;
+    if (!accessToken || !refreshToken) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const scope = "https://www.googleapis.com/auth/calendar " +
+        "https://www.googleapis.com/auth/userinfo.email " +
+        "https://www.googleapis.com/auth/userinfo.profile";
+
+    if (!requestingUser.googleProviderPayload) {
+        requestingUser.googleProviderPayload = emptyGooglePayloadToken(scope);
+    }
+    requestingUser.googleProviderPayload.accessToken = accessToken;
+    requestingUser.googleProviderPayload.refreshToken = refreshToken;
+
+    const conn = await DbConnection.getConnection();
+    const user = await conn.manager.save(requestingUser);
+
+    return res.status(200).json({
+        message: "User updated",
+        user: UserView.formatUser(user),
+    });
+}
+
+//
+// Import google credentials onto existing user
+//
+export async function importFacebookCredentials(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+    if (requestingUser.pseudo !== req.params.pseudo) {
+        throw new ApiException(403, "Action not allowed");
+    }
+
+    const accessToken = req.body.access_token;
+    const refreshToken = req.body.refresh_token || null;
+    if (!accessToken) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const scope = "email user_events";
+
+    if (!requestingUser.facebookProviderPayload) {
+        requestingUser.facebookProviderPayload = emptyFacebookPayloadToken(scope);
+    }
+    requestingUser.facebookProviderPayload.accessToken = accessToken;
+    requestingUser.facebookProviderPayload.refreshToken = refreshToken;
+
+    const conn = await DbConnection.getConnection();
+    const user = await conn.manager.save(requestingUser);
+
+    return res.status(200).json({
+        message: "User updated",
+        user: UserView.formatUser(user),
+    });
 }
 
 //
