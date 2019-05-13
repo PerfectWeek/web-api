@@ -10,21 +10,16 @@ const MINUTES = 60 * 1000;
 const TRAVEL_TIME = 30;
 
 function slotAvailable(calendar: Calendar, start_time: Date, end_time: Date, travel_time: number): boolean {
-    for (const event of calendar.events) {
-        if (start_time.getTime() - travel_time * MINUTES < event.endTime.getTime()
-            && event.startTime.getTime() < end_time.getTime() + travel_time * MINUTES)
-            return false;
-    }
-    return true;
+    return calendar.events.every((event: Event) => {
+        return (!(start_time.getTime() - travel_time * MINUTES < event.endTime.getTime()
+            && event.startTime.getTime() < end_time.getTime() + travel_time * MINUTES))
+        })
 }
 
 function slotAvailableAll(calendars: Calendar[], start_time: Date, end_time: Date, travel_time: number): boolean {
-    for (const calendar of calendars) {
-        if (!slotAvailable(calendar, start_time, end_time, travel_time)) {
-            return false;
-        }
-    }
-    return true;
+    return calendars.every((calendar: Calendar) => {
+        return (slotAvailable(calendar, start_time, end_time, travel_time));
+    })
 }
 
 function getSlotScore(start_time: Date, end_time: Date, type: string, stride: number, preferences: TimeslotPreferences): number {
@@ -131,34 +126,26 @@ export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], du
     return normaliseSlots(slots, min_score, max_score).sort((a: TimeSlot, b: TimeSlot) => b.score - a.score);
 }
 
-function getAttendableEvents(calendars: Calendar[], events: Event[], min_time: Date, max_time: Date): Event[] {
-    const attendable_events: Event[] = [];
-
-    for (const event of events) {
-        if (event.startTime >= min_time && event.endTime <= max_time
-            && slotAvailableAll(calendars, event.startTime, event.endTime, TRAVEL_TIME)) {
-            attendable_events.push(event);
-        }
-    }
-    return attendable_events;
+function filterAttendableEvents(calendars: Calendar[], events: Event[], min_time: Date, max_time: Date): Event[] {
+    return events.filter((e: Event) => {
+        return (e.startTime >= min_time && e.endTime <= max_time
+            && slotAvailableAll(calendars, e.startTime, e.endTime, TRAVEL_TIME));
+    })
 }
 
 function getSuggestionScore(user: User, event: Event): number {
-    return 1;
+    return 1; //TODO build a real collaborative filtering
 }
 
-export function getEventSuggestions(user: User, calendars: Calendar[], events: Event[],
+export function processEventSuggestions(user: User, calendars: Calendar[], events: Event[],
         min_time: Date, max_time: Date)
         : EventSuggestion[] {
-    const attendable_events = getAttendableEvents(calendars, events, min_time, max_time);
+    const attendableEvents = filterAttendableEvents(calendars, events, min_time, max_time);
 
-    const events_scores: EventSuggestion[] = [];
-    for (const event of attendable_events) {
-        events_scores.push({
-            event: event,
-            score: getSuggestionScore(user, event)
+    return attendableEvents.map((e: Event) => {
+        return ({
+            event: e,
+            score: getSuggestionScore(user, e)
         })
-    }
-    console.log(events_scores);
-    return events_scores;
+    });
 }

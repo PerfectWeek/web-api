@@ -5,8 +5,8 @@ import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { ApiException } from "../../utils/apiException";
 import { User } from "../../model/entity/User";
-import { TimeSlotListView } from "../views/assistant/TimeSlotListView";
-import { EventSuggestionListView } from "../views/assistant/EventSuggestionListView";
+import { TimeSlotView } from "../views/assistant/TimeSlotView";
+import { EventSuggestionView } from "../views/assistant/EventSuggestionView";
 import { Event } from "../../model/entity/Event";
 import { EventSuggestion } from "../../utils/types/EventSuggestion";
 import * as Assistant from "../services/assistant/Assistant";
@@ -49,7 +49,7 @@ export async function findBestSlots(req: Request, res: Response) {
 
     return res.status(200).json({
         message: "OK",
-        slots: TimeSlotListView.formatTimeSlotList(slots.slice(0, limit)),
+        slots: TimeSlotView.formatTimeSlotList(slots.slice(0, limit)),
     });
 }
 
@@ -73,17 +73,17 @@ export async function getEventSuggestions(req: Request, res: Response) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
-    const events = await Event.fetchAllPublicEvents(conn);
-    const calendars: Calendar[] = []
+    const events = await Event.fetchAllPublicEvents(conn, min_time, max_time);
     const ctos = await User.getAllCalendars(conn, requestingUser.id);
-    for (const cto of ctos) {
-        cto.calendar = await Calendar.getCalendarWithOwners(conn, cto.calendar_id)
-        calendars.push(cto.calendar);
-    }
 
-    const suggestions: EventSuggestion[] = Assistant.getEventSuggestions(requestingUser, calendars, events, min_time, max_time);
+    const calendarPromises: Promise<Calendar>[] = ctos.map(async cto => {
+        return Calendar.getCalendarWithOwners(conn, cto.calendar_id);
+    });
+    const calendars: Calendar[] = await Promise.all(calendarPromises);
+
+    const suggestions: EventSuggestion[] = Assistant.processEventSuggestions(requestingUser, calendars, events, min_time, max_time);
     return res.status(200).json({
         message: "OK",
-        suggestions: EventSuggestionListView.formatSuggestionList(suggestions),
+        suggestions: EventSuggestionView.formatSuggestionList(suggestions),
     })
 }
