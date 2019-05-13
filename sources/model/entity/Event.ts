@@ -62,6 +62,21 @@ export class Event {
     }
 
     /**
+     * @brief Fetch all public events
+     *
+     * @param conn
+     */
+    public static fetchAllPublicEvents(
+        conn: Connection
+    ): Promise<Event[]> {
+        return conn.getRepository(Event)
+            .createQueryBuilder("event")
+            .innerJoinAndSelect("event.calendar", "calendar")
+            .where(`event.visibility = 'public'`)
+            .getMany();
+    }
+
+    /**
      * @brief Get an Event instance by its ID
      *
      * @param conn
