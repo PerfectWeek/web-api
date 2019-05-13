@@ -5,9 +5,11 @@ import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
 import { ApiException } from "../../utils/apiException";
 import { User } from "../../model/entity/User";
-import { TimeSlotListView } from "../views/assistant/TimeSlotListView";
-
-import * as Assistant from "../../core/assistant/Assistant";
+import { TimeSlotView } from "../views/assistant/TimeSlotView";
+import { EventSuggestionView } from "../views/assistant/EventSuggestionView";
+import { Event } from "../../model/entity/Event";
+import { EventSuggestion } from "../../utils/types/EventSuggestion";
+import * as Assistant from "../services/assistant/Assistant";
 
 //
 //  Find best slots for an Event
@@ -23,7 +25,7 @@ export async function findBestSlots(req: Request, res: Response) {
     const limit: number = req.query.limit || 10;
     const type: string = req.query.type;
 
-    if (!duration || !min_time || !max_time || min_time.getTime() >= max_time.getTime() || !type || limit <= 0) {
+    if (!duration || !min_time || !max_time || min_time.getTime() > max_time.getTime() || !type || limit <= 0) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -47,79 +49,41 @@ export async function findBestSlots(req: Request, res: Response) {
 
     return res.status(200).json({
         message: "OK",
-        slots: TimeSlotListView.formatTimeSlotList(slots.slice(0, limit)),
+        slots: TimeSlotView.formatTimeSlotList(slots.slice(0, limit)),
     });
 }
 
 export async function getEventSuggestions(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    const calendar_id: number = req.params.calendar_id;
+    const min_time: Date = new Date(req.query.min_time);
+    const max_time: Date = new Date(req.query.max_time);
+    const limit: number = req.query.limit || 10;
+
+    if (!min_time || !max_time || min_time.getTime() >= max_time.getTime() || limit <= 0) {
+        throw new ApiException(400, "Bad request");
+    }
+
+    const conn = await DbConnection.getConnection();
+
+    // Make sure the requesting User can access this Calendar
+    const calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
+    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+        throw new ApiException(403, "Calendar not accessible");
+    }
+
+    const events = await Event.fetchAllPublicEvents(conn, min_time, max_time);
+    const ctos = await User.getAllCalendars(conn, requestingUser.id);
+
+    const calendarPromises: Promise<Calendar>[] = ctos.map(async cto => {
+        return Calendar.getCalendarWithOwners(conn, cto.calendar_id);
+    });
+    const calendars: Calendar[] = await Promise.all(calendarPromises);
+
+    const suggestions: EventSuggestion[] = Assistant.processEventSuggestions(requestingUser, calendars, events, min_time, max_time);
     return res.status(200).json({
         message: "OK",
-        suggestions: [
-            {
-                event: {
-                    id: 454,
-                    name: "Damso a Montreal",
-                    description: "lourd bail",
-                    type: "hobby",
-                    visibility: "public",
-                    location: "Montreal",
-                    start_time: "2012-12-12T12:12:12",
-                    end_time: "2012-12-12T12:12:12",
-                },
-                score: 0.99,
-            },
-            {
-                event: {
-                    id: 92,
-                    name: "Booba // U Arena",
-                    description: "lourd bail",
-                    type: "hobby",
-                    visibility: "public",
-                    location: "Montreal",
-                    start_time: "2012-12-12T12:12:12",
-                    end_time: "2012-12-12T12:12:12"
-                },
-                score: 1.00,
-            },
-            {
-                event: {
-                    id: 91,
-                    name: "PNL -- Bercy",
-                    description: "lourd bail",
-                    type: "hobby",
-                    visibility: "public",
-                    location: "Montreal",
-                    start_time: "2012-12-12T12:12:12",
-                    end_time: "2012-12-12T12:12:12"
-                },
-                score: 1.00,
-            },
-            {
-                event: {
-                    id: 101,
-                    name: "Road trip au sud du Canada",
-                    description: "lourd bail",
-                    type: "hobby",
-                    visibility: "public",
-                    location: "Montreal",
-                    start_time: "2012-12-12T12:12:12",
-                    end_time: "2012-12-12T12:12:12"
-                },
-                score: 0.5,
-            },
-            {
-                event: {
-                    id: 1,
-                    name: "Evenement nul",
-                    description: "moins lourd bail",
-                    type: "hobby",
-                    visibility: "public",
-                    location: "Montreal",
-                    start_time: "2012-12-12T12:12:12",
-                    end_time: "2012-12-12T12:12:12"
-                },
-                score: 0.01,
-            }
-        ]
+        suggestions: EventSuggestionView.formatSuggestionList(suggestions),
     })
 }

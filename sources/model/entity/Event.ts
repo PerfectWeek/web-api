@@ -62,6 +62,28 @@ export class Event {
     }
 
     /**
+     * @brief Fetch all public events between two dates
+     *
+     * @param conn
+     * @param min_date
+     * @param max_date
+     *
+     */
+    public static fetchAllPublicEvents(
+        conn: Connection,
+        min_date: Date,
+        max_date: Date
+    ): Promise<Event[]> {
+        return conn.getRepository(Event)
+            .createQueryBuilder("event")
+            .innerJoinAndSelect("event.calendar", "calendar")
+            .where(`event.visibility = 'public'`)
+            .andWhere(`event.start_time >= :min_date`, { min_date})
+            .andWhere(`event.end_time <= :max_date`, { max_date})
+            .getMany();
+    }
+
+    /**
      * @brief Get an Event instance by its ID
      *
      * @param conn

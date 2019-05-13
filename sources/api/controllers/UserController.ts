@@ -333,14 +333,15 @@ export async function getUserCalendars(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
 
-    const imported_calendars = await importGoogleCalendars(conn, requestingUser);
+    const importedCalendars = await importGoogleCalendars(conn, requestingUser);
     await importFacebookEvents(conn, requestingUser);
 
-    for (const cal of imported_calendars) {
+    importedCalendars.forEach(async (cal) => {
         await Calendar.createCalendar(conn, cal, [requestingUser]);
         const eventsInsertions = cal.events.map((e: Event) => {return conn.manager.save(e)});
         await Promise.all(eventsInsertions);
-    }
+    })
+
     await conn.manager.save(requestingUser);
 
     const calendars = await User.getAllCalendars(conn, requestingUser.id);
