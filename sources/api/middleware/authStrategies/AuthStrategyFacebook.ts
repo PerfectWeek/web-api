@@ -28,7 +28,7 @@ export const init = (params: Params): void => {
     params.express.app.get(`${params.express.path}/callback`, (req: Request, res: Response) => {
 
         const accessToken = req.query.access_token;
-        const refreshToken = req.query.refreshToken || null;
+        const refreshToken = req.query.refresh_token || null;
 
         if (!accessToken) {
             return res.status(400).json({

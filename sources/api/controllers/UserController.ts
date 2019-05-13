@@ -333,8 +333,14 @@ export async function getUserCalendars(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
 
-    const importedCalendars = await importGoogleCalendars(conn, requestingUser);
-    await importFacebookEvents(conn, requestingUser);
+    let importedCalendars = [];
+
+    try {
+        importedCalendars = await importGoogleCalendars(conn, requestingUser);
+    } catch(e) {}
+    try {
+        await importFacebookEvents(conn, requestingUser);
+    } catch(e) {}
 
     importedCalendars.forEach(async (cal) => {
         await Calendar.createCalendar(conn, cal, [requestingUser]);
