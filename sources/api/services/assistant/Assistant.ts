@@ -2,8 +2,12 @@ import { Calendar } from "../../../model/entity/Calendar";
 import { TimeSlot } from "../../../utils/TimeSlot";
 import { softmax, minMaxNormalisation } from "../../../utils/math";
 import { TimeslotPreferences } from "../../../utils/baseTimeslotPreferences";
+import { Event } from "../../../model/entity/Event";
+import { User } from "../../../model/entity/User";
+import { EventSuggestion } from "../../../utils/types/EventSuggestion";
 
 const MINUTES = 60 * 1000;
+const TRAVEL_TIME = 30;
 
 function slotAvailable(calendar: Calendar, start_time: Date, end_time: Date, travel_time: number): boolean {
     for (const event of calendar.events) {
@@ -106,7 +110,7 @@ export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], du
 
     while (min_time.getTime() + duration * MINUTES <= max_time.getTime()) {
         const end_time = new Date(min_time.getTime() + duration * MINUTES);
-        if (slotAvailableAll(calendars, min_time, end_time, 30)) {
+        if (slotAvailableAll(calendars, min_time, end_time, TRAVEL_TIME)) {
 
             const score = getSlotScore(min_time, end_time, type, stride, preferences);
             if (score > max_score) {
@@ -125,4 +129,36 @@ export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], du
         min_time = new Date(min_time.getTime() + stride * MINUTES);
     }
     return normaliseSlots(slots, min_score, max_score).sort((a: TimeSlot, b: TimeSlot) => b.score - a.score);
+}
+
+function getAttendableEvents(calendars: Calendar[], events: Event[], min_time: Date, max_time: Date): Event[] {
+    const attendable_events: Event[] = [];
+
+    for (const event of events) {
+        if (event.startTime >= min_time && event.endTime <= max_time
+            && slotAvailableAll(calendars, event.startTime, event.endTime, TRAVEL_TIME)) {
+            attendable_events.push(event);
+        }
+    }
+    return attendable_events;
+}
+
+function getSuggestionScore(user: User, event: Event): number {
+    return 1;
+}
+
+export function getEventSuggestions(user: User, calendars: Calendar[], events: Event[],
+        min_time: Date, max_time: Date)
+        : EventSuggestion[] {
+    const attendable_events = getAttendableEvents(calendars, events, min_time, max_time);
+
+    const events_scores: EventSuggestion[] = [];
+    for (const event of attendable_events) {
+        events_scores.push({
+            event: event,
+            score: getSuggestionScore(user, event)
+        })
+    }
+    console.log(events_scores);
+    return events_scores;
 }
