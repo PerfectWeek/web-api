@@ -5,7 +5,7 @@ import * as RequestPromise from "request-promise";
 
 import { User } from "../../../model/entity/User";
 import { UserView } from "../../views/UserView";
-import { FacebookProviderPayload } from "../../../utils/types/ProviderPayload";
+import { emptyFacebookPayloadToken } from "../../../utils/emptyProviderPayload";
 import { Calendar } from "../../../model/entity/Calendar";
 
 
@@ -56,7 +56,7 @@ export const init = (params: Params): void => {
                     }
 
                     if (!user.facebookProviderPayload) {
-                        user.facebookProviderPayload = emptyPayloadToken(scope);
+                        user.facebookProviderPayload = emptyFacebookPayloadToken(scope);
                     }
 
                     user.facebookProviderPayload.accessToken = accessToken;
@@ -86,16 +86,4 @@ export const init = (params: Params): void => {
             });
         });
     });
-};
-
-const emptyPayloadToken = (scope: string): FacebookProviderPayload => {
-    return {
-        accessToken: null,
-        refreshToken: null,
-        scope: scope,
-        expiresIn: null,
-        tokenType: null,
-        facebookCalendarId: undefined,
-        syncedEvents: {}
-    };
 };

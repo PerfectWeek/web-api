@@ -5,7 +5,7 @@ import * as Jwt from "jsonwebtoken";
 
 import { User } from "../../../model/entity/User";
 import { UserView } from "../../views/UserView";
-import { GoogleProviderPayload } from "../../../utils/types/ProviderPayload";
+import { emptyGooglePayloadToken } from "../../../utils/emptyProviderPayload";
 import { Calendar } from "../../../model/entity/Calendar";
 
 
@@ -62,7 +62,7 @@ export const init = (params: Params): void => {
                 }
 
                 if (!user.googleProviderPayload) {
-                    user.googleProviderPayload = emptyPayloadToken(scope);
+                    user.googleProviderPayload = emptyGooglePayloadToken(scope);
                 }
 
                 user.googleProviderPayload.accessToken = accessToken;
@@ -93,17 +93,4 @@ export const init = (params: Params): void => {
             });
         });
     });
-};
-
-
-const emptyPayloadToken = (scope: string): GoogleProviderPayload => {
-    return {
-        accessToken: null,
-        refreshToken: null,
-        scope: scope,
-        expiresIn: null,
-        tokenType: null,
-        googleCalendarListSyncToken: undefined,
-        syncedGoogleCalendars: {}
-    };
 };
