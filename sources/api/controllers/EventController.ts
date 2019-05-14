@@ -138,9 +138,10 @@ export async function editEvent(req: Request, res: Response) {
     const description = req.body.description || "";
     const location = req.body.location || "";
     const type = req.body.type;
+    const visibility = req.body.visibility;
     const start_time = req.body.start_time;
     const end_time = req.body.end_time;
-    if (!name || !type || !start_time || !end_time) {
+    if (!name || !type || !visibility || !start_time || !end_time) {
         throw new ApiException(400, "Bad request");
     }
 
@@ -163,6 +164,7 @@ export async function editEvent(req: Request, res: Response) {
     event.description = description;
     event.location = location;
     event.type = type;
+    event.visibility = visibility;
     event.startTime = start_time;
     event.endTime = end_time;
     const savedEvent = await conn.manager.save(event);
