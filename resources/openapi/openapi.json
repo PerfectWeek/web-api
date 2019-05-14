@@ -3319,6 +3319,77 @@
           "BearerAuth" : [ ]
         } ]
       }
+    },
+    "/search/users" : {
+      "get" : {
+        "tags" : [ "Search" ],
+        "summary" : "Search users by pseudo",
+        "operationId" : "searchUser",
+        "parameters" : [ {
+          "name" : "q",
+          "in" : "query",
+          "description" : "The pseudo to look for",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "The max number of users to be fetched (must be between 1 and 10)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "event" : {
+                      "$ref" : "#/components/schemas/PublicUserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
     }
   },
   "components" : {
@@ -3367,6 +3438,15 @@
           },
           "providers" : {
             "$ref" : "#/components/schemas/UserInfo_providers"
+          }
+        }
+      },
+      "PublicUserInfo" : {
+        "type" : "object",
+        "properties" : {
+          "pseudo" : {
+            "type" : "string",
+            "example" : "amazing_user"
           }
         }
       },
