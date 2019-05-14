@@ -120,14 +120,16 @@ export class User {
     public static async searchByPseudo(
         conn: Connection,
         q: string,
-        limit: number
+        page_size: number,
+        page_number : number
     ): Promise<User[]> {
         const userRepository = conn.getRepository(User);
 
         return userRepository
             .createQueryBuilder("user")
             .where("user.pseudo LIKE :q", {q: '%' + q + '%'})
-            .limit(limit)
+            .limit(page_size)
+            .offset(page_size * (page_number - 1))
             .getMany();
     }
 
