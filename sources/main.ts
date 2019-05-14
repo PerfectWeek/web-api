@@ -85,12 +85,16 @@ const run = (done: (app: Express) => any): any => {
 
         // Handle errors
         app.use((error: Error, req: Request, res: Response, next: Function) => {
-            res.status(error instanceof ApiException ? (<ApiException>error).code : 500)
+            const statusCode = error instanceof ApiException ? (<ApiException>error).code : 500;
+            if (statusCode === 500) {
+                console.error(error.stack);
+            }
+
+            res.status(statusCode)
                 .json({
                     message: error.message
                 });
         });
-
 
         done(app);
     })
