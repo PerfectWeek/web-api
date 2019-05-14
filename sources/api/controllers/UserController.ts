@@ -336,7 +336,7 @@ export async function importGoogleCredentials(req: Request, res: Response) {
 }
 
 //
-// Import google credentials onto existing user
+// Import facebook credentials onto existing user
 //
 export async function importFacebookCredentials(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
@@ -355,8 +355,11 @@ export async function importFacebookCredentials(req: Request, res: Response) {
     if (!requestingUser.facebookProviderPayload) {
         requestingUser.facebookProviderPayload = emptyFacebookPayloadToken(scope);
     }
+
     requestingUser.facebookProviderPayload.accessToken = accessToken;
-    requestingUser.facebookProviderPayload.refreshToken = refreshToken;
+    if (refreshToken) {
+        requestingUser.facebookProviderPayload.refreshToken = refreshToken;
+    }
 
     const conn = await DbConnection.getConnection();
     const user = await conn.manager.save(requestingUser);
