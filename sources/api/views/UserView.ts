@@ -34,6 +34,10 @@ export class UserView {
         }
     }
 
+    public static formatPublicUserList(userList: User[]): any {
+        return userList.map(this.formatPublicUser);
+    }
+
     public static formatUserGroupList(groups: Group[]) : any {
         return groups.map(GroupView.formatGroupRecap);
     }

@@ -112,6 +112,26 @@ export class User {
     }
 
     /**
+     * @brief Return a list of user matching the query
+     *
+     * @param conn
+     * @param q the pseudo to look for
+     */
+    public static async searchByPseudo(
+        conn: Connection,
+        q: string,
+        limit: number
+    ): Promise<User[]> {
+        const userRepository = conn.getRepository(User);
+
+        return userRepository
+            .createQueryBuilder("user")
+            .where("user.pseudo LIKE :q", {q: '%' + q + '%'})
+            .limit(limit)
+            .getMany();
+    }
+
+    /**
      * @brief Find a User by email
      *
      * @param conn  The database Connection
