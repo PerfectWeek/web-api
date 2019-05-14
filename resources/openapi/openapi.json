@@ -3517,15 +3517,26 @@
             "type" : "string"
           }
         }, {
-          "name" : "limit",
+          "name" : "page_size",
           "in" : "query",
-          "description" : "The max number of users to be fetched (must be between 1 and 10)",
+          "description" : "The max number of users to be fetched by page (must be between 1 and 20)",
           "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
             "type" : "number",
             "default" : 10
+          }
+        }, {
+          "name" : "page_number",
+          "in" : "query",
+          "description" : "The page from which to start fetching",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "default" : 1
           }
         } ],
         "responses" : {
