@@ -489,6 +489,130 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /users/{pseudo}/providers/google:
+    put:
+      tags:
+        - User
+      summary: Edit User google credentials
+      operationId: editUserGoogleCredentials
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Google Credentials successfully updated
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid Credentials
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+
+  /users/{pseudo}/providers/facebook:
+    put:
+      tags:
+        - User
+      summary: Edit User facebook credentials
+      operationId: editUserFacebookCredentials
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                refresh_token:
+                  type: string
+              required:
+                - access_token
+      responses:
+        '200':
+          description: Facebook Credentials successfully updated
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid Credentials
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+
   /users/{pseudo}/timezone:
     put:
       tags:
@@ -2238,7 +2362,7 @@ paths:
       parameters:
         - in: query
           name: q
-          required: false
+          required: true
           description: The pseudo to look for
           schema:
             type: string
@@ -2248,6 +2372,7 @@ paths:
           description: The max number of users to be fetched (must be between 1 and 10)
           schema:
             type: number
+            default: 10
       responses:
         '200':
           description: Success
@@ -2258,8 +2383,10 @@ paths:
                   message:
                     type: string
                     example: OK
-                  event:
-                    $ref: '#/components/schemas/PublicUserInfo'
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PublicUserInfo'
         '401':
           description: Authentication failed
           content:

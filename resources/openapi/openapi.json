@@ -628,6 +628,187 @@
         } ]
       }
     },
+    "/users/{pseudo}/providers/google" : {
+      "put" : {
+        "tags" : [ "User" ],
+        "summary" : "Edit User google credentials",
+        "operationId" : "editUserGoogleCredentials",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "access_token" : {
+                    "type" : "string"
+                  },
+                  "refresh_token" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          },
+          "required" : true,
+          "$ref" : "#/components/requestBodies/inline_object"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Google Credentials successfully updated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400_2"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/users/{pseudo}/providers/facebook" : {
+      "put" : {
+        "tags" : [ "User" ],
+        "summary" : "Edit User facebook credentials",
+        "operationId" : "editUserFacebookCredentials",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "required" : [ "access_token" ],
+                "type" : "object",
+                "properties" : {
+                  "access_token" : {
+                    "type" : "string"
+                  },
+                  "refresh_token" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          },
+          "required" : true,
+          "$ref" : "#/components/requestBodies/inline_object_1"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Facebook Credentials successfully updated",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "user" : {
+                      "$ref" : "#/components/schemas/UserInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_400_2"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/users/{pseudo}/timezone" : {
       "put" : {
         "tags" : [ "User" ],
@@ -658,7 +839,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object"
+          "$ref" : "#/components/requestBodies/inline_object_2"
         },
         "responses" : {
           "200" : {
@@ -729,7 +910,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_1"
+          "$ref" : "#/components/requestBodies/inline_object_3"
         },
         "responses" : {
           "200" : {
@@ -1605,7 +1786,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_2"
+          "$ref" : "#/components/requestBodies/inline_object_4"
         },
         "responses" : {
           "200" : {
@@ -1812,7 +1993,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_3"
+          "$ref" : "#/components/requestBodies/inline_object_5"
         },
         "responses" : {
           "200" : {
@@ -3179,7 +3360,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_4"
+          "$ref" : "#/components/requestBodies/inline_object_6"
         },
         "responses" : {
           "200" : {
@@ -3329,7 +3510,7 @@
           "name" : "q",
           "in" : "query",
           "description" : "The pseudo to look for",
-          "required" : false,
+          "required" : true,
           "style" : "form",
           "explode" : true,
           "schema" : {
@@ -3343,7 +3524,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "number"
+            "type" : "number",
+            "default" : 10
           }
         } ],
         "responses" : {
@@ -3357,8 +3539,11 @@
                       "type" : "string",
                       "example" : "OK"
                     },
-                    "event" : {
-                      "$ref" : "#/components/schemas/PublicUserInfo"
+                    "users" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/PublicUserInfo"
+                      }
                     }
                   }
                 }
@@ -3810,25 +3995,39 @@
       "inline_object" : {
         "type" : "object",
         "properties" : {
-          "timezone" : {
-            "type" : "number"
+          "access_token" : {
+            "type" : "string"
+          },
+          "refresh_token" : {
+            "type" : "string"
+          }
+        }
+      },
+      "inline_response_400_2" : {
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Invalid Credentials"
           }
         }
       },
       "inline_object_1" : {
+        "required" : [ "access_token" ],
         "type" : "object",
         "properties" : {
-          "image" : {
-            "type" : "string",
-            "format" : "binary"
+          "access_token" : {
+            "type" : "string"
+          },
+          "refresh_token" : {
+            "type" : "string"
           }
         }
       },
       "inline_object_2" : {
         "type" : "object",
         "properties" : {
-          "role" : {
-            "$ref" : "#/components/schemas/GroupMemberRole"
+          "timezone" : {
+            "type" : "number"
           }
         }
       },
@@ -3842,6 +4041,23 @@
         }
       },
       "inline_object_4" : {
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
+          }
+        }
+      },
+      "inline_object_5" : {
+        "type" : "object",
+        "properties" : {
+          "image" : {
+            "type" : "string",
+            "format" : "binary"
+          }
+        }
+      },
+      "inline_object_6" : {
         "type" : "object",
         "properties" : {
           "image" : {
@@ -3877,7 +4093,7 @@
     "requestBodies" : {
       "inline_object_1" : {
         "content" : {
-          "multipart/form-data" : {
+          "application/x-www-form-urlencoded" : {
             "schema" : {
               "$ref" : "#/components/schemas/inline_object_1"
             }
@@ -3895,9 +4111,29 @@
         },
         "required" : true
       },
-      "inline_object_4" : {
+      "inline_object_6" : {
         "content" : {
           "multipart/form-data" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_6"
+            }
+          }
+        },
+        "required" : true
+      },
+      "inline_object_5" : {
+        "content" : {
+          "multipart/form-data" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_5"
+            }
+          }
+        },
+        "required" : true
+      },
+      "inline_object_4" : {
+        "content" : {
+          "application/x-www-form-urlencoded" : {
             "schema" : {
               "$ref" : "#/components/schemas/inline_object_4"
             }
