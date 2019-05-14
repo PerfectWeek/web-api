@@ -33,7 +33,8 @@ export async function getEventInfo(req: Request, res: Response) {
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
-    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+    if (event.visibility !== "public"
+        && !(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
         throw new ApiException(403, "Action not allowed");
     }
 
