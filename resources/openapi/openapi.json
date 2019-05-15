@@ -1159,6 +1159,7 @@
       "get" : {
         "tags" : [ "User" ],
         "summary" : "Get all Calendars a User owns",
+        "description" : "Retrieve all calendars of a User with its role in each.\n\nRole can be one of the following:\n- `admin` # Full access\n- `actor` # Can create new events\n- `spectator` # Can only view events\n- `outsider` # Can only view events it is invited to\n",
         "operationId" : "getUserCalendars",
         "parameters" : [ {
           "name" : "pseudo",
@@ -1251,9 +1252,31 @@
         "operationId" : "createGroup",
         "requestBody" : {
           "content" : {
-            "application/x-www-form-urlencoded" : {
+            "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/GroupCredentials"
+                "allOf" : [ {
+                  "$ref" : "#/components/schemas/GroupCredentials"
+                }, {
+                  "type" : "object",
+                  "properties" : {
+                    "members" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "type" : "string",
+                            "example" : "user_2"
+                          },
+                          "role" : {
+                            "type" : "string",
+                            "example" : "spectator"
+                          }
+                        }
+                      }
+                    }
+                  }
+                } ]
               }
             }
           },
@@ -1268,10 +1291,23 @@
                   "properties" : {
                     "message" : {
                       "type" : "string",
-                      "example" : "Group created"
+                      "example" : "OK"
                     },
                     "group" : {
-                      "$ref" : "#/components/schemas/GroupInfo"
+                      "type" : "object",
+                      "allOf" : [ {
+                        "$ref" : "#/components/schemas/GroupInfo"
+                      }, {
+                        "type" : "object",
+                        "properties" : {
+                          "members" : {
+                            "type" : "array",
+                            "items" : {
+                              "$ref" : "#/components/schemas/GroupMember"
+                            }
+                          }
+                        }
+                      } ]
                     }
                   }
                 }
@@ -1545,113 +1581,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Unauthorized"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal server error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/InternalServerError"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      }
-    },
-    "/groups/{group-id}/add-members" : {
-      "post" : {
-        "tags" : [ "Group" ],
-        "summary" : "Add new Users to a Group",
-        "description" : "Add new Users to a Group and returns the new list of members\n",
-        "operationId" : "addMembersToGroup",
-        "parameters" : [ {
-          "name" : "group-id",
-          "in" : "path",
-          "description" : "The Group id",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/x-www-form-urlencoded" : {
-              "schema" : {
-                "properties" : {
-                  "users" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Users added",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "properties" : {
-                    "message" : {
-                      "type" : "string",
-                      "example" : "OK"
-                    },
-                    "members" : {
-                      "type" : "array",
-                      "items" : {
-                        "$ref" : "#/components/schemas/GroupMember"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Authentication failed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AuthenticationFailed"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Action not allowed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Unauthorized"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "User not Found",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "properties" : {
-                    "message" : {
-                      "type" : "string",
-                      "example" : "User not found"
-                    }
-                  }
                 }
               }
             }
@@ -1956,6 +1885,133 @@
         } ]
       }
     },
+    "/groups/{group-id}/add-members" : {
+      "post" : {
+        "tags" : [ "Group" ],
+        "summary" : "Add new Users to a Group",
+        "description" : "Add new Users to a Group and returns the new list of members\n",
+        "operationId" : "addMembersToGroup",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "properties" : {
+                  "users" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "object",
+                      "properties" : {
+                        "name" : {
+                          "type" : "string",
+                          "example" : "user_2"
+                        },
+                        "role" : {
+                          "type" : "string",
+                          "example" : "spectator"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Users added",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "group" : {
+                      "type" : "object",
+                      "allOf" : [ {
+                        "$ref" : "#/components/schemas/GroupInfo"
+                      }, {
+                        "type" : "object",
+                        "properties" : {
+                          "members" : {
+                            "type" : "array",
+                            "items" : {
+                              "$ref" : "#/components/schemas/GroupMember"
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/groups/{group-id}/upload-image" : {
       "post" : {
         "tags" : [ "Group" ],
@@ -2110,6 +2166,211 @@
           },
           "403" : {
             "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/group-invites" : {
+      "get" : {
+        "tags" : [ "GroupInvites" ],
+        "summary" : "Get all pending Group invitations",
+        "operationId" : "getGroupInvites",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "pending_invites" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "id" : {
+                            "type" : "number",
+                            "example" : 42
+                          },
+                          "name" : {
+                            "type" : "string",
+                            "example" : "Super group"
+                          },
+                          "role" : {
+                            "$ref" : "#/components/schemas/GroupMemberRole"
+                          },
+                          "confirmed" : {
+                            "type" : "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/group-invites/{group-id}/accept-invite" : {
+      "post" : {
+        "tags" : [ "GroupInvites" ],
+        "summary" : "Accept a Group invitation",
+        "operationId" : "groupAcceptInvite",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Invitation accepted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/group-invites/{group-id}/decline-invite" : {
+      "post" : {
+        "tags" : [ "GroupInvites" ],
+        "summary" : "Decline a Group invitation",
+        "operationId" : "groupDeclineInvite",
+        "parameters" : [ {
+          "name" : "group-id",
+          "in" : "path",
+          "description" : "The Group id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Invitation declined"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -3259,7 +3520,15 @@
           "content" : {
             "application/x-www-form-urlencoded" : {
               "schema" : {
-                "$ref" : "#/components/schemas/InviteUser"
+                "properties" : {
+                  "users" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "example" : "alif"
+                    }
+                  }
+                }
               }
             }
           },
@@ -3661,6 +3930,9 @@
           "nb_members" : {
             "type" : "number",
             "example" : 3
+          },
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
           }
         }
       },
@@ -3687,13 +3959,6 @@
           "description" : {
             "type" : "string",
             "example" : "A Group description"
-          },
-          "members" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "some_user_pseudo"
-            }
           }
         }
       },
@@ -3721,12 +3986,15 @@
             "type" : "integer",
             "format" : "int32",
             "example" : 3
+          },
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
           }
         }
       },
       "GroupMemberRole" : {
         "type" : "string",
-        "enum" : [ "Admin", "Spectator" ]
+        "enum" : [ "admin", "spectator", "actor", "outsider" ]
       },
       "GroupMember" : {
         "type" : "object",
@@ -3737,6 +4005,9 @@
           },
           "role" : {
             "$ref" : "#/components/schemas/GroupMemberRole"
+          },
+          "confirmed" : {
+            "type" : "boolean"
           }
         }
       },
@@ -3768,6 +4039,9 @@
           "name" : {
             "type" : "string",
             "example" : "amazing_calendar"
+          },
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
           }
         }
       },
@@ -3799,6 +4073,18 @@
           "end_time" : {
             "type" : "string",
             "example" : "2012-12-12T12:12:12"
+          },
+          "type" : {
+            "type" : "string",
+            "example" : "party"
+          },
+          "visibility" : {
+            "type" : "string",
+            "example" : "public"
+          },
+          "status" : {
+            "type" : "string",
+            "example" : "going"
           }
         }
       },
@@ -3870,12 +4156,9 @@
             "type" : "string",
             "example" : "2012-12-12T12:12:12"
           },
-          "attendees" : {
-            "type" : "array",
-            "example" : [ "george", "marc", "alif" ],
-            "items" : {
-              "type" : "string"
-            }
+          "status" : {
+            "type" : "string",
+            "example" : "invited"
           }
         }
       },
@@ -3918,6 +4201,10 @@
           "pseudo" : {
             "type" : "string",
             "example" : "alif"
+          },
+          "status" : {
+            "type" : "string",
+            "example" : "invited"
           }
         }
       },
@@ -4097,6 +4384,9 @@
           "name" : {
             "type" : "string",
             "example" : "amazing_calendar"
+          },
+          "role" : {
+            "$ref" : "#/components/schemas/GroupMemberRole"
           }
         }
       }

@@ -5,6 +5,8 @@ import { Calendar } from "../../model/entity/Calendar";
 import { EventVisibility } from "../../utils/types/EventVisibility";
 
 import axios from "axios";
+import { CalendarRole } from "../../utils/types/CalendarRole";
+import { createCalendarOwner } from "../../model/entity/CalendarsToOwners";
 
 export async function importFacebookEvents(conn: Connection, user: User) {
     if (user.facebookProviderPayload === null) {
@@ -23,7 +25,12 @@ export async function importFacebookEvents(conn: Connection, user: User) {
     const cal_id: number = user.facebookProviderPayload.facebookCalendarId;
     const calendar = (cal_id)
         ? await Calendar.findCalendarById(conn, cal_id)
-        : await Calendar.createCalendar(conn, new Calendar('Facebook'), [user]);
+        : await Calendar.createCalendar(
+            conn,
+            new Calendar('Facebook'),
+            [createCalendarOwner(user)],
+            user.id
+        );
 
     const events_promise = [];
 

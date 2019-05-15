@@ -10,10 +10,10 @@ export class Group {
     id: number;
 
     @OneToOne(type => Calendar)
-    @JoinColumn({name: "calendar_id"})
+    @JoinColumn({ name: "calendar_id" })
     calendar: Calendar;
 
-    @Column("bytea", {nullable: true})
+    @Column("bytea", { nullable: true })
     image?: Buffer;
 
     @Column()
@@ -41,7 +41,7 @@ export class Group {
         return conn.getRepository(Group)
             .createQueryBuilder("group")
             .innerJoinAndSelect("group.calendar", "calendar")
-            .where({id: groupId})
+            .where({ id: groupId })
             .getOne();
     }
 
@@ -58,7 +58,7 @@ export class Group {
         return conn.getRepository(Group)
             .createQueryBuilder("group")
             .innerJoinAndSelect("group.calendar", "calendar")
-            .where("calendar_id = :calendar_id", {calendar_id: calendarId})
+            .where("calendar_id = :calendar_id", { calendar_id: calendarId })
             .getOne();
     }
 
@@ -75,8 +75,7 @@ export class Group {
         return conn.getRepository(Group)
             .createQueryBuilder()
             .delete()
-            .where({id: groupId})
+            .where({ id: groupId })
             .execute();
     }
-
 }

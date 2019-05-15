@@ -5,11 +5,13 @@ import { ApiException } from "../../utils/apiException";
 import { getRequestingUser } from "../middleware/loggedOnly";
 import { DbConnection } from "../../utils/DbConnection";
 import { Calendar } from "../../model/entity/Calendar";
-import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { CalendarsToOwners, createCalendarOwner } from "../../model/entity/CalendarsToOwners";
 import { CalendarView } from "../views/CalendarView";
 import { Event } from "../../model/entity/Event";
 import { EventView } from "../views/EventView";
 import { isEventVisibilityValid } from "../../utils/types/EventVisibility";
+import { CalendarRole } from "../../utils/types/CalendarRole";
+import { EventStatus } from "../../utils/types/EventStatus";
 
 
 //
@@ -29,11 +31,16 @@ export async function createCalendar(req: Request, res: Response) {
     if (!calendar.isValid()) {
         throw new ApiException(400, "Invalid fields in Calendar");
     }
-    const createdCalendar = await Calendar.createCalendar(conn, calendar, [requestingUser]);
+    const createdCalendar = await Calendar.createCalendar(
+        conn,
+        calendar,
+        [createCalendarOwner(requestingUser)],
+        requestingUser.id
+    );
 
     return res.status(201).json({
         message: "Calendar created",
-        calendar: CalendarView.formatCalendar(createdCalendar)
+        calendar: CalendarView.formatCalendarWithRole(createdCalendar, requestingUser)
     });
 }
 
@@ -49,13 +56,13 @@ export async function getCalendarInfo(req: Request, res: Response) {
     const connection = await DbConnection.getConnection();
     const calendar = await Calendar.getCalendarWithOwners(connection, id);
 
-    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+    if (!calendar || !calendar.userCanViewEvents(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
     return res.status(200).json({
         message: "OK",
-        calendar: CalendarView.formatCalendar(calendar)
+        calendar: CalendarView.formatCalendarWithRole(calendar, requestingUser)
     });
 }
 
@@ -76,7 +83,7 @@ export async function editCalendar(req: Request, res: Response) {
 
     // Get the Calendar and make sure the requesting User can edit it
     const calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
-    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+    if (!calendar || !calendar.isCalendarAdmin(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
@@ -88,7 +95,7 @@ export async function editCalendar(req: Request, res: Response) {
 
     return res.status(200).json({
         message: "Calendar successfully edited",
-        calendar: CalendarView.formatCalendar(updatedCalendar)
+        calendar: CalendarView.formatCalendarWithRole(updatedCalendar, requestingUser)
     });
 }
 
@@ -105,7 +112,7 @@ export async function deleteCalendar(req: Request, res: Response) {
 
     // Check if the requesting User can delete this Calendar
     const calendarToOwner = await CalendarsToOwners.findCalendarRelation(conn, calendar_id, requestingUser.id);
-    if (!calendarToOwner) {
+    if (!calendarToOwner || calendarToOwner.role !== CalendarRole.Admin) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
@@ -141,7 +148,7 @@ export async function createEvent(req: Request, res: Response) {
     // Make sure the requesting User can create an Event in this Calendar
     const calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
     if (!calendar
-        || !calendar.isCalendarOwner(requestingUser)) {
+        || !calendar.userCanCreateEvents(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
@@ -153,17 +160,27 @@ export async function createEvent(req: Request, res: Response) {
 
     // Add event in calendar's timeSlotPreferences
     calendar.addTimeslotPreference(event, requestingUser.timezone);
+
+    // Invite Calendar members
     conn.manager.save(calendar);
 
     const savedEvent = await conn.manager.save(event);
 
-    // Add the requesting User in the attendees list
-    const eventToAttendee = new EventsToAttendees(savedEvent.id, requestingUser.id);
-    await conn.manager.save(eventToAttendee);
+    // Invite calendar members
+    const calendarMembersInvites = calendar.owners
+        .filter(m => m.role !== CalendarRole.Outsider)
+        .map(m => {
+            const status = m.owner_id === requestingUser.id
+                ? EventStatus.Going
+                : EventStatus.Invited;
+            return new EventsToAttendees(savedEvent.id, m.owner_id, status)
+        });
+
+    await conn.manager.save(calendarMembersInvites);
 
     return res.status(201).json({
         message: "Event created",
-        event: EventView.formatEvent(savedEvent),
+        event: EventView.formatEventWithStatus(savedEvent, EventStatus.Going),
     });
 }
 
@@ -179,13 +196,29 @@ export async function getCalendarEvents(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
 
     // Make sure the requesting User can access this Calendar
-    let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
-    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+    const calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
+    if (!calendar || !calendar.userCanViewEvents(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
+    }
+
+    // Get user status for each events
+    const eventPromises = calendar.events.map(async e => {
+        const eventRelation = await EventsToAttendees.getRelation(conn, e.id, requestingUser.id);
+        e.calendar = calendar;
+        return { event: e, relation: eventRelation };
+    });
+    let eventsWithRoles = await Promise.all(eventPromises);
+
+    // Filter only accessible events when role is "Outsider"
+    const userMember: CalendarsToOwners = calendar.owners.find(m => m.owner_id === requestingUser.id);
+    if (userMember.role === CalendarRole.Outsider) {
+        eventsWithRoles = eventsWithRoles.filter(e => e.relation !== null);
     }
 
     return res.status(200).json({
         message: "OK",
-        events: CalendarView.formatEventList(calendar.events),
+        events: eventsWithRoles.map(eta =>
+            EventView.formatEventWithStatus(eta.event, eta.relation.status)
+        )
     });
 }

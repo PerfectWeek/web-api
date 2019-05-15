@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import * as Jwt              from "jsonwebtoken";
-import * as B64              from "base64-img";
-import * as Fs               from "fs";
+import * as Jwt from "jsonwebtoken";
+import * as B64 from "base64-img";
+import * as Fs from "fs";
 
 import { User } from "../../model/entity/User";
 import { ApiException } from "../../utils/apiException";
@@ -14,11 +14,14 @@ import { PendingUser } from "../../model/entity/PendingUser";
 import { getReqUrl } from "../../utils/getReqUrl";
 import { CalendarsToOwnersView } from "../views/CalendarsToOwnersView";
 import { Calendar } from "../../model/entity/Calendar";
-import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { CalendarsToOwners, createCalendarOwner } from "../../model/entity/CalendarsToOwners";
+import { emptyGooglePayloadToken, emptyFacebookPayloadToken } from "../../utils/emptyProviderPayload";
+import { CalendarRole } from "../../utils/types/CalendarRole";
 import { importGoogleCalendars } from "../services/GoogleProviderService";
 import { importFacebookEvents } from "../services/FacebookProviderService";
-import { emptyGooglePayloadToken, emptyFacebookPayloadToken } from "../../utils/emptyProviderPayload";
+
 import { image as DEFAULT_IMAGE } from "../../../resources/images/user_default.json";
+
 
 const MAX_FILE_SIZE: number = 2000000;
 
@@ -103,7 +106,9 @@ export async function confirmUserEmail(req: Request, res: Response) {
     // Create a default Calendar for the new User
     const calendar = new Calendar("Main Calendar");
     const createdCalendar = await conn.manager.save(calendar);
-    const calendarsToOwners = new CalendarsToOwners(createdCalendar.id, user.id);
+    const calendarsToOwners = new CalendarsToOwners(
+        createdCalendar.id, user.id, CalendarRole.Admin, true
+    );
     await conn.manager.save(calendarsToOwners);
 
     return res.status(201).json({
@@ -381,7 +386,7 @@ export async function getUserGroups(req: Request, res: Response) {
 
     const conn = await DbConnection.getConnection();
 
-    const groups = await User.getAllGroups(conn, user.id);
+    const groups = await User.getAllConfirmedGroups(conn, user.id);
 
     return res.status(200).json({
         message: "OK",
@@ -413,14 +418,14 @@ export async function getUserCalendars(req: Request, res: Response) {
     } catch(e) {}
 
     importedCalendars.forEach(async (cal) => {
-        await Calendar.createCalendar(conn, cal, [requestingUser]);
+        await Calendar.createCalendar(conn, cal, [createCalendarOwner(requestingUser)], requestingUser.id);
         const eventsInsertions = cal.events.map((e: Event) => {return conn.manager.save(e)});
         await Promise.all(eventsInsertions);
     })
 
     await conn.manager.save(requestingUser);
 
-    const calendars = await User.getAllCalendars(conn, requestingUser.id);
+    const calendars = await User.getAllConfirmedCalendars(conn, requestingUser.id);
 
     return res.status(200).json({
         message: "OK",

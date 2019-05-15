@@ -274,6 +274,18 @@ export class User {
             .getMany();
     }
 
+    static async getAllConfirmedCalendars(
+        conn: Connection,
+        userId: number
+    ): Promise<CalendarsToOwners[]> {
+        return conn.getRepository(CalendarsToOwners)
+            .createQueryBuilder("cto")
+            .innerJoinAndMapOne("cto.calendar", "calendars", "calendar", "calendar.id = cto.calendar_id")
+            .where("cto.owner_id = :userId", { userId: userId })
+            .andWhere("cto.confirmed = true")
+            .getMany();
+    }
+
     /**
      * @brief Get all groups for a User
      *
@@ -292,6 +304,19 @@ export class User {
             .innerJoinAndSelect("group.calendar", "calendar")
             .innerJoin("calendars_to_owners", "cto", "cto.calendar_id = calendar.id")
             .where("cto.owner_id = :owner_id", {owner_id: userId})
+            .getMany();
+    }
+
+    static async getAllConfirmedGroups(
+        conn: Connection,
+        userId: number
+    ): Promise<Group[]> {
+        return conn.getRepository(Group)
+            .createQueryBuilder("group")
+            .innerJoinAndSelect("group.calendar", "calendar")
+            .innerJoin("calendars_to_owners", "cto", "cto.calendar_id = calendar.id")
+            .where("cto.owner_id = :owner_id", { owner_id: userId })
+            .andWhere("cto.confirmed = true")
             .getMany();
     }
 }

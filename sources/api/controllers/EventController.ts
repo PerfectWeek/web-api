@@ -1,21 +1,25 @@
 import { Request, Response } from "express";
-import { Connection }        from "typeorm";
-import * as B64              from "base64-img";
-import * as Fs               from "fs";
+import { Connection } from "typeorm";
+import * as B64 from "base64-img";
+import * as Fs from "fs";
 
-import { EventsToAttendees }      from "../../model/entity/EventsToAttendees";
-import { getRequestingUser }      from "../middleware/loggedOnly";
-import { Event }                  from "../../model/entity/Event";
-import { DbConnection }           from "../../utils/DbConnection";
-import { Calendar }               from "../../model/entity/Calendar";
-import { User }                   from "../../model/entity/User";
-import { ApiException }           from "../../utils/apiException";
-import { CalendarsToOwners }      from "../../model/entity/CalendarsToOwners";
-import { EventView }              from "../views/EventView";
-import { UserView }               from "../views/UserView";
+import { EventsToAttendees } from "../../model/entity/EventsToAttendees";
+import { getRequestingUser } from "../middleware/loggedOnly";
+import { Event } from "../../model/entity/Event";
+import { DbConnection } from "../../utils/DbConnection";
+import { Calendar } from "../../model/entity/Calendar";
+import { User } from "../../model/entity/User";
+import { ApiException } from "../../utils/apiException";
+import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+import { EventView } from "../views/EventView";
+
 import { image as DEFAULT_IMAGE } from "../../../resources/images/event_default.json";
+import { CalendarRole } from "../../utils/types/CalendarRole";
+import { EventStatus } from "../../utils/types/EventStatus";
+
 
 const MAX_FILE_SIZE: number = 2000000;
+
 
 export async function getEventInfo(req: Request, res: Response) {
     const requestingUser: User = getRequestingUser(req);
@@ -30,17 +34,15 @@ export async function getEventInfo(req: Request, res: Response) {
         throw new ApiException(404, "Event not found");
     }
 
-    const calendar: Calendar = event.calendar;
-
     // Check if requesting user is a member of the calendar
-    if (event.visibility !== "public"
-        && !(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+    const eventAttendee = await EventsToAttendees.getRelation(conn, event.id, requestingUser.id);
+    if (event.visibility !== "public" && !eventAttendee) {
         throw new ApiException(403, "Action not allowed");
     }
 
     return res.status(200).json({
         message: "OK",
-        event: EventView.formatEvent(event)
+        event: EventView.formatEventWithStatus(event, eventAttendee.status)
     });
 }
 
@@ -69,11 +71,10 @@ export async function getEventAttendees(req: Request, res: Response) {
 
     return res.status(200).json({
         message: "OK",
-        attendees: eventWithAttendees.attendees.map(eta => UserView.formatPublicUser(eta.attendee))
+        attendees: eventWithAttendees.attendees.map(EventView.formatAttendee)
     });
 }
 
-// The users are automatically added to members, it will change with roles
 export async function inviteUsersToEvent(req: Request, res: Response) {
     const requestingUser = getRequestingUser(req);
 
@@ -91,25 +92,22 @@ export async function inviteUsersToEvent(req: Request, res: Response) {
         throw new ApiException(403, "Event not accessible");
     }
 
-    // Check if the Event is accessible by the requesting User
-    const userCalendarRelation = await CalendarsToOwners.findCalendarRelation(
-        conn,
-        eventWithAttendees.calendar.id,
-        requestingUser.id
-    );
-    if (!userCalendarRelation) {
+    // Get Calendar
+    const calendar = await Calendar.getCalendarWithOwners(conn, eventWithAttendees.calendar.id);
+    if (!calendar.userCanCreateEvents(requestingUser)) {
         throw new ApiException(403, "Event not accessible");
     }
 
     // Get all Users
     const usersPromises = usersToInvite.map(userPseudo => User.findByPseudo(conn, userPseudo));
     const users = await Promise.all(usersPromises);
+
     const indexNonExistingUser = users.findIndex(u => !u);
     if (indexNonExistingUser !== -1) {
         throw new ApiException(404, `User "${usersToInvite[indexNonExistingUser]}" does not exist`);
     }
 
-    // Check if users to invite aren't already in the list
+    // Make sure users to invite aren't already in the list
     const existingUserIds = new Set(eventWithAttendees.attendees.map(eta => eta.attendee_id));
     const indexUserAlreadyInList = users.findIndex(u => existingUserIds.has(u.id));
     if (indexUserAlreadyInList !== -1) {
@@ -117,16 +115,27 @@ export async function inviteUsersToEvent(req: Request, res: Response) {
     }
 
     // Add the users in the attendees list
-    const newEventsToAttendees = users.map(u => new EventsToAttendees(eventWithAttendees.id, u.id));
+    const newEventsToAttendees = users.map(u => {
+        const eta = new EventsToAttendees(eventWithAttendees.id, u.id, EventStatus.Invited);
+        eta.attendee = u;
+        return eta;
+    });
     await conn.manager.save(newEventsToAttendees);
 
+    // Add external users in calendar as "Outsider"
+    const externalUsers = newEventsToAttendees
+        .filter(eta => calendar.owners.findIndex(o => o.owner_id === eta.attendee_id) === -1)
+        .map(eta => new CalendarsToOwners(calendar.id, eta.attendee_id, CalendarRole.Outsider, true));
+    await conn.manager.save(externalUsers);
+
     const attendees = [
-        ...(eventWithAttendees.attendees.map(eta => eta.attendee)),
-        ...users
+        ...eventWithAttendees.attendees,
+        ...newEventsToAttendees
     ];
+
     return res.status(201).json({
         message: "User(s) successfully invited",
-        attendees: attendees.map(u => UserView.formatPublicUser(u))
+        attendees: attendees.map(EventView.formatAttendee)
     });
 }
 
@@ -156,7 +165,11 @@ export async function editEvent(req: Request, res: Response) {
 
     // Check if requesting user is a member of the calendar
     const calendar: Calendar = event.calendar;
-    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+    const calendarRelation = await CalendarsToOwners
+        .findCalendarRelation(conn, calendar.id, requestingUser.id);
+    if (!calendarRelation
+        || (calendarRelation.role !== CalendarRole.Admin
+            && calendarRelation.role !== CalendarRole.Actor)) {
         throw new ApiException(403, "Action not allowed");
     }
 
@@ -194,7 +207,11 @@ export async function uploadEventImage(req: Request, res: Response) {
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
-    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+    const calendarRelation = await CalendarsToOwners
+        .findCalendarRelation(conn, calendar.id, requestingUser.id);
+    if (!calendarRelation
+        || (calendarRelation.role !== CalendarRole.Admin
+            && calendarRelation.role !== CalendarRole.Actor)) {
         throw new ApiException(403, "Action not allowed");
     }
 
@@ -246,8 +263,9 @@ export async function getEventImage(req: Request, res: Response) {
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
+    const eventRelation = await EventsToAttendees.getRelation(conn, event.id, requestingUser.id);
     if (event.visibility !== "public"
-        && !(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+        && !eventRelation) {
         throw new ApiException(403, "Action not allowed");
     }
 
@@ -255,7 +273,6 @@ export async function getEventImage(req: Request, res: Response) {
         message: "OK",
         image: event.image ? event.image.toString() : DEFAULT_IMAGE
     });
-
 }
 
 export async function deleteEvent(req: Request, res: Response) {
@@ -275,7 +292,11 @@ export async function deleteEvent(req: Request, res: Response) {
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
-    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+    const calendarRelation = await CalendarsToOwners
+        .findCalendarRelation(conn, calendar.id, requestingUser.id);
+    if (!calendarRelation
+        || (calendarRelation.role !== CalendarRole.Admin
+            && calendarRelation.role !== CalendarRole.Actor)) {
         throw new ApiException(403, "Action not allowed");
     }
 

@@ -1,7 +1,7 @@
 {
     "info": {
-        "_postman_id": "e9ac018d-7e39-415f-aa0f-c0bf039dc0e9",
-        "name": "PW",
+        "_postman_id": "744f0a16-98c1-4778-a2c3-d5c6e54774de",
+        "name": "PW copy",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -751,7 +751,10 @@
                                 "value": "application/x-www-form-urlencoded"
                             }
                         ],
-                        "body": {},
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
                         "url": {
                             "raw": "http://localhost:{{TEST_API_PORT}}/users/mortimr/image",
                             "protocol": "http",
@@ -2396,29 +2399,13 @@
                             {
                                 "key": "Content-Type",
                                 "name": "Content-Type",
-                                "value": "application/x-www-form-urlencoded",
+                                "value": "application/json",
                                 "type": "text"
                             }
                         ],
                         "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": [
-                                {
-                                    "key": "name",
-                                    "value": "{{GROUP_BENOIT_PATRICK_NAME}}",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "description",
-                                    "value": "Group PB description",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "members[0]",
-                                    "value": "{{PATRICK_PSEUDO}}",
-                                    "type": "text"
-                                }
-                            ]
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"{{GROUP_BENOIT_PATRICK_NAME}}\",\n\t\"description\": \"Group PB description\",\n\t\"members\": [\n\t\t{\n\t\t\t\"name\": \"{{PATRICK_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t}\n\t]\n}"
                         },
                         "url": {
                             "raw": "http://localhost:{{TEST_API_PORT}}/groups",
@@ -2429,6 +2416,60 @@
                             "port": "{{TEST_API_PORT}}",
                             "path": [
                                 "groups"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Group PB - Patrick accept invitation",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+                                "exec": [
+                                    ""
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{PATRICK_TOKEN}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"{{GROUP_BENOIT_PATRICK_NAME}}\",\n\t\"description\": \"Group PB description\",\n\t\"members\": [\n\t\t{\n\t\t\t\"name\": \"{{PATRICK_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t}\n\t]\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:{{TEST_API_PORT}}/group-invites/{{GROUP_PB_ID}}/accept-invite",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "{{TEST_API_PORT}}",
+                            "path": [
+                                "group-invites",
+                                "{{GROUP_PB_ID}}",
+                                "accept-invite"
                             ]
                         }
                     },
@@ -2888,39 +2929,13 @@
                             {
                                 "key": "Content-Type",
                                 "name": "Content-Type",
-                                "value": "application/x-www-form-urlencoded",
+                                "value": "application/json",
                                 "type": "text"
                             }
                         ],
                         "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": [
-                                {
-                                    "key": "name",
-                                    "value": "{{GROUP_BENOIT_PATRICK_INTRUDER_NAME}}",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "members[0]",
-                                    "value": "{{PATRICK_PSEUDO}}",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "members[1]",
-                                    "value": "{{BENOIT_PSEUDO}}",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "members[2]",
-                                    "value": "{{INTRUDER_PSEUDO}}",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "description",
-                                    "value": "Nice group PBI",
-                                    "type": "text"
-                                }
-                            ]
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"{{GROUP_BENOIT_PATRICK_INTRUDER_NAME}}\",\n\t\"description\": \"Nice group PBI\",\n\t\"members\": [\n\t\t{\n\t\t\t\"name\": \"{{PATRICK_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t},\n\t\t{\n\t\t\t\"name\": \"{{BENOIT_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t},\n\t\t{\n\t\t\t\"name\": \"{{INTRUDER_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t}\n\t]\n}"
                         },
                         "url": {
                             "raw": "http://localhost:{{TEST_API_PORT}}/groups",
@@ -2931,6 +2946,114 @@
                             "port": "{{TEST_API_PORT}}",
                             "path": [
                                 "groups"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Group PBI - Patrick accept invitation",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+                                "exec": [
+                                    ""
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{PATRICK_TOKEN}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"{{GROUP_BENOIT_PATRICK_NAME}}\",\n\t\"description\": \"Group PB description\",\n\t\"members\": [\n\t\t{\n\t\t\t\"name\": \"{{PATRICK_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t}\n\t]\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:{{TEST_API_PORT}}/group-invites/{{GROUP_PBI_ID}}/accept-invite",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "{{TEST_API_PORT}}",
+                            "path": [
+                                "group-invites",
+                                "{{GROUP_PBI_ID}}",
+                                "accept-invite"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Group PBI - Intruder accept invitation",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "f3e7aa7e-a174-42b8-af8d-271aba2d349e",
+                                "exec": [
+                                    ""
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{INTRUDER_TOKEN}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "type": "text",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"{{GROUP_BENOIT_PATRICK_NAME}}\",\n\t\"description\": \"Group PB description\",\n\t\"members\": [\n\t\t{\n\t\t\t\"name\": \"{{PATRICK_PSEUDO}}\",\n\t\t\t\"role\": \"admin\"\n\t\t}\n\t]\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:{{TEST_API_PORT}}/group-invites/{{GROUP_PBI_ID}}/accept-invite",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "{{TEST_API_PORT}}",
+                            "path": [
+                                "group-invites",
+                                "{{GROUP_PBI_ID}}",
+                                "accept-invite"
                             ]
                         }
                     },
@@ -5536,7 +5659,10 @@
                                 "value": "application/x-www-form-urlencoded"
                             }
                         ],
-                        "body": {},
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
                         "url": {
                             "raw": "http://localhost:{{TEST_API_PORT}}/events/{{MORTIMER_EVENT_ID}}/image",
                             "protocol": "http",

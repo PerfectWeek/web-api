@@ -839,6 +839,20 @@ paths:
         - User
       summary: Get all Calendars a User owns
       operationId: getUserCalendars
+      description: >
+        Retrieve all calendars of a User with its role in each.
+
+
+        Role can be one of the following:
+
+        - `admin` # Full access
+
+        - `actor` # Can create new events
+
+        - `spectator` # Can only view events
+
+        - `outsider` # Can only view events it is invited to
+
       security:
         - BearerAuth: []
       parameters:
@@ -904,9 +918,23 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
-              $ref: '#/components/schemas/GroupCredentials'
+              allOf:
+                - $ref: '#/components/schemas/GroupCredentials'
+                - type: object
+                  properties:
+                    members:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: user_2
+                          role:
+                            type: string
+                            example: spectator
       responses:
         '201':
           description: Group created
@@ -916,9 +944,18 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Group created
+                    example: OK
                   group:
-                    $ref: '#/components/schemas/GroupInfo'
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/GroupInfo'
+                    - type: object
+                      properties:
+                        members:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/GroupMember'
+
         '400':
           description: Invalid Group
           content:
@@ -1092,75 +1129,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthorized'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternalServerError'
-
-  /groups/{group-id}/add-members:
-    post:
-      tags:
-        - Group
-      summary: Add new Users to a Group
-      operationId: addMembersToGroup
-      description: >
-        Add new Users to a Group and returns the new list of members
-      security:
-        - BearerAuth: []
-      parameters:
-        - in: path
-          name: group-id
-          required: true
-          description: The Group id
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              properties:
-                users:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        '200':
-          description: Users added
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: OK
-                  members:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupMember'
-        '401':
-          description: Authentication failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticationFailed'
-        '403':
-          description: Action not allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Unauthorized'
-        '404':
-          description: User not Found
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: User not found
         '500':
           description: Internal server error
           content:
@@ -1350,6 +1318,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /groups/{group-id}/add-members:
+    post:
+      tags:
+        - Group
+      summary: Add new Users to a Group
+      operationId: addMembersToGroup
+      description: >
+        Add new Users to a Group and returns the new list of members
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: user_2
+                      role:
+                        type: string
+                        example: spectator
+      responses:
+        '200':
+          description: Users added
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  group:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/GroupInfo'
+                    - type: object
+                      properties:
+                        members:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/GroupMember'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: User not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
   /groups/{group-id}/upload-image:
     post:
       tags:
@@ -1452,6 +1502,144 @@ paths:
                 $ref: '#/components/schemas/AuthenticationFailed'
         '403':
           description: Action not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  #
+  # GroupInvites
+  #
+  /group-invites:
+    get:
+      tags:
+        - GroupInvites
+      summary: Get all pending Group invitations
+      operationId: getGroupInvites
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  pending_invites:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                          example: 42
+                        name:
+                          type: string
+                          example: "Super group"
+                        role:
+                          $ref: '#/components/schemas/GroupMemberRole'
+                        confirmed:
+                          type: boolean
+                          example: false
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /group-invites/{group-id}/accept-invite:
+    post:
+      tags:
+        - GroupInvites
+      summary: Accept a Group invitation
+      operationId: groupAcceptInvite
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invitation accepted
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /group-invites/{group-id}/decline-invite:
+    post:
+      tags:
+        - GroupInvites
+      summary: Decline a Group invitation
+      operationId: groupDeclineInvite
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: group-id
+          required: true
+          description: The Group id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invitation declined
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '403':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -2202,7 +2390,13 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InviteUser'
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: string
+                    example: alif
+
       responses:
         '200':
           description: Success
@@ -2491,6 +2685,8 @@ components:
         nb_members:
           type: number
           example: 3
+        role:
+          $ref: '#/components/schemas/GroupMemberRole'
 
     GroupEdit:
       type: object
@@ -2511,11 +2707,6 @@ components:
         description:
           type: string
           example: A Group description
-        members:
-          type: array
-          items:
-            type: string
-            example: some_user_pseudo
 
     GroupInfo:
       type: object
@@ -2535,12 +2726,16 @@ components:
         nb_members:
           type: integer
           example: 3
+        role:
+          $ref: '#/components/schemas/GroupMemberRole'
 
     GroupMemberRole:
       type: string
       enum:
-        - Admin
-        - Spectator
+        - admin
+        - spectator
+        - actor
+        - outsider
 
     GroupMember:
       type: object
@@ -2550,6 +2745,10 @@ components:
           example: amazing_user
         role:
           $ref: '#/components/schemas/GroupMemberRole'
+        confirmed:
+          type: boolean
+          example: false
+
 
     CalendarRecap:
       type: object
@@ -2563,6 +2762,8 @@ components:
             name:
               type: string
               example: amazing_calendar
+            role:
+              $ref: '#/components/schemas/GroupMemberRole'
 
     CalendarCredentials:
       type: object
@@ -2580,6 +2781,8 @@ components:
         name:
           type: string
           example: amazing_calendar
+        role:
+          $ref: '#/components/schemas/GroupMemberRole'
 
     CalendarEdit:
       type: object
@@ -2603,6 +2806,15 @@ components:
         end_time:
           type: string
           example: "2012-12-12T12:12:12"
+        type:
+          type: string
+          example: party
+        visibility:
+          type: string
+          example: public
+        status:
+          type: string
+          example: going
 
     SlotInfo:
       type: object
@@ -2656,11 +2868,9 @@ components:
         end_time:
           type: string
           example: "2012-12-12T12:12:12"
-        attendees:
-          type: array
-          items:
-            type: string
-          example: [george, marc, alif]
+        status:
+          type: string
+          example: invited
 
     EventEdit:
       type: object
@@ -2693,6 +2903,9 @@ components:
         pseudo:
           type: string
           example: alif
+        status:
+          type: string
+          example: invited
 
     InviteUser:
       type: array

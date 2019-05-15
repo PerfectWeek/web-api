@@ -33,7 +33,7 @@ export async function findBestSlots(req: Request, res: Response) {
 
     // Make sure the requesting User can access this Calendar
     let calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
-    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+    if (!calendar || !calendar.userCanCreateEvents(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
     }
 
@@ -69,7 +69,7 @@ export async function getEventSuggestions(req: Request, res: Response) {
 
     // Make sure the requesting User can access this Calendar
     const calendar = await Calendar.getCalendarWithOwners(conn, calendar_id);
-    if (!calendar || !calendar.isCalendarOwner(requestingUser)) {
+    if (!calendar || !calendar.userCanCreateEvents(requestingUser)) {
         throw new ApiException(403, "Calendar not accessible");
     }
 

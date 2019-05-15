@@ -1,15 +1,25 @@
 import { CalendarsToOwners } from "../../model/entity/CalendarsToOwners";
+
 import { CalendarView } from "./CalendarView";
 
 export class CalendarsToOwnersView {
 
-    public static formatCalendarsToOwnersList(calendars: CalendarsToOwners[]): any {
-        return calendars.map(this.formatCalendarsToOwners);
+    public static formatCalendarsToOwnersList(ctos: CalendarsToOwners[]): any {
+        return ctos.map(this.formatCalendarsToOwners);
     }
 
-    static formatCalendarsToOwners(calendar: CalendarsToOwners): any {
+    static formatCalendarsToOwners(cto: CalendarsToOwners): any {
         return {
-            calendar: CalendarView.formatCalendar(calendar.calendar)
-        }
+            ...CalendarView.formatCalendar(cto.calendar),
+            role: cto.role
+        };
+    }
+
+    static formatPendingInvite(cto: CalendarsToOwners): any {
+        return {
+            ...CalendarView.formatCalendar(cto.calendar),
+            role: cto.role,
+            confirmed: cto.confirmed
+        };
     }
 }

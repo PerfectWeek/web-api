@@ -47,8 +47,17 @@ export class Event {
     image?: Buffer;
 
 
-    public constructor(name: string, description: string, location: string, type: string, visibility: EventVisibility,
-                        calendar: Calendar, startTime: Date, endTime: Date, image?: Buffer) {
+    public constructor(
+        name: string,
+        description: string,
+        location: string,
+        type: string,
+        visibility: EventVisibility,
+        calendar: Calendar,
+        startTime: Date,
+        endTime: Date,
+        image?: Buffer
+    ) {
         this.name = name;
         this.description = description;
         this.location = location;

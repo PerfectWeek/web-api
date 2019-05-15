@@ -1,12 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Connection } from "typeorm";
-import { Event }                                                         from "./Event"
-import { CalendarsToOwners }                                             from "./CalendarsToOwners";
-import { EventsToAttendees }                                             from "./EventsToAttendees";
-import { User }                                                          from "./User";
-import { Group }                                                         from "./Group";
+import { Event } from "./Event"
+import { CalendarsToOwners } from "./CalendarsToOwners";
+import { EventsToAttendees } from "./EventsToAttendees";
+import { User } from "./User";
+import { Group } from "./Group";
 
-import { baseTimeslotPreferences, TimeslotPreferences }                  from "../../utils/baseTimeslotPreferences";
-import { ApiException }                                                  from "../../utils/apiException";
+import { baseTimeslotPreferences, TimeslotPreferences } from "../../utils/baseTimeslotPreferences";
+import { ApiException } from "../../utils/apiException";
+import { CalendarRole } from "../../utils/types/CalendarRole";
 
 @Entity("calendars")
 export class Calendar {
@@ -75,18 +76,57 @@ export class Calendar {
             this.timeslotPreferences[event.type][iter.getUTCDay()][iter.getUTCHours()] += 1;
             iter.setTime(iter.getTime() + 3600*1000);
         }
-
     }
+
     /**
-     * @brief Check if User owns the Calendar
+     * @brief Check if User is admin
      *
      * @param user  The User to look for
      *
-     * @return true is the User owns this Calendar
+     * @return true is the User is admin in this Calendar
      * @return false otherwise
      */
-    public isCalendarOwner(user: User) {
-        return this.owners.findIndex(cto => cto.owner_id === user.id) !== -1;
+    public isCalendarAdmin(user: User) {
+        const userIdx = this.owners.findIndex(cto => cto.owner_id === user.id);
+        const cto = this.owners[userIdx];
+        return userIdx !== -1
+            && cto.confirmed
+            && cto.role === CalendarRole.Admin;
+    }
+
+    /**
+     * @brief Check if User can edit the Calendar
+     *
+     * @param user  The User to look for
+     *
+     * @return true is the User can
+     * @return false otherwise
+     */
+    public userCanCreateEvents(user: User) {
+        const userIdx = this.owners.findIndex(cto => cto.owner_id === user.id);
+        if (userIdx === -1) {
+            return false;
+        }
+        const confirmed = this.owners[userIdx].confirmed;
+        const role = this.owners[userIdx].role;
+        return confirmed
+            && (role === CalendarRole.Admin || role === CalendarRole.Actor);
+    }
+
+    /**
+     * @brief Check if User can view the Calendar
+     *
+     * @param user  The User to look for
+     *
+     * @return true is the User can
+     * @return false otherwise
+     */
+    public userCanViewEvents(user: User) {
+        const userIdx = this.owners.findIndex(cto => cto.owner_id === user.id);
+        if (userIdx === -1) {
+            return false;
+        }
+        return this.owners[userIdx].confirmed;
     }
 
     /**
@@ -101,14 +141,20 @@ export class Calendar {
     public static async createCalendar(
         conn: Connection,
         calendar: Calendar,
-        owners: User[]
+        owners: {user: User, role: CalendarRole}[],
+        creatorId: number
     ): Promise<Calendar> {
         const calendarRepository = conn.getRepository(Calendar);
         const calendarsToOwnersRepository = conn.getRepository(CalendarsToOwners);
 
         const createdCalendar = await calendarRepository.save(calendar);
 
-        const calendarsToOwners = owners.map(owner => new CalendarsToOwners(createdCalendar.id, owner.id));
+        const calendarsToOwners = owners.map(owner => {
+            const confirmedMember: boolean = owner.user.id === creatorId;
+            const cto = new CalendarsToOwners(createdCalendar.id, owner.user.id, owner.role, confirmedMember);
+            cto.owner = owner.user;
+            return cto;
+        });
         createdCalendar.owners = await calendarsToOwnersRepository.save(calendarsToOwners);
         createdCalendar.nbOwners = calendar.owners.length;
 
@@ -242,16 +288,18 @@ export class Calendar {
     static async addUsers(
         conn: Connection,
         calendarId: number,
-        users: User[]
+        users: {user: User, role: CalendarRole}[]
     ): Promise<any> {
         await conn.transaction(async entityManager => {
             // Recover User <=> Calendar Relationship Repository
             const calendarsToOwnersRepository = entityManager.getRepository(CalendarsToOwners);
 
-            for (const user of users) {
+            for (const userRole of users) {
 
                 // Create and save new relationship
-                const newCalendarToOwner = new CalendarsToOwners(calendarId, user.id);
+                const newCalendarToOwner = new CalendarsToOwners(
+                    calendarId, userRole.user.id, userRole.role, false
+                );
                 await calendarsToOwnersRepository.save(newCalendarToOwner);
 
             }

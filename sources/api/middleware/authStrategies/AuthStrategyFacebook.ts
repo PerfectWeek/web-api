@@ -7,6 +7,7 @@ import { User } from "../../../model/entity/User";
 import { UserView } from "../../views/UserView";
 import { emptyFacebookPayloadToken } from "../../../utils/emptyProviderPayload";
 import { Calendar } from "../../../model/entity/Calendar";
+import { createCalendarOwner } from "../../../model/entity/CalendarsToOwners";
 
 
 type Params = {
@@ -70,7 +71,12 @@ export const init = (params: Params): void => {
 
                         if (needFirstCalendar) {
                             const firstCalendar = new Calendar("Main calendar");
-                            Calendar.createCalendar(params.conn, firstCalendar, [savedUser]);
+                            Calendar.createCalendar(
+                                params.conn,
+                                firstCalendar,
+                                [createCalendarOwner(savedUser)],
+                                savedUser.id
+                            ).catch(() => {}); // Ignore error
                         }
 
                         res.status(200).json({
