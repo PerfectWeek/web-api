@@ -63,7 +63,7 @@ export async function getEventAttendees(req: Request, res: Response) {
         eventWithAttendees.calendar.id,
         requestingUser.id
     );
-    if (!userCalendarRelation) {
+    if (eventWithAttendees.visibility !== "public" && !userCalendarRelation) {
         throw new ApiException(403, "Event not accessible");
     }
 
@@ -246,7 +246,8 @@ export async function getEventImage(req: Request, res: Response) {
     const calendar: Calendar = event.calendar;
 
     // Check if requesting user is a member of the calendar
-    if (!(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
+    if (event.visibility !== "public"
+        && !(await CalendarsToOwners.findCalendarRelation(conn, calendar.id, requestingUser.id))) {
         throw new ApiException(403, "Action not allowed");
     }
 
