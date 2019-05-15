@@ -2367,12 +2367,19 @@ paths:
           schema:
             type: string
         - in: query
-          name: limit
+          name: page_size
           required: false
-          description: The max number of users to be fetched (must be between 1 and 10)
+          description: The max number of users to be fetched by page (must be between 1 and 20)
           schema:
             type: number
             default: 10
+        - in: query
+          name: page_number
+          required: false
+          description: The page from which to start fetching
+          schema:
+            type: number
+            default: 1
       responses:
         '200':
           description: Success
