@@ -217,8 +217,9 @@ export async function getCalendarEvents(req: Request, res: Response) {
 
     return res.status(200).json({
         message: "OK",
-        events: eventsWithRoles.map(eta =>
-            EventView.formatEventWithStatus(eta.event, eta.relation.status)
-        )
+        events: eventsWithRoles.map(eta => {
+            const status = eta.relation ? eta.relation.status : EventStatus.Invited;
+            return EventView.formatEventWithStatus(eta.event, status);
+        })
     });
 }
