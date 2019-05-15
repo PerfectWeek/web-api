@@ -5,7 +5,9 @@ import { CalendarView } from "./CalendarView";
 export class CalendarsToOwnersView {
 
     public static formatCalendarsToOwnersList(ctos: CalendarsToOwners[]): any {
-        return ctos.map(this.formatCalendarsToOwners);
+        return ctos.map(cto => ({
+            calendar: this.formatCalendarsToOwners(cto)
+        }));
     }
 
     static formatCalendarsToOwners(cto: CalendarsToOwners): any {
