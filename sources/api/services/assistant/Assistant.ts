@@ -5,20 +5,23 @@ import { TimeslotPreferences } from "../../../utils/baseTimeslotPreferences";
 import { Event } from "../../../model/entity/Event";
 import { User } from "../../../model/entity/User";
 import { EventSuggestion } from "../../../utils/types/EventSuggestion";
+import { EventStatus } from "../../../utils/types/EventStatus";
 
 const MINUTES = 60 * 1000;
 const TRAVEL_TIME = 30;
 
-function slotAvailable(calendar: Calendar, start_time: Date, end_time: Date, travel_time: number): boolean {
+function slotAvailable(user: User, calendar: Calendar, start_time: Date, end_time: Date, travel_time: number): boolean {
     return calendar.events.every((event: Event) => {
-        return (!(start_time.getTime() - travel_time * MINUTES < event.endTime.getTime()
-            && event.startTime.getTime() < end_time.getTime() + travel_time * MINUTES))
+        const idx = event.attendees.findIndex((a) => { return a.attendee_id === user.id && a.status === EventStatus.Going });
+
+        return (idx === -1 || (!(start_time.getTime() - travel_time * MINUTES < event.endTime.getTime()
+            && event.startTime.getTime() < end_time.getTime() + travel_time * MINUTES)))
         })
 }
 
-function slotAvailableAll(calendars: Calendar[], start_time: Date, end_time: Date, travel_time: number): boolean {
+function slotAvailableAll(user: User, calendars: Calendar[], start_time: Date, end_time: Date, travel_time: number): boolean {
     return calendars.every((calendar: Calendar) => {
-        return (slotAvailable(calendar, start_time, end_time, travel_time));
+        return (slotAvailable(user, calendar, start_time, end_time, travel_time));
     })
 }
 
@@ -94,7 +97,7 @@ function normaliseSlots(slots: TimeSlot[], min_score: number, max_score: number)
     });
 }
 
-export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], duration: number,
+export function findBestSlots(user: User, groupCalendar: Calendar, calendars: Calendar[], duration: number,
         min_time: Date, max_time: Date, type: string, timezone: number): Array<TimeSlot> {
     const slots = []
     const stride = 60; // in minutes
@@ -105,7 +108,7 @@ export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], du
 
     while (min_time.getTime() + duration * MINUTES <= max_time.getTime()) {
         const end_time = new Date(min_time.getTime() + duration * MINUTES);
-        if (slotAvailableAll(calendars, min_time, end_time, TRAVEL_TIME)) {
+        if (slotAvailableAll(user, calendars, min_time, end_time, TRAVEL_TIME)) {
 
             const score = getSlotScore(min_time, end_time, type, stride, preferences);
             if (score > max_score) {
@@ -126,10 +129,10 @@ export function findBestSlots(groupCalendar: Calendar, calendars: Calendar[], du
     return normaliseSlots(slots, min_score, max_score).sort((a: TimeSlot, b: TimeSlot) => b.score - a.score);
 }
 
-function filterAttendableEvents(calendars: Calendar[], events: Event[], min_time: Date, max_time: Date): Event[] {
+function filterAttendableEvents(user: User, calendars: Calendar[], events: Event[], min_time: Date, max_time: Date): Event[] {
     return events.filter((e: Event) => {
         return (e.startTime >= min_time && e.endTime <= max_time
-            && slotAvailableAll(calendars, e.startTime, e.endTime, TRAVEL_TIME));
+            && slotAvailableAll(user, calendars, e.startTime, e.endTime, TRAVEL_TIME));
     })
 }
 
@@ -140,7 +143,7 @@ function getSuggestionScore(user: User, event: Event): number {
 export function processEventSuggestions(user: User, calendars: Calendar[], events: Event[],
         min_time: Date, max_time: Date)
         : EventSuggestion[] {
-    const attendableEvents = filterAttendableEvents(calendars, events, min_time, max_time);
+    const attendableEvents = filterAttendableEvents(user, calendars, events, min_time, max_time);
 
     return attendableEvents.map((e: Event) => {
         return ({
