@@ -904,6 +904,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
 
+  /users/{pseudo}/friend-invite:
+    post:
+      tags:
+        - User
+      summary: Send a new friend request
+      operationId: sendFriendRequest
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Request sent
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
   #
   # Group
   #
@@ -2697,6 +2746,252 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+
+
+  #
+  # Friend Invites
+  #
+  /friend-invites:
+    get:
+      tags:
+        - FriendInvites
+      summary: Get all received friend invites
+      operationId: getAllFriendInvite
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  friend_requests:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: received
+                        from_user:
+                          $ref: '#/components/schemas/PublicUserInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /friend-invites/{pseudo}:
+    get:
+      tags:
+        - FriendInvites
+      summary: Get the status of a friend invitation
+      operationId: getSpecificFriendInvite
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      description: >
+        Get the status of the relation between the requesting User and the specified User
+
+
+        Status can be one of the following:
+
+        ```js
+
+        [
+          "sent",
+          "received",
+          "confirmed",
+          "none"
+        ]
+
+        ```
+
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  status:
+                    type: string
+                    example: confirmed
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /friend-invites/{pseudo}/accept:
+    post:
+      tags:
+        - FriendInvites
+      summary: Accept a friend invitation
+      operationId: acceptFriendRequest
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invitation accepted
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /friend-invites/{pseudo}/decline:
+    post:
+      tags:
+        - FriendInvites
+      summary: Decline a friend invitation
+      operationId: declineFriendRequest
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: pseudo
+          required: true
+          description: The User pseudo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Invitation declined
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
+  #
+  # Friends
+  #
+  /friends:
+    get:
+      tags:
+        - Friends
+      summary: Get all confirmed friends
+      operationId: getAllConfirmedFriends
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                  friends:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PublicUserInfo'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationFailed'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 
   #
   # Search
