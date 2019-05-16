@@ -2083,7 +2083,7 @@ paths:
                   message:
                     type: string
                     example: OK
-                  slots:
+                  suggestions:
                     type: array
                     items:
                       $ref: '#/components/schemas/EventSuggestion'
