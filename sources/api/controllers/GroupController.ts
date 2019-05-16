@@ -215,7 +215,7 @@ export async function getMembers(req: Request, res: Response) {
 
     // Check if the Group exists and if the requesting User belongs to it
     const calendarToOwner = await CalendarsToOwners.findGroupRelation(conn, groupId, requestingUser.id);
-    if (!calendarToOwner || calendarToOwner.role === CalendarRole.Outsider) {
+    if (!calendarToOwner) {
         throw new ApiException(403, "Action not allowed");
     }
 
@@ -351,7 +351,7 @@ export async function getGroupImage(req: Request, res: Response) {
     const calendarToOwner: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(
         conn, group.calendar.id, requestingUser.id
     );
-    if (!calendarToOwner || calendarToOwner.role === CalendarRole.Outsider) {
+    if (!calendarToOwner) {
         throw new ApiException(403, "Group not accessible");
     }
 
