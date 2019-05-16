@@ -268,11 +268,15 @@ export async function getEventImage(req: Request, res: Response) {
         throw new ApiException(404, "Event not found");
     }
 
-    // Check if requesting user is a member of the calendar
-    const eventRelation = await EventsToAttendees.getRelation(conn, event.id, requestingUser.id);
-    if (event.visibility !== "public"
-        && !eventRelation) {
-        throw new ApiException(403, "Action not allowed");
+
+    // Check if the Event is accessible by the requesting User
+    const userCalendarRelation = await CalendarsToOwners.findCalendarRelation(
+        conn,
+        event.calendar.id,
+        requestingUser.id
+    );
+    if (event.visibility !== "public" && !userCalendarRelation) {
+        throw new ApiException(403, "Event not accessible");
     }
 
     return res.status(200).json({
