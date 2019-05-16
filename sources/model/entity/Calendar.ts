@@ -176,7 +176,8 @@ export class Calendar {
     ): Promise<Calendar> {
         return conn.getRepository(Calendar)
             .createQueryBuilder("calendars")
-            .leftJoinAndSelect("calendars.events", "events")
+            .leftJoinAndMapMany("calendars.events", "events", "events", "calendars.id = events.calendar_id")
+            .leftJoinAndMapMany("events.attendees", "events_to_attendees", "eta", "events.id = eta.event_id")
             .where({ id: calendarId })
             .getOne();
     }

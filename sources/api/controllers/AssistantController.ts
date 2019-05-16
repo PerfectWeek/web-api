@@ -45,7 +45,7 @@ export async function findBestSlots(req: Request, res: Response) {
             calendars.push(cal.calendar);
         }
     }
-    const slots = Assistant.findBestSlots(calendar, calendars, duration, min_time, max_time, type, requestingUser.timezone);
+    const slots = Assistant.findBestSlots(requestingUser, calendar, calendars, duration, min_time, max_time, type, requestingUser.timezone);
 
     return res.status(200).json({
         message: "OK",
