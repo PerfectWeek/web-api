@@ -24,6 +24,18 @@ router.get("/:event_id/image", AsyncHandler(loggedOnly), AsyncHandler(EventContr
 
 router.put("/:event_id", AsyncHandler(loggedOnly), AsyncHandler(EventController.editEvent));
 
+router.put(
+    "/:event_id/status",
+    AsyncHandler(loggedOnly),
+    AsyncHandler(EventController.changeAttendeeStatus)
+);
+
+router.post(
+    "/:event_id/join",
+    AsyncHandler(loggedOnly),
+    AsyncHandler(EventController.joinEvent)
+);
+
 router.delete("/:event_id", AsyncHandler(loggedOnly), AsyncHandler(EventController.deleteEvent));
 
 export default router;

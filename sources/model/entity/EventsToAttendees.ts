@@ -70,4 +70,40 @@ export class EventsToAttendees {
             .andWhere("eta.attendee_id = :user_id", { user_id: userId })
             .getOne();
     }
+
+
+    /**
+     * @brief Fetch pending invites
+     *
+     * @param conn
+     * @param eventId
+     * @param userId
+     */
+    public static async getUserPendingInvites(
+        conn: Connection,
+        userId: number
+    ): Promise<EventsToAttendees[]> {
+        return conn
+            .createQueryBuilder(EventsToAttendees, "eta")
+            .innerJoinAndMapOne("eta.event", Event, "event", "event.id = eta.event_id")
+            .where("eta.attendee_id = :attendee_id", { attendee_id: userId })
+            .andWhere("eta.status = :status", { status: EventStatus.Invited })
+            .getMany()
+    }
+
+
+    public static async updateEventStatus(
+        conn: Connection,
+        eventId: number,
+        userId: number,
+        status: EventStatus
+    ): Promise<any> {
+        return conn
+            .createQueryBuilder()
+            .update(EventsToAttendees)
+            .set({ status: status })
+            .where("event_id = :event_id", { event_id: eventId })
+            .andWhere("attendee_id = :user_id", { user_id: userId })
+            .execute();
+    }
 }

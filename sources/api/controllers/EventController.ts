@@ -15,7 +15,8 @@ import { EventView } from "../views/EventView";
 
 import { image as DEFAULT_IMAGE } from "../../../resources/images/event_default.json";
 import { CalendarRole } from "../../utils/types/CalendarRole";
-import { EventStatus } from "../../utils/types/EventStatus";
+import { EventStatus, eventStatusFromString } from "../../utils/types/EventStatus";
+import { EventsToAttendeesView } from "../views/EventsToAttendeesView";
 
 
 const MAX_FILE_SIZE: number = 2000000;
@@ -267,8 +268,6 @@ export async function getEventImage(req: Request, res: Response) {
         throw new ApiException(404, "Event not found");
     }
 
-    const calendar: Calendar = event.calendar;
-
     // Check if requesting user is a member of the calendar
     const eventRelation = await EventsToAttendees.getRelation(conn, event.id, requestingUser.id);
     if (event.visibility !== "public"
@@ -281,6 +280,123 @@ export async function getEventImage(req: Request, res: Response) {
         image: event.image ? event.image.toString() : DEFAULT_IMAGE
     });
 }
+
+
+export async function getPendingInvites(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    // Retrieve db connection
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Fetch all pending invites
+    const pendingInvites = await EventsToAttendees.getUserPendingInvites(conn, requestingUser.id);
+
+    return res.status(200).json({
+        message: "OK",
+        pending_invites: pendingInvites.map(EventsToAttendeesView.formatPendingInvite)
+    });
+}
+
+
+export async function joinEvent(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    // Retrieve query arguments
+    const eventId: number = req.params.event_id;
+
+    // Retrieve db connection
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Get Event
+    const event = await Event.getEventById(conn, eventId);
+    if (!event) {
+        throw new ApiException(404, "Event not found");
+    }
+
+    // Check if user can change its status for this event
+    const eventRelation = await EventsToAttendees.getRelation(conn, eventId, requestingUser.id);
+    if (eventRelation) {
+        throw new ApiException(400, "Already atending this Event, try updating status instead");
+    }
+
+    await createRelationIfAuthorized(conn, event, requestingUser, EventStatus.Going);
+
+    return res.status(200).json({
+        message: "OK",
+    });
+}
+
+
+export async function changeAttendeeStatus(req: Request, res: Response) {
+    const requestingUser = getRequestingUser(req);
+
+    // Retrieve query arguments
+    const eventId: number = req.params.event_id;
+    const status: string = req.body.status;
+
+    // Check if status is valid
+    const eventStatus = eventStatusFromString(status);
+    if (!eventStatus || eventStatus === EventStatus.Invited) {
+        throw new ApiException(400, "Invalid status");
+    }
+
+    // Retrieve db connection
+    const conn: Connection = await DbConnection.getConnection();
+
+    // Get Event
+    const event = await Event.getEventById(conn, eventId);
+    if (!event) {
+        throw new ApiException(404, "Event not found");
+    }
+
+    // Check if user can change its status for this event
+    const eventRelation = await EventsToAttendees.getRelation(conn, eventId, requestingUser.id);
+    if (eventRelation) {
+        eventRelation.status = eventStatus;
+        await EventsToAttendees.updateEventStatus(conn, eventId, requestingUser.id, eventStatus);
+    }
+    else {
+        await createRelationIfAuthorized(conn, event, requestingUser, eventStatus);
+    }
+
+    return res.status(200).json({
+        message: "Status updated"
+    });
+}
+
+
+async function createRelationIfAuthorized(
+    conn: Connection,
+    event: Event,
+    requestingUser: User,
+    status: EventStatus
+): Promise<any> {
+    // Get role in calendar
+    const cto = await CalendarsToOwners.findCalendarRelation(conn, event.calendar.id, requestingUser.id);
+    if (cto) {
+        if (cto.role === CalendarRole.Outsider && event.visibility !== "public") {
+            throw new ApiException(403, "Event not accessible");
+        }
+
+        // Add to event
+        const newEventRelation = new EventsToAttendees(event.id, requestingUser.id, status);
+        await conn.manager.save(newEventRelation);
+    }
+    else {
+        if (event.visibility !== "public") {
+            throw new ApiException(403, "Event not accessible");
+        }
+
+        // Add to event and mark as "outsider" in calendar
+        const newEventRelation = new EventsToAttendees(event.id, requestingUser.id, status);
+        const newCalendarToOwnerRelation = new CalendarsToOwners(
+            event.calendar.id, requestingUser.id, CalendarRole.Outsider, true
+        );
+        await conn.manager.save(newCalendarToOwnerRelation);
+        await conn.manager.save(newEventRelation);
+    }
+}
+
 
 export async function deleteEvent(req: Request, res: Response) {
 
