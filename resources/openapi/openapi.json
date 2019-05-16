@@ -3592,6 +3592,176 @@
         } ]
       }
     },
+    "/events/{event-id}/status" : {
+      "put" : {
+        "tags" : [ "Event" ],
+        "summary" : "Change User's status regarding an Event",
+        "operationId" : "editEventStatus",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "status" : {
+                    "type" : "string",
+                    "example" : "going"
+                  }
+                }
+              }
+            }
+          },
+          "required" : true,
+          "$ref" : "#/components/requestBodies/inline_object_6"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Status updated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/events/{event-id}/join" : {
+      "post" : {
+        "tags" : [ "Event" ],
+        "summary" : "Change User's status regarding an Event",
+        "operationId" : "joinPublicEvent",
+        "parameters" : [ {
+          "name" : "event-id",
+          "in" : "path",
+          "description" : "The Event id",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "status" : {
+                    "type" : "string",
+                    "example" : "going"
+                  }
+                }
+              }
+            }
+          },
+          "required" : true,
+          "$ref" : "#/components/requestBodies/inline_object_7"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Event joined"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Action not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/events/{event-id}/upload-image" : {
       "post" : {
         "tags" : [ "Event" ],
@@ -3629,7 +3799,7 @@
             }
           },
           "required" : true,
-          "$ref" : "#/components/requestBodies/inline_object_6"
+          "$ref" : "#/components/requestBodies/inline_object_8"
         },
         "responses" : {
           "200" : {
@@ -3750,6 +3920,73 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Unauthorized"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/event-invites" : {
+      "get" : {
+        "tags" : [ "EventInvites" ],
+        "summary" : "Fetch pending Event invitations",
+        "operationId" : "getEventInvites",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "pending_invites" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "id" : {
+                            "type" : "number",
+                            "example" : 42
+                          },
+                          "name" : {
+                            "type" : "string",
+                            "example" : "Super Event"
+                          },
+                          "status" : {
+                            "type" : "string",
+                            "example" : "invited"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
                 }
               }
             }
@@ -4358,6 +4595,24 @@
       "inline_object_6" : {
         "type" : "object",
         "properties" : {
+          "status" : {
+            "type" : "string",
+            "example" : "going"
+          }
+        }
+      },
+      "inline_object_7" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "example" : "going"
+          }
+        }
+      },
+      "inline_object_8" : {
+        "type" : "object",
+        "properties" : {
           "image" : {
             "type" : "string",
             "format" : "binary"
@@ -4412,9 +4667,29 @@
         },
         "required" : true
       },
-      "inline_object_6" : {
+      "inline_object_8" : {
         "content" : {
           "multipart/form-data" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_8"
+            }
+          }
+        },
+        "required" : true
+      },
+      "inline_object_7" : {
+        "content" : {
+          "application/x-www-form-urlencoded" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_object_7"
+            }
+          }
+        },
+        "required" : true
+      },
+      "inline_object_6" : {
+        "content" : {
+          "application/x-www-form-urlencoded" : {
             "schema" : {
               "$ref" : "#/components/schemas/inline_object_6"
             }
