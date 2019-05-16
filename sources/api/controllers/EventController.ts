@@ -322,7 +322,7 @@ export async function joinEvent(req: Request, res: Response) {
     await createRelationIfAuthorized(conn, event, requestingUser, EventStatus.Going);
 
     return res.status(200).json({
-        message: "OK",
+        message: "Event joined"
     });
 }
 
