@@ -443,7 +443,8 @@ export async function kickUserFromGroup(req: Request, res: Response) {
     const calendarToOwner: CalendarsToOwners = await CalendarsToOwners.findCalendarRelation(
         conn, group.calendar.id, requestingUser.id
     );
-    if (!calendarToOwner || calendarToOwner.role !== CalendarRole.Admin) {
+    if (!calendarToOwner
+        || (calendarToOwner.role !== CalendarRole.Admin && requestingUser.pseudo !== userPseudo)) {
         throw new ApiException(403, "Group not accessible");
     }
 
