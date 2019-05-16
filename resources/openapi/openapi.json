@@ -1245,6 +1245,74 @@
         } ]
       }
     },
+    "/users/{pseudo}/friend-invite" : {
+      "post" : {
+        "tags" : [ "User" ],
+        "summary" : "Send a new friend request",
+        "operationId" : "sendFriendRequest",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Request sent",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/groups" : {
       "post" : {
         "tags" : [ "Group" ],
@@ -3049,7 +3117,7 @@
                       "type" : "string",
                       "example" : "OK"
                     },
-                    "slots" : {
+                    "suggestions" : {
                       "type" : "array",
                       "items" : {
                         "$ref" : "#/components/schemas/EventSuggestion"
@@ -4007,6 +4075,345 @@
         } ]
       }
     },
+    "/friend-invites" : {
+      "get" : {
+        "tags" : [ "FriendInvites" ],
+        "summary" : "Get all received friend invites",
+        "operationId" : "getAllFriendInvite",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "friend_requests" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "status" : {
+                            "type" : "string",
+                            "example" : "received"
+                          },
+                          "from_user" : {
+                            "$ref" : "#/components/schemas/PublicUserInfo"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/friend-invites/{pseudo}" : {
+      "get" : {
+        "tags" : [ "FriendInvites" ],
+        "summary" : "Get the status of a friend invitation",
+        "description" : "Get the status of the relation between the requesting User and the specified User\n\nStatus can be one of the following:\n```js\n[\n  \"sent\",\n  \"received\",\n  \"confirmed\",\n  \"none\"\n]\n```\n",
+        "operationId" : "getSpecificFriendInvite",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "status" : {
+                      "type" : "string",
+                      "example" : "confirmed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/friend-invites/{pseudo}/accept" : {
+      "post" : {
+        "tags" : [ "FriendInvites" ],
+        "summary" : "Accept a friend invitation",
+        "operationId" : "acceptFriendRequest",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Invitation accepted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/friend-invites/{pseudo}/decline" : {
+      "post" : {
+        "tags" : [ "FriendInvites" ],
+        "summary" : "Decline a friend invitation",
+        "operationId" : "declineFriendRequest",
+        "parameters" : [ {
+          "name" : "pseudo",
+          "in" : "path",
+          "description" : "The User pseudo",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "Invitation declined"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/friends" : {
+      "get" : {
+        "tags" : [ "Friends" ],
+        "summary" : "Get all confirmed friends",
+        "operationId" : "getAllConfirmedFriends",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "message" : {
+                      "type" : "string",
+                      "example" : "OK"
+                    },
+                    "friends" : {
+                      "type" : "array",
+                      "items" : {
+                        "$ref" : "#/components/schemas/PublicUserInfo"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticationFailed"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/search/users" : {
       "get" : {
         "tags" : [ "Search" ],
@@ -4573,6 +4980,17 @@
             "type" : "string",
             "format" : "binary"
           }
+        }
+      },
+      "inline_response_200_1" : {
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Request sent"
+          }
+        },
+        "example" : {
+          "message" : "Request sent"
         }
       },
       "inline_object_4" : {
