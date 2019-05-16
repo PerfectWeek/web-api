@@ -212,7 +212,7 @@ export async function getCalendarEvents(req: Request, res: Response) {
     // Filter only accessible events when role is "Outsider"
     const userMember: CalendarsToOwners = calendar.owners.find(m => m.owner_id === requestingUser.id);
     if (userMember.role === CalendarRole.Outsider) {
-        eventsWithRoles = eventsWithRoles.filter(e => e.relation !== null);
+        eventsWithRoles = eventsWithRoles.filter(e => !!e.relation);
     }
 
     return res.status(200).json({
