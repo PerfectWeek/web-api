@@ -84,8 +84,9 @@ export class FriendRelation {
     ): Promise<FriendRelation[]> {
         return conn
             .createQueryBuilder(FriendRelation, "fr")
-            .andWhere("requested_id = :requested_id", { requested_id: userId })
             .innerJoinAndMapOne("fr.requestingUser", "users", "user", "fr.requesting_id = user.id")
+            .where("requested_id = :requested_id", { requested_id: userId })
+            .andWhere("fr.confirmed = false")
             .getMany();
     }
 }
