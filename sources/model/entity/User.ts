@@ -127,7 +127,7 @@ export class User {
 
         return userRepository
             .createQueryBuilder("user")
-            .where("user.pseudo LIKE :q", {q: '%' + q + '%'})
+            .where("lower(user.pseudo) like :q", {q: '%' + q.toLowerCase() + '%'})
             .limit(page_size)
             .offset(page_size * (page_number - 1))
             .getMany();
