@@ -508,7 +508,7 @@ export async function groupInviteAccept(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
 
     // Retrieve relation
-    const relation = await CalendarsToOwners.findGroupRelation(conn, groupId, requestingUser.id);
+    const relation = await CalendarsToOwners.findCalendarRelation(conn, groupId, requestingUser.id);
 
     // Make sure that the relation is valid
     if (!relation) {
@@ -541,7 +541,7 @@ export async function groupInviteDecline(req: Request, res: Response) {
     const conn = await DbConnection.getConnection();
 
     // Retrieve relation
-    const relation = await CalendarsToOwners.findGroupRelation(conn, groupId, requestingUser.id);
+    const relation = await CalendarsToOwners.findCalendarRelation(conn, groupId, requestingUser.id);
 
     // Make sure that the relation is valid
     if (!relation) {
