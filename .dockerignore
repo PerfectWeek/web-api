@@ -1,0 +1,13 @@
+# Git
+.git
+
+# IDEs
+.vscode
+.idea
+
+# Node
+build
+node_modules
+
+# MISC
+.DS_Store
